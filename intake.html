@@ -130,6 +130,33 @@
         <input type="file" name="dlBack" accept="image/*" capture="environment" required>
       </div>
 
+      <!-- Medical Conditions Section -->
+<div class="section" id="conditions-section">
+  <label>Please select at least one qualifying medical condition:</label>
+  <div>
+    <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
+    <label><input type="checkbox" name="conditions" value="PTSD"> PTSD</label>
+    <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
+    <label><input type="checkbox" name="conditions" value="ALS"> Amyotrophic Lateral Sclerosis</label>
+    <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
+    <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
+    <label><input type="checkbox" name="conditions" value="Crohns Disease"> Crohn’s Disease</label>
+    <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
+    <label><input type="checkbox" name="conditions" value="Parkinsons"> Parkinson’s</label>
+    <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
+    <label><input type="checkbox" name="conditions" value="Tourettes"> Tourette’s</label>
+    <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
+    <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
+    <label><input type="checkbox" name="conditions" value="Alzheimers"> Alzheimer’s</label>
+    <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
+    <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
+    <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
+  </div>
+  <div id="conditions-error" class="error hidden">
+    ❌ Please select at least one condition.
+  </div>
+</div>
+
       <!-- Medical Record & Proof Address -->
       <div class="section">
         <label>Do you have a medical record of your condition?</label>
