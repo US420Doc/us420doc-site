@@ -69,13 +69,50 @@
         <label>Last Name:</label><input type="text" name="lastName" required>
         <label>First Name:</label><input type="text" name="firstName" required>
         <label>Birthdate (MM/DD/YYYY):</label><input type="text" name="birthdate" required>
-        <label>Address (Street, City, State ZIP):</label>
+        <div class="section">
+        <label>Street Address:</label>
         <input
           type="text"
-          name="fullAddress"
-          placeholder="123 Main St, Atlanta, GA 30303"
+          id="street"
+          autocomplete="address-line1"
+          placeholder="123 Main St"
           required
         >
+
+        <label>City:</label>
+        <input
+          type="text"
+          id="city"
+          autocomplete="address-level2"
+          placeholder="Atlanta"
+          required
+        >
+
+        <label>State (2-letter):</label>
+        <input
+          type="text"
+          id="state"
+          maxlength="2"
+          autocomplete="region"
+          placeholder="GA"
+          required
+        >
+
+        <label>ZIP Code:</label>
+        <input
+          type="text"
+          id="zip"
+          pattern="\d{5}"
+          autocomplete="postal-code"
+          placeholder="30303"
+          title="5-digit ZIP, e.g. 30303"
+          required
+         >
+
+        <!-- Hidden field that Google Sheets reads: -->
+        <input type="hidden" name="fullAddress" id="fullAddress">
+        </div>
+
         <label>Years Living in Georgia:</label><input type="number" name="yearsInGA" min="0" required>
         <p class="note">Format: 4045551234 or 404-555-1234</p>
         <label>Email:</label><input type="email" name="email" required>
