@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Cannabis Card Intake Form</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
@@ -17,61 +17,53 @@
     .welcome { background: #ffffff; padding: 15px; border: 1px solid #1a751a; border-radius: 8px; margin-bottom: 20px; text-align: center; }
   </style>
   <script>
-    function toggleMedicalRecord(value) {
-      document.getElementById('medical-record-upload').style.display = value === 'Yes' ? 'block' : 'none';
-      document.getElementById('medical-record-note').style.display = value === 'No' ? 'block' : 'none';
+    // Toggle sections
+    function toggleMedicalRecord(v) {
+      document.getElementById('medical-record-upload').style.display = v==='Yes' ? 'block' : 'none';
+      document.getElementById('medical-record-note').style.display = v==='No' ? 'block' : 'none';
     }
-    function toggleProofAddress(value) {
-      document.getElementById('proof-address-upload').style.display = value === 'No' ? 'block' : 'none';
+    function toggleProofAddress(v) {
+      document.getElementById('proof-address-upload').style.display = v==='No' ? 'block' : 'none';
     }
-    function toggleCaregiver(value) {
-      document.getElementById('caregiver-section').style.display = value === 'Yes' ? 'block' : 'none';
-      document.querySelectorAll('#caregiver-section input').forEach(input => input.required = (value === 'Yes'));
+    function toggleCaregiver(v) {
+      const sec = document.getElementById('caregiver-section');
+      sec.style.display = v==='Yes' ? 'block' : 'none';
+      sec.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
     }
+
+    // Combine visible address into fullAddress hidden field
+    function combineAddress() {
+      const st = document.getElementById('street').value.trim();
+      const ci = document.getElementById('city').value.trim();
+      const stt= document.getElementById('state').value.trim();
+      const zp = document.getElementById('zip').value.trim();
+      document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
+    }
+
+    // Validate on submit: first combine address, then check code
     function validateForm(event) {
-      const enteredCode = document.getElementById('access-code').value.trim();
-      if (enteredCode !== 'US420PASS') {
+      combineAddress();
+      const code = document.getElementById('access-code').value.trim();
+      if(code !== 'US420PASS') {
         event.preventDefault();
         document.getElementById('code-error').style.display = 'block';
         return false;
       }
       document.getElementById('form-area').style.display = 'none';
       document.getElementById('success-message').style.display = 'block';
-      setTimeout(() => window.location.href = "https://us420doc.com/ur420appt", 3000);
+      setTimeout(()=> window.location.href = "https://us420doc.com/ur420appt", 3000);
     }
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('fname')) document.querySelector('input[name="firstName"]').value = decodeURIComponent(params.get('fname'));
-      if (params.has('lname')) document.querySelector('input[name="lastName"]').value = decodeURIComponent(params.get('lname'));
-      if (params.has('email')) document.querySelector('input[name="email"]').value = decodeURIComponent(params.get('email'));
-      if (params.has('phone')) document.querySelector('input[name="phone"]').value = decodeURIComponent(params.get('phone'));
+
+    // Pre-fill from URL params
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const p = new URLSearchParams(window.location.search);
+      if(p.has('fname')) document.querySelector('input[name="firstName"]').value = decodeURIComponent(p.get('fname'));
+      if(p.has('lname')) document.querySelector('input[name="lastName"]').value = decodeURIComponent(p.get('lname'));
+      if(p.has('email')) document.querySelector('input[name="email"]').value = decodeURIComponent(p.get('email'));
+      if(p.has('phone')) document.querySelector('input[name="phone"]').value = decodeURIComponent(p.get('phone'));
     });
   </script>
 </head>
-  <script>
-  function combineAddress() {
-    const street = document.getElementById('street').value.trim();
-    const city   = document.getElementById('city').value.trim();
-    const state  = document.getElementById('state').value.trim();
-    const zip    = document.getElementById('zip').value.trim();
-    document.getElementById('fullAddress').value =
-      street + ', ' + city + ', ' + state + ' ' + zip;
-  }
-
-  function validateForm(event) {
-    // first, rebuild the fullAddress hidden field
-    combineAddress();
-
-    // then do your existing access-code check
-    const enteredCode = document.getElementById('access-code').value.trim();
-    if (enteredCode !== 'US420PASS') {
-      event.preventDefault();
-      document.getElementById('code-error').style.display = 'block';
-      return false;
-    }
-    // …rest of your success logic…
-  }
-</script>
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
 
@@ -81,120 +73,155 @@
   </div>
 
   <div id="form-area">
-    <form action="https://script.google.com/macros/s/AKfycbzcJLcTcRTTux1K5HVCPdMReVyybEU3oBT0bUWzwB8ZzdX5ufmlQtVCnePQe3seOlpW/exec" method="POST" enctype="multipart/form-data" onsubmit="validateForm(event)">
-      
+    <form onsubmit="validateForm(event)"
+          action="https://script.google.com/macros/s/AKfycbzcJLcTcRTTux1K5HVCPdMReVyybEU3oBT0bUWzwB8ZzdX5ufmlQtVCnePQe3seOlpW/exec"
+          method="POST"
+          enctype="multipart/form-data">
+
+      <!-- Access Code Section -->
       <div class="section">
         <label>Access Code:</label>
         <input type="text" id="access-code" required>
-        <div id="code-error" class="error hidden">❌ Incorrect Access Code. Please check and try again.</div>
+        <div id="code-error" class="error hidden">
+          ❌ Incorrect Access Code. Please check and try again.
+        </div>
       </div>
 
+      <!-- Patient Information Section -->
       <div class="section">
-        <label>Last Name:</label><input type="text" name="lastName" required>
-        <label>First Name:</label><input type="text" name="firstName" required>
-        <label>Birthdate (MM/DD/YYYY):</label><input type="text" name="birthdate" required>
-        <div class="section">
+        <label>Last Name:</label>
+        <input type="text" name="lastName" required>
+
+        <label>First Name:</label>
+        <input type="text" name="firstName" required>
+
+        <label>Birthdate (MM/DD/YYYY):</label>
+        <input type="text" name="birthdate" required>
+      </div>
+
+      <!-- Address Section (visible) + hidden fullAddress -->
+      <div class="section">
         <label>Street Address:</label>
-        <input
-          type="text"
-          id="street"
-          autocomplete="address-line1"
-          placeholder="123 Main St"
-          required
-        >
+        <input type="text" id="street"
+               autocomplete="address-line1"
+               placeholder="123 Main St"
+               required>
 
         <label>City:</label>
-        <input
-          type="text"
-          id="city"
-          autocomplete="address-level2"
-          placeholder="Atlanta"
-          required
-        >
+        <input type="text" id="city"
+               autocomplete="address-level2"
+               placeholder="Atlanta"
+               required>
 
         <label>State (2-letter):</label>
-        <input
-          type="text"
-          id="state"
-          maxlength="2"
-          autocomplete="region"
-          placeholder="GA"
-          required
-        >
+        <input type="text" id="state"
+               maxlength="2"
+               autocomplete="region"
+               placeholder="GA"
+               required>
 
         <label>ZIP Code:</label>
-        <input
-          type="text"
-          id="zip"
-          pattern="\d{5}"
-          autocomplete="postal-code"
-          placeholder="30303"
-          title="5-digit ZIP, e.g. 30303"
-          required
-         >
+        <input type="text" id="zip"
+               pattern="\d{5}"
+               autocomplete="postal-code"
+               placeholder="30303"
+               title="Please enter a 5-digit ZIP code (e.g. 30303)"
+               required>
 
-        <!-- Hidden field that Google Sheets reads: -->
+        <!-- This hidden field is what Google reads -->
         <input type="hidden" name="fullAddress" id="fullAddress">
-        </div>
+      </div>
 
-        <label>Years Living in Georgia:</label><input type="number" name="yearsInGA" min="0" required>
-        <p class="note">Format: 4045551234 or 404-555-1234</p>
-        <label>Email:</label><input type="email" name="email" required>
-        <label>Driver's License Number:</label><input type="text" name="dlNumber" required>
-        <label>Upload Driver's License Front:</label><input type="file" name="dlFront" accept="image/*" capture="environment" required>
-        <p class="note">On mobile, you can use your camera to upload.</p>
-        <label>Upload Driver's License Back:</label><input type="file" name="dlBack" accept="image/*" capture="environment" required>
+      <!-- Other Info -->
+      <div class="section">
+        <label>Years Living in Georgia:</label>
+        <input type="number" name="yearsInGA" min="0" required>
 
+        <label>Cell Phone:</label>
+        <input type="tel" name="phone"
+               pattern="\d{10}|\d{3}-\d{3}-\d{4}"
+               placeholder="404-555-1234"
+               title="Enter 10 digits (4045551234) or with dashes (404-555-1234)"
+               required>
+        <p class="note">Allowed: 4045551234 or 404-555-1234</p>
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Driver's License Number:</label>
+        <input type="text" name="dlNumber" required>
+
+        <label>Upload Driver's License Front:</label>
+        <input type="file" name="dlFront"
+               accept="image/*" capture="environment" required>
+        <p class="note">On mobile, you can use your camera.</p>
+
+        <label>Upload Driver's License Back:</label>
+        <input type="file" name="dlBack"
+               accept="image/*" capture="environment" required>
+      </div>
+
+      <!-- Medical Record & Proof of Address -->
+      <div class="section">
         <label>Do you have a medical record of your condition?</label>
-        <select name="hasMedicalRecord" onchange="toggleMedicalRecord(this.value)" required>
+        <select name="hasMedicalRecord"
+                onchange="toggleMedicalRecord(this.value)"
+                required>
           <option value="">-- Please select --</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
-
         <div id="medical-record-upload" class="hidden">
-          <label>Upload Medical Record:</label><input type="file" name="medicalRecord" accept="application/pdf,image/*">
+          <label>Upload Medical Record:</label>
+          <input type="file" name="medicalRecord"
+                 accept="application/pdf,image/*">
         </div>
         <div id="medical-record-note" class="hidden">
-          <p>We will email you instructions for submitting your medical record later.</p>
+          <p>We will email you instructions later.</p>
         </div>
+
         <label>Does your address match your photo ID?</label>
         <select onchange="toggleProofAddress(this.value)" required>
           <option value="">-- Please select --</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
-
         <div id="proof-address-upload" class="hidden">
-          <label>Upload Proof of Address:</label><input type="file" name="proofOfAddress" accept="application/pdf,image/*">
+          <label>Upload Proof of Address:</label>
+          <input type="file" name="proofOfAddress"
+                 accept="application/pdf,image/*">
         </div>
       </div>
 
+      <!-- Caregiver Section -->
       <div class="section">
-        <label>Are you completing this application on behalf of someone else?</label>
+        <label>Are you completing this on behalf of someone else?</label>
         <select onchange="toggleCaregiver(this.value)" required>
           <option value="">-- Please select --</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
       </div>
-
       <div id="caregiver-section" class="section hidden">
         <h3>Caregiver 1 Information</h3>
         <label>Full Name:</label><input type="text" name="cg1_name">
-        <label>Birthdate:</label><input type="text" name="cg1_birthdate" placeholder="MM/DD/YYYY">
-        <label>Phone:</label><input type="tel" name="cg1_phone" pattern="[0-9\\-\\s]+">
+        <label>Birthdate:</label><input type="text" name="cg1_birthdate"
+                                         placeholder="MM/DD/YYYY">
+        <label>Phone:</label><input type="tel" name="cg1_phone"
+                                    pattern="[0-9\\-\\s]+">
         <label>Email:</label><input type="email" name="cg1_email">
         <label>Driver's License Number:</label><input type="text" name="cg1_dl">
-        <label>Upload DL Front:</label><input type="file" name="cg1_dlFront" accept="image/*">
-        <label>Upload DL Back:</label><input type="file" name="cg1_dlBack" accept="image/*">
+        <label>Upload DL Front:</label><input type="file" name="cg1_dlFront"
+                                              accept="image/*">
+        <label>Upload DL Back:</label><input type="file" name="cg1_dlBack"
+                                             accept="image/*">
       </div>
 
       <button type="submit">Submit Application</button>
     </form>
   </div>
 
-  <div id="success-message" style="display:none; text-align:center;">
+  <div id="success-message" class="section" style="display:none; text-align:center;">
     <h2>✅ Thank you!</h2>
     <p>Redirecting you to schedule your telehealth appointment...</p>
   </div>
