@@ -48,6 +48,30 @@
     });
   </script>
 </head>
+  <script>
+  function combineAddress() {
+    const street = document.getElementById('street').value.trim();
+    const city   = document.getElementById('city').value.trim();
+    const state  = document.getElementById('state').value.trim();
+    const zip    = document.getElementById('zip').value.trim();
+    document.getElementById('fullAddress').value =
+      street + ', ' + city + ', ' + state + ' ' + zip;
+  }
+
+  function validateForm(event) {
+    // first, rebuild the fullAddress hidden field
+    combineAddress();
+
+    // then do your existing access-code check
+    const enteredCode = document.getElementById('access-code').value.trim();
+    if (enteredCode !== 'US420PASS') {
+      event.preventDefault();
+      document.getElementById('code-error').style.display = 'block';
+      return false;
+    }
+    // …rest of your success logic…
+  }
+</script>
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
 
