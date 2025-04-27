@@ -87,15 +87,17 @@
       // inside validateForm(event), after Access Code check succeeds:
 
      // figure out if they have a medical record:
-     const hasRecord = document.getElementById('hasMedicalRecord').value;
-     if (hasRecord === 'No') {
-       event.preventDefault();
-       document.getElementById('form-area').style.display = 'none';
-       document.getElementById('no-record-message').style.display = 'block';
-       return false;
-    }  
+     <div id="no-record-message" class="section hidden" style="text-align:center;">
+     <h2>📄 Medical Records Required</h2>
+     <p>
+       Thanks for applying! You indicated you don’t yet have your medical record.
+       We’ll send you an email in a few minutes with instructions on how to submit it.
+       Once we receive your records, you’ll be able to schedule your telehealth appointment.
+    </p>
+    </div>
 
-     // 5) Iif the do have a medical record: All good! Show thank-you and redirect
+
+     // 5) if they have a medical record, All good! Show thank-you and redirect
       event.preventDefault();
       document.getElementById('form-area').style.display='none';
       document.getElementById('success-message').style.display='block';
