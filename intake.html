@@ -158,4 +158,90 @@
         <input type="file" id="dlFront" name="dlFront" accept="image/*" capture="environment" required>
         <p class="note">On mobile, you can use your camera.</p>
         <label for="dlBack">Upload Driver's License Back:</label>
-        <input type="file"
+        <input type="file" id="dlBack" name="dlBack" accept="image/*" capture="environment" required>
+      </div>
+
+      <!-- Medical Conditions Section -->
+      <div class="section" id="conditions-section">
+        <label>Please select at least one qualifying medical condition:</label>
+        <div>
+          <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
+          <label><input type="checkbox" name="conditions" value="PTSD"> PTSD (Anxiety, Stress, Depression)</label>
+          <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
+          <label><input type="checkbox" name="conditions" value="ALS"> Amyotrophic Lateral Sclerosis</label>
+          <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
+          <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
+          <label><input type="checkbox" name="conditions" value="Crohns Disease"> Crohn’s Disease</label>
+          <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
+          <label><input type="checkbox" name="conditions" value="Parkinsons"> Parkinson’s</label>
+          <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
+          <label><input type="checkbox" name="conditions" value="Tourettes"> Tourette’s</label>
+          <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
+          <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
+          <label><input type="checkbox" name="conditions" value="Alzheimers"> Alzheimer’s</label>
+          <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
+          <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
+          <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
+        </div>
+        <div id="conditions-error" class="error hidden">
+          ❌ Please select at least one condition.
+        </div>
+      </div>
+
+      <!-- Medical Record & Proof Address -->
+      <div class="section">
+        <label for="hasMedicalRecord">Do you have a medical record of your condition?</label>
+        <select id="hasMedicalRecord" name="hasMedicalRecord" onchange="toggleMedicalRecord(this.value)" required>
+          <option value="">-- Please select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <div id="medical-record-upload" class="hidden">
+          <label for="medicalRecord">Upload Medical Record:</label>
+          <input type="file" id="medicalRecord" name="medicalRecord" accept="application/pdf,image/*">
+        </div>
+        <div id="medical-record-note" class="hidden">
+          <p>We will email you instructions later.</p>
+        </div>
+        <label for="proofAddressMatches">Does your address match your photo ID?</label>
+        <select id="proofAddressMatches" name="proofAddressMatches" onchange="toggleProofAddress(this.value)" required>
+          <option value="">-- Please select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <div id="proof-address-upload" class="hidden">
+          <label for="proofOfAddress">Upload Proof of Address:</label>
+          <input type="file" id="proofOfAddress" name="proofOfAddress" accept="application/pdf,image/*">
+        </div>
+      </div>
+
+      <!-- Caregiver Section -->
+      <div class="section">
+        <label for="isCaregiver">Are you completing this application on behalf of someone else?</label>
+        <select id="isCaregiver" name="isCaregiver" onchange="toggleCaregiver(this.value)" required>
+          <option value="">-- Please select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div id="caregiver-section" class="section hidden">
+        <h3>Caregiver 1 Information</h3>
+        <label for="cg1_name">Full Name:</label><input type="text" id="cg1_name" name="cg1_name">
+        <label for="cg1_birthdate">Birthdate:</label><input type="text" id="cg1_birthdate" name="cg1_birthdate" placeholder="MM/DD/YYYY">
+        <label for="cg1_phone">Phone:</label><input type="tel" id="cg1_phone" name="cg1_phone" pattern="[0-9\-\s]+">
+        <label for="cg1_email">Email:</label><input type="email" id="cg1_email" name="cg1_email">
+        <label for="cg1_dl">Driver's License Number:</label><input type="text" id="cg1_dl" name="cg1_dl">
+        <label for="cg1_dlFront">Upload DL Front:</label><input type="file" id="cg1_dlFront" name="cg1_dlFront" accept="image/*">
+        <label for="cg1_dlBack">Upload DL Back:</label><input type="file" id="cg1_dlBack" name="cg1_dlBack" accept="image/*">
+      </div>
+
+      <button type="submit">Submit Application</button>
+    </form>
+  </div>
+
+  <div id="success-message" class="section hidden" style="text-align:center;">
+    <h2>✅ Thank you!</h2>
+    <p>Redirecting you to schedule your telehealth appointment...</p>
+  </div>
+</body>
+</html>
