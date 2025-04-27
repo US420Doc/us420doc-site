@@ -76,7 +76,7 @@
 
       // 3) Combine address
       combineAddress();
-
+      
       // 4) Access-Code check
       const code = document.getElementById('access-code').value.trim();
       if (code!=='US420PASS') {
@@ -84,8 +84,18 @@
         document.getElementById('code-error').style.display='block';
         return false;
       }
+      // inside validateForm(event), after Access Code check succeeds:
 
-      // 5) All good! Show thank-you and redirect
+     // figure out if they have a medical record:
+     const hasRecord = document.getElementById('hasMedicalRecord').value;
+     if (hasRecord === 'No') {
+       event.preventDefault();
+       document.getElementById('form-area').style.display = 'none';
+       document.getElementById('no-record-message').style.display = 'block';
+       return false;
+    }  
+
+     // 5) Iif the do have a medical record: All good! Show thank-you and redirect
       event.preventDefault();
       document.getElementById('form-area').style.display='none';
       document.getElementById('success-message').style.display='block';
