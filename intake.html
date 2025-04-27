@@ -26,12 +26,16 @@
       document.getElementById('proof-address-upload').style.display = v==='No'?'block':'none';
     }
     function toggleCaregiver(v) {
-      const sec = document.getElementById('caregiver-section');
-      sec.style.display = v==='Yes'?'block':'none';
-      sec.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
+      const sec1 = document.getElementById('caregiver1-section');
+      const sec2 = document.getElementById('caregiver2-section');
+      // show both when Yes; hide both when No
+      sec1.style.display = sec2.style.display = (v==='Yes'?'block':'none');
+      // require caregiver1 inputs when shown; caregiver2 always optional
+      sec1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
+      sec2.querySelectorAll('input').forEach(i=> i.required = false);
     }
 
-    // Build hidden fullAddress
+    // Combine visible address into hidden fullAddress
     function combineAddress() {
       const st = document.getElementById('street').value.trim();
       const ci = document.getElementById('city').value.trim();
@@ -44,15 +48,15 @@
     function validateForm(event) {
       const form = event.target;
       const invalid = [];
-      // 1) HTML5 validation
+      // 1) Check HTML5 validity
       for (const el of form.elements) {
         if (el.willValidate && !el.checkValidity()) {
           let label = '';
           const lab = document.querySelector(`label[for="${el.id}"]`);
-          if (lab)        label = lab.innerText;
-          else if (el.name)      label = el.name;
-          else if (el.placeholder) label = el.placeholder;
-          else label = 'A required field';
+          label = lab ? lab.innerText
+                : el.name  ? el.name
+                : el.placeholder ? el.placeholder
+                : 'A required field';
           invalid.push(label.trim());
         }
       }
@@ -61,37 +65,40 @@
         alert('Please complete the following fields correctly:\n• ' + invalid.join('\n• '));
         return false;
       }
-      // 2) At least one condition
-      const conds = Array.from(document.querySelectorAll('input[name="conditions"]:checked'));
+      // 2) Ensure at least one medical condition
+      const conds = document.querySelectorAll('input[name="conditions"]:checked');
       if (conds.length === 0) {
         event.preventDefault();
-        document.getElementById('conditions-error').style.display = 'block';
+        document.getElementById('conditions-error').style.display='block';
         return false;
       }
-      document.getElementById('conditions-error').style.display = 'none';
+      document.getElementById('conditions-error').style.display='none';
+
       // 3) Combine address
       combineAddress();
-      // 4) Access code
+
+      // 4) Access-Code check
       const code = document.getElementById('access-code').value.trim();
-      if (code !== 'US420PASS') {
+      if (code!=='US420PASS') {
         event.preventDefault();
-        document.getElementById('code-error').style.display = 'block';
+        document.getElementById('code-error').style.display='block';
         return false;
       }
-      // 5) Show success & redirect
+
+      // 5) All good! Show thank-you and redirect
       event.preventDefault();
-      document.getElementById('form-area').style.display = 'none';
-      document.getElementById('success-message').style.display = 'block';
-      setTimeout(() => window.location.href = "https://us420doc.com/ur420appt", 3000);
+      document.getElementById('form-area').style.display='none';
+      document.getElementById('success-message').style.display='block';
+      setTimeout(()=> window.location.href='https://us420doc.com/ur420appt', 3000);
     }
 
     // Prefill from URL params
     window.addEventListener('DOMContentLoaded', ()=>{
       const p = new URLSearchParams(window.location.search);
-      if (p.has('fname')) document.querySelector('input[name="firstName"]').value = decodeURIComponent(p.get('fname'));
-      if (p.has('lname')) document.querySelector('input[name="lastName"]').value = decodeURIComponent(p.get('lname'));
-      if (p.has('email')) document.querySelector('input[name="email"]').value = decodeURIComponent(p.get('email'));
-      if (p.has('phone')) document.querySelector('input[name="phone"]').value = decodeURIComponent(p.get('phone'));
+      if(p.has('fname')) document.querySelector('input[name="firstName"]').value=decodeURIComponent(p.get('fname'));
+      if(p.has('lname')) document.querySelector('input[name="lastName"]').value=decodeURIComponent(p.get('lname'));
+      if(p.has('email')) document.querySelector('input[name="email"]').value=decodeURIComponent(p.get('email'));
+      if(p.has('phone')) document.querySelector('input[name="phone"]').value=decodeURIComponent(p.get('phone'));
     });
   </script>
 </head>
@@ -112,7 +119,7 @@
       <!-- Access Code -->
       <div class="section">
         <label for="access-code">Access Code:</label>
-        <input type="text" id="access-code" required>
+        <input id="access-code" type="text" required>
         <div id="code-error" class="error hidden">
           ❌ Incorrect Access Code. Please check and try again.
         </div>
@@ -121,54 +128,53 @@
       <!-- Patient Info -->
       <div class="section">
         <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required>
+        <input id="lastName" name="lastName" type="text" required>
         <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required>
+        <input id="firstName" name="firstName" type="text" required>
         <label for="birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input type="text" id="birthdate" name="birthdate" required>
+        <input id="birthdate" name="birthdate" type="text" required>
       </div>
 
-      <!-- Address Visible + Hidden fullAddress -->
+      <!-- Address + Hidden fullAddress -->
       <div class="section">
         <label for="street">Street Address:</label>
-        <input type="text" id="street" autocomplete="address-line1" placeholder="123 Main St" required>
+        <input id="street" type="text" autocomplete="address-line1" placeholder="123 Main St" required>
         <label for="city">City:</label>
-        <input type="text" id="city" autocomplete="address-level2" placeholder="Atlanta" required>
+        <input id="city" type="text" autocomplete="address-level2" placeholder="Atlanta" required>
         <label for="state">State (2-letter):</label>
-        <input type="text" id="state" name="state" maxlength="2" autocomplete="region" placeholder="GA" required>
+        <input id="state" name="state" type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
         <label for="zip">ZIP Code:</label>
-        <input type="text" id="zip" pattern="\d{5}" autocomplete="postal-code" placeholder="30303"
-               title="Please enter a 5-digit ZIP code (e.g. 30303)" required>
-        <input type="hidden" name="fullAddress" id="fullAddress">
+        <input id="zip" type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303"
+               title="Please enter a 5-digit ZIP code" required>
+        <input type="hidden" id="fullAddress" name="fullAddress">
       </div>
 
       <!-- Other Fields -->
       <div class="section">
         <label for="yearsInGA">Years Living in Georgia:</label>
-        <input type="number" id="yearsInGA" name="yearsInGA" min="0" required>
+        <input id="yearsInGA" name="yearsInGA" type="number" min="0" required>
         <label for="phone">Cell Phone:</label>
-        <input type="tel" id="phone" name="phone" pattern="\d{10}|\d{3}-\d{3}-\d{4}" placeholder="404-555-1234"
-               title="Enter 10 digits (4045551234) or with dashes (404-555-1234)" required>
+        <input id="phone" name="phone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}"
+               placeholder="404-555-1234" title="10 digits or dashes" required>
         <p class="note">Allowed: 4045551234 or 404-555-1234</p>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="dlNumber">Driver's License Number:</label>
-        <input type="text" id="dlNumber" name="dlNumber" required>
-        <label for="dlFront">Upload Driver's License Front:</label>
-        <input type="file" id="dlFront" name="dlFront" accept="image/*" capture="environment" required>
-        <p class="note">On mobile, you can use your camera.</p>
-        <label for="dlBack">Upload Driver's License Back:</label>
-        <input type="file" id="dlBack" name="dlBack" accept="image/*" capture="environment" required>
+        <input id="email" name="email" type="email" required>
+        <label for="dlNumber">Driver’s License Number:</label>
+        <input id="dlNumber" name="dlNumber" type="text" required>
+        <label for="dlFront">Upload DL Front:</label>
+        <input id="dlFront" name="dlFront" type="file" accept="image/*" capture="environment" required>
+        <label for="dlBack">Upload DL Back:</label>
+        <input id="dlBack" name="dlBack" type="file" accept="image/*" capture="environment" required>
       </div>
 
-      <!-- Medical Conditions Section -->
+      <!-- Medical Conditions -->
       <div class="section" id="conditions-section">
         <label>Please select at least one qualifying medical condition:</label>
         <div>
           <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
           <label><input type="checkbox" name="conditions" value="PTSD"> PTSD (Anxiety, Stress, Depression)</label>
           <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
-          <label><input type="checkbox" name="conditions" value="ALS"> Amyotrophic Lateral Sclerosis</label>
+          <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
           <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
           <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
           <label><input type="checkbox" name="conditions" value="Crohns Disease"> Crohn’s Disease</label>
@@ -198,11 +204,12 @@
         </select>
         <div id="medical-record-upload" class="hidden">
           <label for="medicalRecord">Upload Medical Record:</label>
-          <input type="file" id="medicalRecord" name="medicalRecord" accept="application/pdf,image/*">
+          <input id="medicalRecord" name="medicalRecord" type="file" accept="application/pdf,image/*">
         </div>
         <div id="medical-record-note" class="hidden">
           <p>We will email you instructions later.</p>
         </div>
+
         <label for="proofAddressMatches">Does your address match your photo ID?</label>
         <select id="proofAddressMatches" name="proofAddressMatches" onchange="toggleProofAddress(this.value)" required>
           <option value="">-- Please select --</option>
@@ -211,11 +218,11 @@
         </select>
         <div id="proof-address-upload" class="hidden">
           <label for="proofOfAddress">Upload Proof of Address:</label>
-          <input type="file" id="proofOfAddress" name="proofOfAddress" accept="application/pdf,image/*">
+          <input id="proofOfAddress" name="proofOfAddress" type="file" accept="application/pdf,image/*">
         </div>
       </div>
 
-      <!-- Caregiver Section -->
+      <!-- Caregiver Sections -->
       <div class="section">
         <label for="isCaregiver">Are you completing this application on behalf of someone else?</label>
         <select id="isCaregiver" name="isCaregiver" onchange="toggleCaregiver(this.value)" required>
@@ -224,15 +231,25 @@
           <option value="No">No</option>
         </select>
       </div>
-      <div id="caregiver-section" class="section hidden">
+      <div id="caregiver1-section" class="section hidden">
         <h3>Caregiver 1 Information</h3>
-        <label for="cg1_name">Full Name:</label><input type="text" id="cg1_name" name="cg1_name">
-        <label for="cg1_birthdate">Birthdate:</label><input type="text" id="cg1_birthdate" name="cg1_birthdate" placeholder="MM/DD/YYYY">
-        <label for="cg1_phone">Phone:</label><input type="tel" id="cg1_phone" name="cg1_phone" pattern="[0-9\-\s]+">
-        <label for="cg1_email">Email:</label><input type="email" id="cg1_email" name="cg1_email">
-        <label for="cg1_dl">Driver's License Number:</label><input type="text" id="cg1_dl" name="cg1_dl">
-        <label for="cg1_dlFront">Upload DL Front:</label><input type="file" id="cg1_dlFront" name="cg1_dlFront" accept="image/*">
-        <label for="cg1_dlBack">Upload DL Back:</label><input type="file" id="cg1_dlBack" name="cg1_dlBack" accept="image/*">
+        <label for="cg1_name">Full Name:</label><input id="cg1_name" name="cg1_name" type="text" required>
+        <label for="cg1_birthdate">Birthdate:</label><input id="cg1_birthdate" name="cg1_birthdate" type="text" placeholder="MM/DD/YYYY" required>
+        <label for="cg1_phone">Phone:</label><input id="cg1_phone" name="cg1_phone" type="tel" pattern="[0-9\-\\s]+" required>
+        <label for="cg1_email">Email:</label><input id="cg1_email" name="cg1_email" type="email" required>
+        <label for="cg1_dl">Driver’s License #:</label><input id="cg1_dl" name="cg1_dl" type="text" required>
+        <label for="cg1_dlFront">Upload DL Front:</label><input id="cg1_dlFront" name="cg1_dlFront" type="file" accept="image/*" required>
+        <label for="cg1_dlBack">Upload DL Back:</label><input id="cg1_dlBack" name="cg1_dlBack" type="file" accept="image/*" required>
+      </div>
+      <div id="caregiver2-section" class="section hidden">
+        <h3>Caregiver 2 Information (Optional)</h3>
+        <label for="cg2_name">Full Name:</label><input id="cg2_name" name="cg2_name" type="text">
+        <label for="cg2_birthdate">Birthdate:</label><input id="cg2_birthdate" name="cg2_birthdate" type="text" placeholder="MM/DD/YYYY">
+        <label for="cg2_phone">Phone:</label><input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\\s]+">
+        <label for="cg2_email">Email:</label><input id="cg2_email" name="cg2_email" type="email">
+        <label for="cg2_dl">Driver’s License #:</label><input id="cg2_dl" name="cg2_dl" type="text">
+        <label for="cg2_dlFront">Upload DL Front:</label><input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*">
+        <label for="cg2_dlBack">Upload DL Back:</label><input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*">
       </div>
 
       <button type="submit">Submit Application</button>
