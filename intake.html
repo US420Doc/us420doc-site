@@ -44,65 +44,32 @@
       document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
     }
 
-    // Debug-enabled validateForm
     function validateForm(event) {
-      const form = event.target;
-      const invalid = [];
-      // 1) Check HTML5 validity
-      for (const el of form.elements) {
-        if (el.willValidate && !el.checkValidity()) {
-          let label = '';
-          const lab = document.querySelector(`label[for="${el.id}"]`);
-          label = lab ? lab.innerText
-                : el.name  ? el.name
-                : el.placeholder ? el.placeholder
-                : 'A required field';
-          invalid.push(label.trim());
-        }
-      }
-      if (invalid.length) {
-        event.preventDefault();
-        alert('Please complete the following fields correctly:\n• ' + invalid.join('\n• '));
-        return false;
-      }
-      // 2) Ensure at least one medical condition
-      const conds = document.querySelectorAll('input[name="conditions"]:checked');
-      if (conds.length === 0) {
-        event.preventDefault();
-        document.getElementById('conditions-error').style.display='block';
-        return false;
-      }
-      document.getElementById('conditions-error').style.display='none';
+  event.preventDefault();  
+  combineAddress();
 
-      // 3) Combine address
-      combineAddress();
-      
-      // 4) Access-Code check
-      const code = document.getElementById('access-code').value.trim();
-      if (code!=='US420PASS') {
-        event.preventDefault();
-        document.getElementById('code-error').style.display='block';
-        return false;
-      }
-      // inside validateForm(event), after Access Code check succeeds:
+  // 1) Access code check
+  const code = document.getElementById('access-code').value.trim();
+  if (code !== 'US420PASS') {
+    document.getElementById('code-error').style.display = 'block';
+    return;
+  }
 
-     // figure out if they have a medical record:
-     <div id="no-record-message" class="section hidden" style="text-align:center;">
-     <h2>📄 Medical Records Required</h2>
-     <p>
-       Thanks for applying! You indicated you don’t yet have your medical record.
-       We’ll send you an email in a few minutes with instructions on how to submit it.
-       Once we receive your records, you’ll be able to schedule your telehealth appointment.
-    </p>
-    </div>
+  // 2) Medical-record branch
+  const hasRecord = document.getElementById('hasMedicalRecord').value;
+  if (hasRecord === 'No') {
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('no-record-message').style.display = 'block';
+    return;
+  }
 
-
-     // 5) if they have a medical record, All good! Show thank-you and redirect
-      event.preventDefault();
-      document.getElementById('form-area').style.display='none';
-      document.getElementById('success-message').style.display='block';
-      setTimeout(()=> window.location.href='https://us420doc.com/ur420appt', 3000);
-    }
+  // 3) Everything’s good → thank you + redirect
+  document.getElementById('form-area').style.display = 'none';
+  document.getElementById('success-message').style.display = 'block';
+  setTimeout(()=>{
+    window.location.href = 'https://us420doc.com/ur420appt';
+  }, 3000);
+}
 
     // Prefill from URL params
     window.addEventListener('DOMContentLoaded', ()=>{
