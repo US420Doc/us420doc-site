@@ -122,19 +122,18 @@
     (Your Access Code is: <strong>US420PASS</strong>)
   </div>
 
-  -    <form action="https://script.google.com/macros/.../exec"
--          method="POST"
--          enctype="multipart/form-data">
-
-    <form onsubmit="return validateForm(event)"
+  <form onsubmit="return validateForm(event)"
       action="https://script.google.com/macros/s/AKfycbyZaRBBM_1YBandV6hLI7ZD2Acu4i0f52RogdbbdFzN4l4uySpkfOVpr2eq4vW39IPXAA/exec"
       method="POST"
-      enctype="multipart/form-data">
-  …
-    </form>
+      enctype="multipart/form-data"> 
+    
+  <!-- hidden payment values from Square -->
+  <input type="hidden" id="payerEmail"   name="payerEmail">
+  <input type="hidden" id="paymentType"  name="paymentType">
+  <input type="hidden" id="amount"       name="amount">
+  <input type="hidden" id="last4"        name="last4">
 
-
-
+  
       <!-- Access Code -->
       <div class="section">
         <label for="access-code">Access Code:</label>
