@@ -16,70 +16,83 @@
     .error { color: red; font-weight: bold; margin-top: 10px; }
     .welcome { background: #fff; padding: 15px; border: 1px solid #1a751a; border-radius: 8px; margin-bottom: 20px; text-align: center; }
   </style>
-  <script>
-    // Toggle sections
-    function toggleMedicalRecord(v) {
-      document.getElementById('medical-record-upload').style.display = v==='Yes'?'block':'none';
-      document.getElementById('medical-record-note').style.display = v==='No'?'block':'none';
-    }
-    function toggleProofAddress(v) {
-      document.getElementById('proof-address-upload').style.display = v==='No'?'block':'none';
-    }
-    function toggleCaregiver(v) {
-      const sec1 = document.getElementById('caregiver1-section');
-      const sec2 = document.getElementById('caregiver2-section');
-      // show both when Yes; hide both when No
-      sec1.style.display = sec2.style.display = (v==='Yes'?'block':'none');
-      // require caregiver1 inputs when shown; caregiver2 always optional
-      sec1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
-      sec2.querySelectorAll('input').forEach(i=> i.required = false);
-    }
-
-    // Combine visible address into hidden fullAddress
-    function combineAddress() {
-      const st = document.getElementById('street').value.trim();
-      const ci = document.getElementById('city').value.trim();
-      const stt= document.getElementById('state').value.trim();
-      const zp = document.getElementById('zip').value.trim();
-      document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
-    }
-
-    function validateForm(event) {
-  event.preventDefault();  
-  combineAddress();
-
-  // 1) Access code check
-  const code = document.getElementById('access-code').value.trim();
-  if (code !== 'US420PASS') {
-    document.getElementById('code-error').style.display = 'block';
-    return;
+<script>
+  // Toggle sections
+  function toggleMedicalRecord(v) {
+    document.getElementById('medical-record-upload').style.display = v==='Yes'?'block':'none';
+    document.getElementById('medical-record-note').style.display = v==='No'?'block':'none';
+  }
+  function toggleProofAddress(v) {
+    document.getElementById('proof-address-upload').style.display = v==='No'?'block':'none';
+  }
+  function toggleCaregiver(v) {
+    const sec1 = document.getElementById('caregiver1-section');
+    const sec2 = document.getElementById('caregiver2-section');
+    sec1.style.display = sec2.style.display = (v==='Yes'?'block':'none');
+    sec1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
+    sec2.querySelectorAll('input').forEach(i=> i.required = false);
   }
 
-  // 2) Medical-record branch
-  const hasRecord = document.getElementById('hasMedicalRecord').value;
-  if (hasRecord === 'No') {
-    document.getElementById('form-area').style.display = 'none';
-    document.getElementById('no-record-message').style.display = 'block';
-    return;
+  // Build the hidden fullAddress
+  function combineAddress() {
+    const st = document.getElementById('street').value.trim();
+    const ci = document.getElementById('city').value.trim();
+    const stt= document.getElementById('state').value.trim();
+    const zp = document.getElementById('zip').value.trim();
+    document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  // 3) Everything’s good → thank you + redirect
-  document.getElementById('form-area').style.display = 'none';
-  document.getElementById('success-message').style.display = 'block';
-  setTimeout(()=>{
-    window.location.href = 'https://us420doc.com/ur420appt';
-  }, 3000);
-}
+  // Option A validateForm: return false on errors, true on success
+  function validateForm(event) {
+    const form = event.target;
 
-    // Prefill from URL params
-    window.addEventListener('DOMContentLoaded', ()=>{
-      const p = new URLSearchParams(window.location.search);
-      if(p.has('fname')) document.querySelector('input[name="firstName"]').value=decodeURIComponent(p.get('fname'));
-      if(p.has('lname')) document.querySelector('input[name="lastName"]').value=decodeURIComponent(p.get('lname'));
-      if(p.has('email')) document.querySelector('input[name="email"]').value=decodeURIComponent(p.get('email'));
-      if(p.has('phone')) document.querySelector('input[name="phone"]').value=decodeURIComponent(p.get('phone'));
-    });
-  </script>
+    // 1) Combine address
+    combineAddress();
+
+    // 2) Native HTML5 validity
+    if (!form.checkValidity()) {
+      // browser will highlight the first invalid field
+      return false;
+    }
+
+    // 3) At least one medical condition
+    const conds = document.querySelectorAll('input[name="conditions"]:checked');
+    if (conds.length === 0) {
+      document.getElementById('conditions-error').style.display = 'block';
+      return false;
+    }
+    document.getElementById('conditions-error').style.display = 'none';
+
+    // 4) Access-code check
+    const code = document.getElementById('access-code').value.trim();
+    if (code !== 'US420PASS') {
+      document.getElementById('code-error').style.display = 'block';
+      return false;
+    }
+    document.getElementById('code-error').style.display = 'none';
+
+    // 5) Medical-record branch
+    const hasRecord = document.getElementById('hasMedicalRecord').value;
+    if (hasRecord === 'No') {
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('no-record-message').style.display = 'block';
+      return false;
+    }
+
+    // 6) All checks passed → allow normal submit
+    return true;
+  }
+
+  // Prefill from URL params (unchanged)
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const p = new URLSearchParams(window.location.search);
+    if(p.has('fname')) document.querySelector('input[name="firstName"]').value = decodeURIComponent(p.get('fname'));
+    if(p.has('lname')) document.querySelector('input[name="lastName"]').value  = decodeURIComponent(p.get('lname'));
+    if(p.has('email')) document.querySelector('input[name="email"]').value     = decodeURIComponent(p.get('email'));
+    if(p.has('phone')) document.querySelector('input[name="phone"]').value     = decodeURIComponent(p.get('phone'));
+  });
+</script>
+
 </head>
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
