@@ -17,79 +17,99 @@
     .welcome { background: #fff; padding: 15px; border: 1px solid #1a751a; border-radius: 8px; margin-bottom: 20px; text-align: center; }
   </style>
 <script>
-  // Toggle sections
+  // ——— Toggle functions ———
   function toggleMedicalRecord(v) {
     document.getElementById('medical-record-upload').style.display = v==='Yes'?'block':'none';
-    document.getElementById('medical-record-note').style.display = v==='No'?'block':'none';
+    document.getElementById('medical-record-note')  .style.display = v==='No'?'block':'none';
   }
   function toggleProofAddress(v) {
     document.getElementById('proof-address-upload').style.display = v==='No'?'block':'none';
   }
   function toggleCaregiver(v) {
-    const sec1 = document.getElementById('caregiver1-section');
-    const sec2 = document.getElementById('caregiver2-section');
-    sec1.style.display = sec2.style.display = (v==='Yes'?'block':'none');
-    sec1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
-    sec2.querySelectorAll('input').forEach(i=> i.required = false);
+    const c1 = document.getElementById('caregiver1-section');
+    const c2 = document.getElementById('caregiver2-section');
+    c1.style.display = c2.style.display = (v==='Yes'?'block':'none');
+    c1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
+    c2.querySelectorAll('input').forEach(i=> i.required = false);
   }
 
-  // Build the hidden fullAddress
+  // ——— Combine address bits into hidden fullAddress ———
   function combineAddress() {
-    const st = document.getElementById('street').value.trim();
-    const ci = document.getElementById('city').value.trim();
-    const stt= document.getElementById('state').value.trim();
-    const zp = document.getElementById('zip').value.trim();
+    const st  = document.getElementById('street').value.trim();
+    const ci  = document.getElementById('city').value.trim();
+    const stt = document.getElementById('state').value.trim();
+    const zp  = document.getElementById('zip').value.trim();
     document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  // Option A validateForm: return false on errors, true on success
+  // ——— Debug‐enabled validation ———
   function validateForm(event) {
     const form = event.target;
-
-    // 1) Combine address
     combineAddress();
 
-    // 2) Native HTML5 validity
-    if (!form.checkValidity()) {
-      // browser will highlight the first invalid field
+    // collect all invalid elements
+    const invalidEls = Array.from(form.elements)
+      .filter(el => el.willValidate && !el.checkValidity());
+
+    if (invalidEls.length) {
+      event.preventDefault();
+      // build a list of user‐friendly labels
+      const missing = invalidEls.map(el => {
+        // prefer <label for="...">
+        const lab = document.querySelector(`label[for="${el.id}"]`);
+        if (lab) return lab.innerText;
+        if (el.name) return el.name;
+        if (el.placeholder) return el.placeholder;
+        return 'A required field';
+      });
+      alert(
+        'Please complete the following fields correctly:\n' +
+        missing.map(m => '• ' + m).join('\n')
+      );
       return false;
     }
 
-    // 3) At least one medical condition
-    const conds = document.querySelectorAll('input[name="conditions"]:checked');
-    if (conds.length === 0) {
+    // at least one medical condition
+    if (!document.querySelector('input[name="conditions"]:checked')) {
+      event.preventDefault();
       document.getElementById('conditions-error').style.display = 'block';
       return false;
     }
     document.getElementById('conditions-error').style.display = 'none';
 
-    // 4) Access-code check
+    // access code
     const code = document.getElementById('access-code').value.trim();
     if (code !== 'US420PASS') {
+      event.preventDefault();
       document.getElementById('code-error').style.display = 'block';
       return false;
     }
     document.getElementById('code-error').style.display = 'none';
 
-    // 5) Medical-record branch
+    // medical‐record branch
     const hasRecord = document.getElementById('hasMedicalRecord').value;
     if (hasRecord === 'No') {
+      event.preventDefault();
       document.getElementById('form-area').style.display = 'none';
       document.getElementById('no-record-message').style.display = 'block';
       return false;
     }
 
-    // 6) All checks passed → allow normal submit
+    // all good → submit normally
     return true;
   }
 
-  // Prefill from URL params (unchanged)
+  // ——— Prefill from URL params (unchanged) ———
   window.addEventListener('DOMContentLoaded', ()=>{
     const p = new URLSearchParams(window.location.search);
-    if(p.has('fname')) document.querySelector('input[name="firstName"]').value = decodeURIComponent(p.get('fname'));
-    if(p.has('lname')) document.querySelector('input[name="lastName"]').value  = decodeURIComponent(p.get('lname'));
-    if(p.has('email')) document.querySelector('input[name="email"]').value     = decodeURIComponent(p.get('email'));
-    if(p.has('phone')) document.querySelector('input[name="phone"]').value     = decodeURIComponent(p.get('phone'));
+    if (p.has('fname'))   document.querySelector('input[name="firstName"]').value = decodeURIComponent(p.get('fname'));
+    if (p.has('lname'))   document.querySelector('input[name="lastName"]').value  = decodeURIComponent(p.get('lname'));
+    if (p.has('email'))   document.querySelector('input[name="email"]').value     = decodeURIComponent(p.get('email'));
+    if (p.has('phone'))   document.querySelector('input[name="phone"]').value     = decodeURIComponent(p.get('phone'));
+    if (p.has('paymentType')) document.getElementById('paymentType').value      = decodeURIComponent(p.get('paymentType'));
+    if (p.has('amount'))      document.getElementById('amount').value           = decodeURIComponent(p.get('amount'));
+    if (p.has('last4'))       document.getElementById('last4').value            = decodeURIComponent(p.get('last4'));
+    if (p.has('payerEmail'))  document.getElementById('payerEmail').value       = decodeURIComponent(p.get('payerEmail'));
   });
 </script>
 
