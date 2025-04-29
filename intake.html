@@ -46,34 +46,30 @@
   <script>
   // … your other helper functions (toggle*, combineAddress, prefill…) remain unchanged …
 
-  function validateForm(event) {
+ <script>
+function validateForm(event) {
+  console.log("🔔 validateForm() called");
+  try {
     const form = event.target;
     combineAddress();
 
-    // 1) gather all invalid elements
+    // 1) gather invalid elements
     const invalidEls = Array.from(form.elements)
       .filter(el => el.willValidate && !el.checkValidity());
 
     if (invalidEls.length) {
       event.preventDefault();
-
-      // build a human‐readable list
       const missing = invalidEls.map(el => {
-        // if it's a file input, grab its label text
         if (el.type === 'file') {
           const lab = document.querySelector(`label[for="${el.id}"]`);
-          return lab 
-            ? lab.innerText 
-            : (el.name || el.id || 'File upload');
+          return lab ? lab.innerText : el.name || el.id || 'A required file';
         }
-        // otherwise use existing logic
         const lab = document.querySelector(`label[for="${el.id}"]`);
         if (lab) return lab.innerText;
         if (el.name) return el.name;
         if (el.placeholder) return el.placeholder;
         return 'A required field';
       });
-
       alert(
         'Please complete the following fields correctly:\n' +
         missing.map(m => '• ' + m).join('\n')
@@ -81,7 +77,7 @@
       return false;
     }
 
-    // 2) one condition at least
+    // 2) at least one condition
     if (!document.querySelector('input[name="conditions"]:checked')) {
       event.preventDefault();
       document.getElementById('conditions-error').style.display = 'block';
@@ -107,10 +103,17 @@
       return false;
     }
 
-    // 5) all good → submit
+    // 5) all good → let it submit
+    console.log("✔️ validateForm passed, submitting...");
     return true;
+  } catch (err) {
+    console.error("❌ validateForm error:", err);
+    alert("Unexpected error: " + err.message);
+    return false;
   }
+}
 </script>
+
 
 
 </head>
