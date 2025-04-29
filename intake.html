@@ -159,14 +159,17 @@ function validateForm(event) {
       <!-- Address + Hidden fullAddress -->
       <div class="section">
         <label for="street">Street Address:</label>
-        <input id="street" type="text" autocomplete="address-line1" placeholder="123 Main St" required>
+        <input id="street" name="street" type="text" autocomplete="address-line1" placeholder="123 Main St" required>
+
         <label for="city">City:</label>
-        <input id="city" type="text" autocomplete="address-level2" placeholder="Atlanta" required>
+        <input id="city"   name="city"   type="text" autocomplete="address-level2" placeholder="Atlanta"    required>
+
         <label for="state">State (2-letter):</label>
-        <input id="state" name="state" type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
+        <input id="state"  name="state"  type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
+
         <label for="zip">ZIP Code:</label>
-        <input id="zip" type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303"
-               title="Please enter a 5-digit ZIP code" required>
+        <input id="zip"    name="zip"    type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303" title="5-digit ZIP code" required>
+
         <input type="hidden" id="fullAddress" name="fullAddress">
       </div>
 
