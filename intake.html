@@ -198,10 +198,16 @@
   </div>
 
   <!-- Success message -->
-  <div id="success-message" class="section hidden" style="text-align:center;">
-    <h2>✅ Thank you!</h2>
-    <p>Redirecting to schedule your telehealth appointment...</p>
-  </div>
+ <div id="success-message" class="section hidden" style="text-align:center;">
+  <h2 style="font-size:1.5em; margin-bottom:0.5em;">✅ Application Received!</h2>
+  <p style="font-size:1.1em; margin-bottom:1.5em;">
+    Great news—you’re all set! Redirecting you to our telehealth scheduler in <span id="countdown">3</span> seconds…
+  </p>
+  <p style="font-size:0.9em; color:#555;">
+    If you’re not redirected automatically, <a href="https://us420doc.com/ur420appt">click here</a>.
+  </p>
+</div>
+
 
   <!-- ─── Bottom‐of‐body JS ──────────────────────────────────────────────────── -->
   <script>
@@ -290,17 +296,43 @@
         }
         document.getElementById("code-error").style.display="none";
 
-        // D) medical-record branch
-        if (document.getElementById("hasMedicalRecord").value==="No") {
-          document.getElementById("form-area").style.display="none";
-          document.getElementById("no-record-message").style.display="block";
-          return false;
+       // D) medical-record branch
+const hasRecord = document.getElementById("hasMedicalRecord").value;
+
+if (hasRecord === "No") {
+  // No‐record branch
+  document.getElementById("form-area").style.display = "none";
+  document.getElementById("no-record-message").style.display = "block";
+  return false;
+
+} else {
+  // Yes‐record branch (show success and countdown+redirect)
+  document.getElementById("form-area").style.display = "none";
+  const success = document.getElementById("success-message");
+  success.style.display = "block";
+
+ } else {
+  // Yes-record branch
+  document.getElementById("form-area").style.display = "none";
+  const success = document.getElementById("success-message");
+  success.style.display = "block";
+
+  // Countdown without loops:
+  const countdownEl = document.getElementById("countdown");
+  countdownEl.textContent = "3";
+  setTimeout(() => { countdownEl.textContent = "2"; }, 1000);
+  setTimeout(() => { countdownEl.textContent = "1"; }, 2000);
+  setTimeout(() => { window.location.href = "https://us420doc.com/ur420appt"; }, 3000);
+
+  return false;
+}
+  
         }
 
         // E) all good → show success & redirect
         document.getElementById("form-area").style.display="none";
         document.getElementById("success-message").style.display="block";
-        setTimeout(()=> window.location.href="https://us420doc.com/ur420appt", 3000);
+        setTimeout(() => window.location.href = "https://us420doc.com/ur420appt", 3000);
         return false; // prevent native POST; we redirect
       } catch(err) {
         console.error("validateForm error:", err);
