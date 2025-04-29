@@ -9,7 +9,7 @@
     .section { background: #fff; border-radius: 10px; padding: 20px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     label { font-weight: bold; margin-top: 10px; display: block; }
     input, select, textarea, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #ff000d; color: white; border: none; font-size: 1em; cursor: pointer; margin-top: 20px; }
+    button { background: #ff000d; color: white; border: none; font-size: 1em; cursor: pointer; }
     button:hover { background: #c9000b; }
     .hidden { display: none; }
     .note { font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 10px; }
@@ -21,13 +21,13 @@
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
 
   <div class="welcome">
-    ✅ Welcome! Please enter your Access Code below to continue.<br>
-    (Your Access Code is: <strong>US420PASS</strong>)
+    ✅ Welcome! Enter your Access Code to continue.<br>
+    (Your code is: <strong>US420PASS</strong>)
   </div>
 
   <div id="form-area">
-  <form id="mainForm"
-          action="https://script.google.com/macros/s/AKfycby7fh7nCse8dyham4oWIb_j38Q71-b7RYZVHvnm4WVowPsTecQvBthQaaHtjvWTmjB0/exec"
+    <form id="mainForm"
+          action="https://script.google.com/macros/s/YOUR_NEW_ID/exec"
           method="POST"
           enctype="multipart/form-data">
 
@@ -59,11 +59,11 @@
         <label for="street">Street Address:</label>
         <input id="street" name="street" type="text" autocomplete="address-line1" placeholder="123 Main St" required>
         <label for="city">City:</label>
-        <input id="city"   name="city"   type="text" autocomplete="address-level2" placeholder="Atlanta" required>
+        <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Atlanta" required>
         <label for="state">State (2-letter):</label>
-        <input id="state"  name="state"  type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
+        <input id="state" name="state" type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
         <label for="zip">ZIP Code:</label>
-        <input id="zip"    name="zip"    type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303" required>
+        <input id="zip" name="zip" type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303" required>
         <input type="hidden" id="fullAddress" name="fullAddress">
       </div>
 
@@ -88,7 +88,23 @@
       <div class="section" id="conditions-section">
         <label>Please select at least one qualifying medical condition:</label>
         <div>
-          <!-- checkboxes unchanged -->
+          <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
+          <label><input type="checkbox" name="conditions" value="PTSD"> PTSD (Anxiety, Stress, Depression)</label>
+          <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
+          <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
+          <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
+          <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
+          <label><input type="checkbox" name="conditions" value="Crohns Disease"> Crohn’s Disease</label>
+          <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
+          <label><input type="checkbox" name="conditions" value="Parkinsons"> Parkinson’s</label>
+          <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
+          <label><input type="checkbox" name="conditions" value="Tourettes"> Tourette’s</label>
+          <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
+          <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
+          <label><input type="checkbox" name="conditions" value="Alzheimers"> Alzheimer’s</label>
+          <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
+          <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
+          <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
         </div>
         <div id="conditions-error" class="error hidden">❌ Please select at least one condition.</div>
       </div>
@@ -119,66 +135,178 @@
         </div>
       </div>
 
-      <!-- Caregiver Sections -->
+      <!-- Caregiver 1 -->
+      <div id="caregiver1-section" class="section hidden">
+        <h3>Caregiver 1 Information</h3>
+        <label for="cg1_firstName">First Name:</label>
+        <input id="cg1_firstName" name="cg1_firstName" type="text" required>
+        <label for="cg1_lastName">Last Name:</label>
+        <input id="cg1_lastName" name="cg1_lastName" type="text" required>
+        <label for="cg1_birthdate">Birthdate (MM/DD/YYYY):</label>
+        <input id="cg1_birthdate" name="cg1_birthdate" type="text" placeholder="MM/DD/YYYY" required>
+        <label for="cg1_phone">Phone:</label>
+        <input id="cg1_phone" name="cg1_phone" type="tel" pattern="[0-9\-\s]+" required>
+        <label for="cg1_email">Email:</label>
+        <input id="cg1_email" name="cg1_email" type="email" required>
+        <label for="cg1_dl">Driver’s License #:</label>
+        <input id="cg1_dl" name="cg1_dl" type="text" required>
+        <label for="cg1_dlFront">Upload DL Front:</label>
+        <input id="cg1_dlFront" name="cg1_dlFront" type="file" accept="image/*" required>
+        <label for="cg1_dlBack">Upload DL Back:</label>
+        <input id="cg1_dlBack" name="cg1_dlBack" type="file" accept="image/*" required>
+      </div>
+
+      <!-- Caregiver 2 (Optional) -->
+      <div id="caregiver2-section" class="section hidden">
+        <h3>Caregiver 2 Information (Optional)</h3>
+        <label for="cg2_firstName">First Name:</label>
+        <input id="cg2_firstName" name="cg2_firstName" type="text">
+        <label for="cg2_lastName">Last Name:</label>
+        <input id="cg2_lastName" name="cg2_lastName" type="text">
+        <label for="cg2_birthdate">Birthdate:</label>
+        <input id="cg2_birthdate" name="cg2_birthdate" type="text" placeholder="MM/DD/YYYY">
+        <label for="cg2_phone">Phone:</label>
+        <input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\s]+">
+        <label for="cg2_email">Email:</label>
+        <input id="cg2_email" name="cg2_email" type="email">
+        <label for="cg2_dl">Driver’s License #:</label>
+        <input id="cg2_dl" name="cg2_dl" type="text">
+        <label for="cg2_dlFront">Upload DL Front:</label>
+        <input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*">
+        <label for="cg2_dlBack">Upload DL Back:</label>
+        <input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*">
+      </div>
+
+      <!-- Caregiver selector -->
       <div class="section">
         <label for="isCaregiver">Completing on behalf of someone else?</label>
         <select id="isCaregiver" name="isCaregiver" required>
           <option value="">-- Please select --</option>
-          <option value="Yes">Yes</option>
           <option value="No">No</option>
+          <option value="Yes">Yes</option>
         </select>
-      </div>
-      <div id="caregiver1-section" class="section hidden">
-        <!-- updated first/last fields as before -->
-      </div>
-      <div id="caregiver2-section" class="section hidden">
-        <!-- updated first/last fields as before -->
       </div>
 
       <button id="submitBtn" name="submitBtn" type="submit">Submit Application</button>
-  </form>
-    
+    </form>
   </div>
+
+  <!-- No-record message -->
   <div id="no-record-message" class="section hidden" style="text-align:center;">
     <h2>📄 Medical Records Required</h2>
     <p>We’ll email you instructions. You’ll schedule once we have them.</p>
   </div>
 
+  <!-- Success message -->
   <div id="success-message" class="section hidden" style="text-align:center;">
     <h2>✅ Thank you!</h2>
     <p>Redirecting to schedule your telehealth appointment...</p>
   </div>
 
+  <!-- ─── Bottom‐of‐body JS ──────────────────────────────────────────────────── -->
   <script>
     // 1) Bind after DOM loaded
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("📦 Initializing form script…");
-        const form = document.getElementById("mainForm");
-        if (!form) {
-          console.error("❌ Could not find #mainForm");
-          return;
+      console.log("📦 Initializing form script…");
+      const form = document.getElementById("mainForm");
+      if (!form) return console.error("❌ #mainForm not found");
+      console.log("🔗 Binding validateForm to #mainForm");
+      form.addEventListener("submit", ev => {
+        console.log("🔔 validateForm() called");
+        if (!validateForm(ev)) {
+          ev.preventDefault();
+          console.warn("⚠️ Submission blocked by validateForm");
         }
-        console.log("🔗 Binding validateForm to #mainForm");
-        form.addEventListener("submit", ev => {
-          console.log("🔔 validateForm() called");
-          if (!validateForm(ev)) {
-            ev.preventDefault();
-            console.warn("Submission blocked by validateForm");
-          }
-        });
       });
 
-    // 2) Helpers
-    function toggleMedicalRecord(v) { /* … */ }
-    function toggleProofAddress(v) { /* … */ }
-    function toggleCaregiver(v)    { /* … */ }
-    function combineAddress()      { /* … */ }
+      // also wire up the toggle dropdowns
+      document.getElementById("hasMedicalRecord")
+        .addEventListener("change", e => toggleMedicalRecord(e.target.value));
+      document.getElementById("proofAddressMatches")
+        .addEventListener("change", e => toggleProofAddress(e.target.value));
+      document.getElementById("isCaregiver")
+        .addEventListener("change", e => toggleCaregiver(e.target.value));
+    });
 
-    // 3) Validation
+    // 2) Helper toggles
+    function toggleMedicalRecord(v) {
+      document.getElementById("medical-record-upload").style.display   = v==="Yes" ? "block" : "none";
+      document.getElementById("medical-record-note").style.display     = v==="No"  ? "block" : "none";
+    }
+    function toggleProofAddress(v) {
+      document.getElementById("proof-address-upload").style.display = v==="No" ? "block" : "none";
+    }
+    function toggleCaregiver(v) {
+      const c1 = document.getElementById("caregiver1-section");
+      const c2 = document.getElementById("caregiver2-section");
+      c1.style.display = c2.style.display = (v==="Yes" ? "block" : "none");
+      c1.querySelectorAll("input").forEach(i => i.required = v==="Yes");
+      c2.querySelectorAll("input").forEach(i => i.required = false);
+    }
+
+    // 3) Combine address into hidden field
+    function combineAddress() {
+      const st  = document.getElementById("street").value.trim();
+      const ci  = document.getElementById("city").value.trim();
+      const stt = document.getElementById("state").value.trim();
+      const zp  = document.getElementById("zip").value.trim();
+      document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
+    }
+
+    // 4) Main validation
     function validateForm(event) {
-      combineAddress();
-      // native HTML5 + file‐label alerts + condition, code, record logic…
-      // exactly as in the previous full snippet
+      try {
+        combineAddress();
+
+        const form = event.target;
+        // A) native HTML5 checks
+        const invalid = Array.from(form.elements)
+          .filter(el => el.willValidate && !el.checkValidity());
+        if (invalid.length) {
+          const missing = invalid.map(el => {
+            if (el.type==="file") {
+              const L = document.querySelector(`label[for="${el.id}"]`);
+              return L ? L.innerText : el.name||el.id||"File upload";
+            }
+            const L = document.querySelector(`label[for="${el.id}"]`);
+            return L ? L.innerText : el.name||el.placeholder||"Required field";
+          });
+          alert("Please complete:\n• " + missing.join("\n• "));
+          return false;
+        }
+
+        // B) at least one condition
+        if (!document.querySelector("input[name='conditions']:checked")) {
+          document.getElementById("conditions-error").style.display="block";
+          return false;
+        }
+        document.getElementById("conditions-error").style.display="none";
+
+        // C) access code
+        const code = document.getElementById("access-code").value.trim();
+        if (code!=="US420PASS") {
+          document.getElementById("code-error").style.display="block";
+          return false;
+        }
+        document.getElementById("code-error").style.display="none";
+
+        // D) medical-record branch
+        if (document.getElementById("hasMedicalRecord").value==="No") {
+          document.getElementById("form-area").style.display="none";
+          document.getElementById("no-record-message").style.display="block";
+          return false;
+        }
+
+        // E) all good → show success & redirect
+        document.getElementById("form-area").style.display="none";
+        document.getElementById("success-message").style.display="block";
+        setTimeout(()=> window.location.href="https://us420doc.com/ur420appt", 3000);
+        return false; // prevent native POST; we redirect
+      } catch(err) {
+        console.error("validateForm error:", err);
+        alert("Unexpected error: "+err);
+        return false;
+      }
     }
   </script>
 </body>
