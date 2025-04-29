@@ -42,81 +42,9 @@
     document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  // ——— Debug‐enabled validation ———
-  <script>
-  // … your other helper functions (toggle*, combineAddress, prefill…) remain unchanged …
-
- <script>
-function validateForm(event) {
-  console.log("🔔 validateForm() called");
-  try {
-    const form = event.target;
-    combineAddress();
-
-    // 1) gather invalid elements
-    const invalidEls = Array.from(form.elements)
-      .filter(el => el.willValidate && !el.checkValidity());
-
-    if (invalidEls.length) {
-      event.preventDefault();
-      const missing = invalidEls.map(el => {
-        if (el.type === 'file') {
-          const lab = document.querySelector(`label[for="${el.id}"]`);
-          return lab ? lab.innerText : el.name || el.id || 'A required file';
-        }
-        const lab = document.querySelector(`label[for="${el.id}"]`);
-        if (lab) return lab.innerText;
-        if (el.name) return el.name;
-        if (el.placeholder) return el.placeholder;
-        return 'A required field';
-      });
-      alert(
-        'Please complete the following fields correctly:\n' +
-        missing.map(m => '• ' + m).join('\n')
-      );
-      return false;
-    }
-
-    // 2) at least one condition
-    if (!document.querySelector('input[name="conditions"]:checked')) {
-      event.preventDefault();
-      document.getElementById('conditions-error').style.display = 'block';
-      return false;
-    }
-    document.getElementById('conditions-error').style.display = 'none';
-
-    // 3) access code
-    const code = document.getElementById('access-code').value.trim();
-    if (code !== 'US420PASS') {
-      event.preventDefault();
-      document.getElementById('code-error').style.display = 'block';
-      return false;
-    }
-    document.getElementById('code-error').style.display = 'none';
-
-    // 4) medical-record branch
-    const hasRecord = document.getElementById('hasMedicalRecord').value;
-    if (hasRecord === 'No') {
-      event.preventDefault();
-      document.getElementById('form-area').style.display = 'none';
-      document.getElementById('no-record-message').style.display = 'block';
-      return false;
-    }
-
-    // 5) all good → let it submit
-    console.log("✔️ validateForm passed, submitting...");
-    return true;
-  } catch (err) {
-    console.error("❌ validateForm error:", err);
-    alert("Unexpected error: " + err.message);
-    return false;
-  }
-}
-</script>
-
-
-
+ 
 </head>
+  
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
 
@@ -125,10 +53,12 @@ function validateForm(event) {
     (Your Access Code is: <strong>US420PASS</strong>)
   </div>
 
-  <form onsubmit="return validateForm(event)"
-      action="https://script.google.com/macros/s/AKfycbyZaRBBM_1YBandV6hLI7ZD2Acu4i0f52RogdbbdFzN4l4uySpkfOVpr2eq4vW39IPXAA/exec"
+ 
+<form id="mainForm"
+      action="https://script.google.com/macros/…/exec"
       method="POST"
-      enctype="multipart/form-data"> 
+      enctype="multipart/form-data">
+
     
   <!-- hidden payment values from Square -->
   <input type="hidden" id="payerEmail"   name="payerEmail">
@@ -298,5 +228,118 @@ function validateForm(event) {
     <h2>✅ Thank you!</h2>
     <p>Redirecting you to schedule your telehealth appointment...</p>
   </div>
+
+                  // ——— Debug‐enabled validation ———
+  <script>
+  // … your other helper functions (toggle*, combineAddress, prefill…) remain unchanged …
+
+ <script>
+  // ▶️ 1) Initialization: bind on DOM ready
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("📦 Initializing form script…");
+    const form = document.getElementById("mainForm");
+    if (!form) {
+      console.error("❌ Could not find #mainForm");
+      return;
+    }
+    console.log("🔗 Binding validateForm to #mainForm");
+    form.addEventListener("submit", ev => {
+      if (!validateForm(ev)) ev.preventDefault();
+    });
+  });
+
+  // ▶️ 2) Helper toggles
+  function toggleMedicalRecord(v) {
+    document.getElementById('medical-record-upload').style.display = v==='Yes'?'block':'none';
+    document.getElementById('medical-record-note').style.display      = v==='No' ? 'block' : 'none';
+  }
+  function toggleProofAddress(v) {
+    document.getElementById('proof-address-upload').style.display = v==='No'?'block':'none';
+  }
+  function toggleCaregiver(v) {
+    const c1 = document.getElementById('caregiver1-section');
+    const c2 = document.getElementById('caregiver2-section');
+    c1.style.display = c2.style.display = (v==='Yes'?'block':'none');
+    c1.querySelectorAll('input').forEach(i=> i.required = (v==='Yes'));
+    c2.querySelectorAll('input').forEach(i=> i.required = false);
+  }
+
+  // ▶️ 3) Combine address fields into single hidden input
+  function combineAddress() {
+    const st  = document.getElementById('street').value.trim();
+    const ci  = document.getElementById('city').value.trim();
+    const stt = document.getElementById('state').value.trim();
+    const zp  = document.getElementById('zip').value.trim();
+    document.getElementById('fullAddress').value = `${st}, ${ci}, ${stt} ${zp}`;
+  }
+
+  // ▶️ 4) Main validation routine
+  function validateForm(event) {
+    console.log("🔔 validateForm() called");
+    try {
+      const form = event.target;
+      combineAddress();
+
+      // A) Native HTML5 checks
+      const invalidEls = Array.from(form.elements)
+        .filter(el => el.willValidate && !el.checkValidity());
+
+      if (invalidEls.length) {
+        // prevent submission and alert user
+        event.preventDefault();
+        const missing = invalidEls.map(el => {
+          if (el.type === 'file') {
+            const lab = document.querySelector(`label[for="${el.id}"]`);
+            return lab ? lab.innerText : (el.name||el.id||'A required file');
+          }
+          const lab = document.querySelector(`label[for="${el.id}"]`);
+          if (lab) return lab.innerText;
+          return el.name || el.placeholder || 'A required field';
+        });
+        alert(
+          'Please complete the following fields correctly:\n' +
+          missing.map(m => '• ' + m).join('\n')
+        );
+        return false;
+      }
+
+      // B) At least one medical condition
+      if (!document.querySelector('input[name="conditions"]:checked')) {
+        event.preventDefault();
+        document.getElementById('conditions-error').style.display='block';
+        return false;
+      }
+      document.getElementById('conditions-error').style.display='none';
+
+      // C) Access-code
+      const code = document.getElementById('access-code').value.trim();
+      if (code !== 'US420PASS') {
+        event.preventDefault();
+        document.getElementById('code-error').style.display='block';
+        return false;
+      }
+      document.getElementById('code-error').style.display='none';
+
+      // D) Medical-record branch
+      const hasRecord = document.getElementById('hasMedicalRecord').value;
+      if (hasRecord === 'No') {
+        event.preventDefault();
+        document.getElementById('form-area').style.display='none';
+        document.getElementById('no-record-message').style.display='block';
+        return false;
+      }
+
+      // E) All checks passed → allow submit
+      console.log("✔️ validateForm passed, submitting...");
+      return true;
+    } catch (err) {
+      console.error("❌ validateForm error:", err);
+      alert("Unexpected error: " + err.message);
+      return false;
+    }
+  }
+</script>
+
+
 </body>
 </html>
