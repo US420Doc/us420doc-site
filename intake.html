@@ -70,7 +70,7 @@
       <!-- Access Code -->
       <div class="section">
         <label for="access-code">Access Code:</label>
-        <input id="access-code" type="text" required>
+        <input id="access-code" name="accessCode" type="text" required>
         <div id="code-error" class="error hidden">
           ❌ Incorrect Access Code. Please check and try again.
         </div>
@@ -205,14 +205,14 @@
         <label for="cg2_name">Caregiver 2 Last Name:</label>
         <input id="cg2_lastName" name="cg2_lastName" type="text">
         <label for="cg2_birthdate">Birthdate:</label><input id="cg2_birthdate" name="cg2_birthdate" type="text" placeholder="MM/DD/YYYY">
-        <label for="cg2_phone">Phone:</label><input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\\s]+">
-        <label for="cg2_email">Email:</label><input id="cg2_email" name="cg2_email" type="email">
-        <label for="cg2_dl">Driver’s License #:</label><input id="cg2_dl" name="cg2_dl" type="text">
-        <label for="cg2_dlFront">Upload DL Front:</label><input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*">
-        <label for="cg2_dlBack">Upload DL Back:</label><input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*">
+        <label for="cg2_phone">Phone:</label><input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\\s]+"> required>
+        <label for="cg2_email">Email:</label><input id="cg2_email" name="cg2_email" type="email"> required>
+        <label for="cg2_dl">Driver’s License #:</label><input id="cg2_dl" name="cg2_dl" type="text"> required>
+        <label for="cg2_dlFront">Upload DL Front:</label><input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*"> required>
+        <label for="cg2_dlBack">Upload DL Back:</label><input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*"> required>
       </div>
 
-      <button type="submit">Submit Application</button>
+      <button id="submitBtn" name="submitBtn" type="submit">Submit Application</button>
     </form>
   </div>
   <div id="no-record-message" class="section hidden" style="text-align:center;">
