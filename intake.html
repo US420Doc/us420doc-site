@@ -13,6 +13,22 @@
     button:hover { background: #c9000b; }
     .hidden { display: none; }
     .error { color: red; font-weight: bold; margin-top: 10px; }
+ 
+    .conditions-list {
+  /* flow labels in two columns */
+    columns: 2;             
+    column-gap: 1rem;       
+  /* ensure nothing gets hidden */
+    max-height: none !important;  
+}
+
+/* make sure each label is full-width within its column */
+.conditions-list label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+    
   </style>
 </head>
 <body>
