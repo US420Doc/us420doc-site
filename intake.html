@@ -285,9 +285,27 @@
 
       const form = event.target;
 
-      // A) Native HTML5 validity
-      const invalidEls = Array.from(form.elements)
-        .filter(el => el.willValidate && !el.checkValidity());
+    
+      // A) Native HTML5 validity — but skip all checkboxes
+   const invalidEls = Array.from(form.elements)
+     .filter(el => 
+       el.willValidate &&
+       el.type !== 'checkbox' &&    // ← ignore checkboxes here
+       !el.checkValidity()
+     );
+   if (invalidEls.length) {
+    const missing = invalidEls.map(el => {
+      const lab = el.id
+        ? document.querySelector(`label[for="${el.id}"]`)
+        : null;
+      return lab
+        ? lab.innerText
+        : (el.name || el.placeholder || 'This field');
+    });
+    alert("Please complete the following fields:\n• " + missing.join("\n• "));
+    return false;
+  }
+
       if (invalidEls.length) {
         const missing = invalidEls.map(el => {
           if (el.type === "file") {
