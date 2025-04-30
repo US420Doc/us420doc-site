@@ -128,5 +128,119 @@
       document.getElementById("backup-link").href = base + p.toString();
     }
   </script>
+
+  <script>
+function buildBackupLink() {
+  const form = document.getElementById("mainForm");
+
+  // 1) Map your local form element names → Google‐Form entry IDs
+  const fieldMap = {
+    lastName:        "2005620554",
+    firstName:       "1240065359",
+    birthdate:       "831780182",
+    fullAddress:     "1065046570",
+    yearsInGA:       "1443566450",  // if you want to record it
+    phone:           "1166974658",
+    email:           "101604311",
+    dlNumber:        "1440065350",  // replace with your actual entry ID
+    diagnosisDate:   "1991623433",
+    treatmentsTried: "2018797023",
+    hasMedicalRecord:"787182730",
+    proofAddressMatches: "XXXXXXXXX" // add if you want to record this
+  };
+
+  // 2) Conditions map: [ checkbox-value, entry-ID ]
+  const conditionsMap = [
+    ["Chronic Pain",             "839337160"],
+    ["PTSD (Anxiety, Stress, Depression)", "1944367806"],
+    ["Cancer",                   "1146759112"],
+    ["Amyotrophic Lateral Sclerosis","2113866318"],
+    ["Seizures",                 "597256890"],
+    ["Multiple Sclerosis",       "591094171"],
+    ["Crohn’s Disease",          "837956208"],
+    ["Mitochondrial Disease",    "373851050"],
+    ["Parkinson’s",              "1594310054"],
+    ["Sickle Cell",              "436450057"],
+    ["Tourette’s",               "1120660671"],
+    ["Autism Spectrum",          "1237105033"],
+    ["Epidermolysis Bullosa",    "201518932"],
+    ["Alzheimer’s",              "1872930144"],
+    ["AIDS",                     "793470222"],
+    ["Peripheral Neuropathy",    "1216798359"],
+    ["Hospice",                  "1195824215"]
+  ];
+
+  // 3) Caregiver maps
+  const cg1Map = {
+    cg1_lastName:    "1684387053",
+    cg1_firstName:   "1479911648",
+    cg1_birthdate:   "807121215",
+    cg1_address:     "368727207",
+    cg1_phone:       "1788534373",
+    cg1_email:       "1721647753",
+    cg1_dl:          "1486195094"
+  };
+  const cg2Map = {
+    cg2_lastName:    "660108886",
+    cg2_firstName:   "1998511509",
+    cg2_birthdate:   "1008047398",
+    cg2_address:     "1286070865",
+    cg2_phone:       "1663450780",
+    cg2_email:       "811181725",
+    cg2_dl:          "1509977777"
+  };
+
+  // 4) Build the query string
+  const params = [];
+
+  // simple text/select fields
+  Object.entries(fieldMap).forEach(([name, entryId]) => {
+    const el = form.elements[name];
+    if (!el) return;
+    const val = el.value.trim();
+    // only include if non‐empty
+    if (val !== "") {
+      params.push(`entry.${entryId}=${encodeURIComponent(val)}`);
+    }
+  });
+
+  // conditions checkboxes
+  const checked = Array.from(
+    form.querySelectorAll("input[name='conditions']:checked")
+  ).map(cb => cb.value);
+  conditionsMap.forEach(([label, entryId]) => {
+    // send a ✔ for each one they checked, blank otherwise
+    const mark = checked.includes(label) ? "√" : "";
+    params.push(`entry.${entryId}=${encodeURIComponent(mark)}`);
+  });
+
+  // caregiver 1 (only if visible)
+  if (document.getElementById("caregiver1-section").style.display !== "none") {
+    Object.entries(cg1Map).forEach(([name, entryId]) => {
+      const el = form.elements[name];
+      if (el && el.value.trim() !== "") {
+        params.push(`entry.${entryId}=${encodeURIComponent(el.value.trim())}`);
+      }
+    });
+  }
+
+  // caregiver 2 (only if visible)
+  if (document.getElementById("caregiver2-section").style.display !== "none") {
+    Object.entries(cg2Map).forEach(([name, entryId]) => {
+      const el = form.elements[name];
+      if (el && el.value.trim() !== "") {
+        params.push(`entry.${entryId}=${encodeURIComponent(el.value.trim())}`);
+      }
+    });
+  }
+
+  // 5) Attach to your backup link
+  const base =
+    "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&";
+  document.getElementById("backup-link").href = base + params.join("&");
+  document.getElementById("backup-container").style.display = "block";
+}
+</script>
+
 </body>
 </html>
