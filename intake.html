@@ -13,22 +13,16 @@
     button:hover { background: #c9000b; }
     .hidden { display: none; }
     .error { color: red; font-weight: bold; margin-top: 10px; }
- 
+
     .conditions-list {
-  /* flow labels in two columns */
-    columns: 2;             
-    column-gap: 1rem;       
-  /* ensure nothing gets hidden */
-    max-height: none !important;  
-}
-
-/* make sure each label is full-width within its column */
-.conditions-list label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-    
+      columns: 2;
+      column-gap: 1rem;
+      max-height: none !important;
+    }
+    .conditions-list label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -40,137 +34,7 @@
 
   <div id="form-area">
     <form id="mainForm" action="https://script.google.com/macros/s/YOUR_EXEC_URL/exec" method="POST" enctype="multipart/form-data" novalidate>
-
-      <!-- Hidden square values -->
-      <input type="hidden" name="payerEmail" id="payerEmail">
-      <input type="hidden" name="paymentType" id="paymentType">
-      <input type="hidden" name="amount" id="amount">
-      <input type="hidden" name="last4" id="last4">
-
-      <!-- Access Code -->
-      <div class="section">
-        <label for="access-code">Access Code:</label>
-        <input id="access-code" name="accessCode" type="text">
-        <div id="code-error" class="error hidden">Incorrect code.</div>
-      </div>
-
-      <!-- Patient Info -->
-      <div class="section">
-        <label for="lastName">Last Name:</label>
-        <input id="lastName" name="lastName" type="text">
-        <label for="firstName">First Name:</label>
-        <input id="firstName" name="firstName" type="text">
-        <label for="birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input id="birthdate" name="birthdate" type="text" placeholder="MM/DD/YYYY">
-      </div>
-
-      <!-- Address -->
-      <div class="section">
-        <label for="street">Street Address:</label>
-        <input id="street" name="street" type="text" placeholder="123 Main St">
-        <label for="city">City:</label>
-        <input id="city" name="city" type="text" placeholder="Atlanta">
-        <label for="state">State (2-letter):</label>
-        <input id="state" name="state" type="text" maxlength="2" placeholder="GA">
-        <label for="zip">ZIP Code:</label>
-        <input id="zip" name="zip" type="text" pattern="\d{5}" placeholder="30303">
-        <input id="fullAddress" name="fullAddress" type="hidden">
-      </div>
-
-      <!-- Other -->
-      <div class="section">
-        <label for="yearsInGA">Years Living in Georgia:</label>
-        <input id="yearsInGA" name="yearsInGA" type="number" min="0">
-        <label for="phone">Cell Phone:</label>
-        <input id="phone" name="phone" type="tel" placeholder="404-555-1234">
-        <label for="email">Email:</label>
-        <input id="email" name="email" type="email">
-        <label for="dlNumber">Driver’s License #:</label>
-        <input id="dlNumber" name="dlNumber" type="text">
-        <label for="dlFront">Upload DL Front:</label>
-        <input id="dlFront" name="dlFront" type="file" accept="image/*">
-        <label for="dlBack">Upload DL Back:</label>
-        <input id="dlBack" name="dlBack" type="file" accept="image/*">
-      </div>
-
-      <!-- Medical Conditions -->
-      <div class="section" id="conditions-section">
-        <label>Please select at least one qualifying medical condition:</label>
-        <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
-        <label><input type="checkbox" name="conditions" value="PTSD (Anxiety, Stress, Depression)"> PTSD (Anxiety, Stress, Depression)</label>
-        <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
-        <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
-        <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
-        <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
-        <label><input type="checkbox" name="conditions" value="Crohn’s Disease"> Crohn’s Disease</label>
-        <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
-        <label><input type="checkbox" name="conditions" value="Parkinson’s"> Parkinson’s</label>
-        <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
-        <label><input type="checkbox" name="conditions" value="Tourette’s"> Tourette’s</label>
-        <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
-        <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
-        <label><input type="checkbox" name="conditions" value="Alzheimer’s"> Alzheimer’s</label>
-        <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
-        <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
-        <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
-        <div id="conditions-error" class="error hidden">Select at least one condition.</div>
-      </div>
-
-      <!-- Diagnosis & Treatments -->
-      <div class="section">
-        <label for="diagnosisDate">Date of Diagnosis/Condition (MM/DD/YYYY):</label>
-        <input id="diagnosisDate" name="diagnosisDate" type="text" placeholder="MM/DD/YYYY">
-        <label for="treatmentsTried">What treatments have you tried?</label>
-        <textarea id="treatmentsTried" name="treatmentsTried" rows="3" placeholder="List any prior treatments"></textarea>
-      </div>
-
-      <!-- Medical Record & Proof Address -->
-      <div class="section">
-        <label for="hasMedicalRecord">Do you have a medical record?</label>
-        <select id="hasMedicalRecord" name="hasMedicalRecord">
-          <option value="">-- Please select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        <div id="medical-record-upload" class="hidden">
-          <label for="medicalRecord">Upload Medical Record:</label>
-          <input id="medicalRecord" name="medicalRecord" type="file" accept="application/pdf,image/*">
-        </div>
-        <div id="no-record-message" class="hidden section">We’ll email instructions on submitting your records.</div>
-      </div>
-
-      <!-- Proof of Address -->
-      <div class="section">
-        <label for="proofAddressMatches">Does your address match your photo ID?</label>
-        <select id="proofAddressMatches" name="proofAddressMatches">
-          <option value="">-- Please select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        <div id="proof-address-upload" class="hidden">
-          <label for="proofOfAddress">Upload Proof of Address:</label>
-          <input id="proofOfAddress" name="proofOfAddress" type="file" accept="application/pdf,image/*">
-        </div>
-      </div>
-
-      <!-- Caregiver Selector -->
-      <div class="section">
-        <label for="isCaregiver">Completing on behalf of someone else?</label>
-        <select id="isCaregiver" name="isCaregiver">
-          <option value="">-- Please select --</option>
-          <option value="No">No</option>
-          <option value="Yes">Yes</option>
-        </select>
-      </div>
-      <div id="caregiver1-section" class="hidden section">
-        <h3>Caregiver 1</h3>
-        <!-- caregiver1 fields -->
-      </div>
-      <div id="caregiver2-section" class="hidden section">
-        <h3>Caregiver 2 (Optional)</h3>
-        <!-- caregiver2 fields -->
-      </div>
-
+      <!-- … all your inputs … -->
       <button type="submit">Submit Application</button>
     </form>
   </div>
@@ -183,86 +47,85 @@
 
   <!-- Backup Link -->
   <div id="backup-container" class="hidden section" style="text-align:center;">
-    <a id="backup-link" href="#" target="_blank">Review & Save Your Submission</a>
+    <a id="backup-link" href="#" target="_blank">Review &amp; Save Your Submission</a>
   </div>
 
-  <!-- Bottom JS -->
   <script>
-    document.addEventListener("DOMContentLoaded", ()=>{
+    document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("mainForm");
-      ["hasMedicalRecord","proofAddressMatches","isCaregiver"].forEach(id=>{
+      ["hasMedicalRecord","proofAddressMatches","isCaregiver"].forEach(id => {
         document.getElementById(id)
-          .addEventListener("change", e=>toggleSection(e.target.id, e.target.value));
+          .addEventListener("change", e => toggleSection(e.target.id, e.target.value));
       });
       form.addEventListener("submit", handleSubmit);
     });
 
-    function toggleSection(id, val){
+    function toggleSection(id, val) {
       const map = {
         hasMedicalRecord: ["medical-record-upload","no-record-message"],
         proofAddressMatches: ["proof-address-upload"],
         isCaregiver: ["caregiver1-section","caregiver2-section"]
       };
-      map[id].forEach(secId=>{
-        const show = (id==="hasMedicalRecord"? val==="Yes"
-                   : id==="proofAddressMatches"? val==="No"
-                   : val==="Yes");
+      map[id].forEach(secId => {
+        const show = (
+          id === "hasMedicalRecord"      ? val === "Yes"
+          : id === "proofAddressMatches" ? val === "No"
+          : val === "Yes"
+        );
         document.getElementById(secId).classList.toggle("hidden", !show);
       });
     }
 
-    function combineAddress(){
-      ["street","city","state","zip"].forEach(()=>{});
-      const vals=["street","city","state","zip"].map(i=>document.getElementById(i).value.trim());
-      document.getElementById("fullAddress").value=vals.join(", ");
+    function combineAddress() {
+      const parts = ["street","city","state","zip"]
+        .map(i => document.getElementById(i).value.trim());
+      document.getElementById("fullAddress").value = parts.join(", ");
     }
 
-    function handleSubmit(ev){
+    function handleSubmit(ev) {
       ev.preventDefault();
       combineAddress();
-      // simple required checks… including new fields
-      const required=[
-        {id:"access-code",lbl:"Access Code"},
-        {id:"lastName",lbl:"Last Name"},
-        {id:"firstName",lbl:"First Name"},
-        {id:"birthdate",lbl:"Birthdate"},
-        {id:"street",lbl:"Street"},
-        {id:"city",lbl:"City"},
-        {id:"state",lbl:"State"},
-        {id:"zip",lbl:"ZIP"},
-        {id:"yearsInGA",lbl:"Years in GA"},
-        {id:"phone",lbl:"Phone"},
-        {id:"email",lbl:"Email"},
-        {id:"dlNumber",lbl:"Driver’s License #"},
-        {id:"diagnosisDate",lbl:"Date of Diagnosis"},
-        {id:"treatmentsTried",lbl:"Treatments Tried"}
-      ];
-      for(const f of required){
-        const v=document.getElementById(f.id).value.trim();
-        if(!v) return alert(`Please fill in: ${f.lbl}`);
-      }
-      if(!document.querySelector("input[name='conditions']:checked")) return alert("Select ≥1 condition");
-      const rec=document.getElementById("hasMedicalRecord").value;
-      if(rec==="No"){ document.getElementById("form-area").classList.add("hidden");
-        document.getElementById("no-record-message").classList.remove("hidden");
-        return;
-      }
+
+      // … your existing required‐field checks …
+      // and medical‐record / proof‐of‐address logic …
+
+      // If we reach the “Yes, they HAVE a medical record” branch:
       document.getElementById("form-area").classList.add("hidden");
       document.getElementById("success-message").classList.remove("hidden");
-      let sec=3;const cd=document.getElementById("countdown");
-      const timer=setInterval(()=>{sec--;cd.textContent=sec;if(sec<1){clearInterval(timer);buildBackupLink();window.location.href="https://us420doc.com/urappt420";}},1000);
+
+      // ← NEW: log and build the backup link now
+      console.log("🏷️ Calling buildBackupLink()");
+      buildBackupLink();
+      document.getElementById("backup-container").classList.remove("hidden");
+
+      // ← then start countdown + redirect
+      let sec = 3;
+      const cd = document.getElementById("countdown");
+      cd.textContent = sec;
+      const timer = setInterval(() => {
+        sec--;
+        cd.textContent = sec;
+        if (sec < 1) {
+          clearInterval(timer);
+          window.location.href = "https://us420doc.com/urappt420";
+        }
+      }, 1000);
     }
 
-    function buildBackupLink(){
-      const form=document.getElementById("mainForm");
-      const p=new URLSearchParams();
-      ["lastName","firstName","birthdate","fullAddress","yearsInGA","phone","email","dlNumber","diagnosisDate","treatmentsTried"].forEach(n=>p.set(n,form.elements[n].value));
-      const conds=Array.from(form.querySelectorAll("input[name='conditions']:checked")).map(c=>c.value).join(';');
-      p.set("conditions",conds);
-      const base="https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&";
-      const url=base+p.toString();
-      const link=document.getElementById("backup-link");link.href=url;
-      document.getElementById("backup-container").classList.remove("hidden");
+    function buildBackupLink() {
+      const form = document.getElementById("mainForm");
+      const p = new URLSearchParams();
+      // gather all your fields, e.g.:
+      ["lastName","firstName","birthdate","fullAddress",
+       "yearsInGA","phone","email","dlNumber","diagnosisDate","treatmentsTried"
+      ].forEach(name => p.set(name, form.elements[name].value));
+      // conditions:
+      const conds = Array.from(form.querySelectorAll("input[name='conditions']:checked"))
+        .map(cb => cb.value).join(";");
+      p.set("conditions", conds);
+
+      const base = "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&";
+      document.getElementById("backup-link").href = base + p.toString();
     }
   </script>
 </body>
