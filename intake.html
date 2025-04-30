@@ -322,6 +322,80 @@
         const successMsg = document.getElementById("success-message");
         successMsg.style.display = "block";
 
+        // === Build Google Form backup link ===
+const backupLink = document.getElementById("backup-link");
+let url = "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url";
+
+// Access-Code “other” (if you capture that; otherwise skip)
+// url += "&entry.2018844368=" + encodeURIComponent(/* your accessCode or otherOption */);
+// url += "&entry.2018844368.other_option_response=" + encodeURIComponent(/* other text */);
+
+// Driver’s License Number
+url += "&entry.1443566450="     + encodeURIComponent(document.getElementById("dlNumber").value);
+// Last Name
+url += "&entry.2005620554="     + encodeURIComponent(document.getElementById("lastName").value);
+// First Name
+url += "&entry.1240065359="     + encodeURIComponent(document.getElementById("firstName").value);
+// Birthdate
+url += "&entry.831780182="      + encodeURIComponent(document.getElementById("birthdate").value);
+// Full Address
+url += "&entry.1065046570="     + encodeURIComponent(document.getElementById("fullAddress").value);
+// Cell Phone
+url += "&entry.1166974658="     + encodeURIComponent(document.getElementById("phone").value);
+// Email
+url += "&entry.101604311="      + encodeURIComponent(document.getElementById("email").value);
+
+// Medical Conditions (we join the checked boxes)
+const conditions = Array.from(
+  document.querySelectorAll("input[name='conditions']:checked")
+).map(cb => cb.value).join(", ");
+url += "&entry.839337160="      + encodeURIComponent(conditions.includes("Chronic Pain")              ? "√" : "");
+url += "&entry.1944367806="     + encodeURIComponent(conditions.includes("PTSD (Anxiety, Stress, Depression)") ? "√" : "");
+url += "&entry.1146759112="     + encodeURIComponent(conditions.includes("Cancer")                   ? "√" : "");
+url += "&entry.597256890="      + encodeURIComponent(conditions.includes("Seizures")                 ? "√" : "");
+url += "&entry.2113866318="     + encodeURIComponent(conditions.includes("Amyotrophic Lateral Sclerosis") ? "√" : "");
+url += "&entry.591094171="      + encodeURIComponent(conditions.includes("Multiple Sclerosis")       ? "√" : "");
+url += "&entry.837956208="      + encodeURIComponent(conditions.includes("Crohn’s Disease")          ? "√" : "");
+url += "&entry.373851050="      + encodeURIComponent(conditions.includes("Mitochondrial Disease")    ? "√" : "");
+url += "&entry.1594310054="     + encodeURIComponent(conditions.includes("Parkinson’s")             ? "√" : "");
+url += "&entry.436450057="      + encodeURIComponent(conditions.includes("Sickle Cell")             ? "√" : "");
+url += "&entry.1120660671="     + encodeURIComponent(conditions.includes("Tourette’s")              ? "√" : "");
+url += "&entry.1237105033="     + encodeURIComponent(conditions.includes("Autism Spectrum")         ? "√" : "");
+url += "&entry.201518932="      + encodeURIComponent(conditions.includes("Epidermolysis Bullosa")    ? "√" : "");
+url += "&entry.1872930144="     + encodeURIComponent(conditions.includes("Alzheimer’s")             ? "√" : "");
+url += "&entry.793470222="      + encodeURIComponent(conditions.includes("AIDS")                    ? "√" : "");
+url += "&entry.1216798359="     + encodeURIComponent(conditions.includes("Peripheral Neuropathy")   ? "√" : "");
+url += "&entry.1195824215="     + encodeURIComponent(conditions.includes("Hospice")                 ? "√" : "");
+
+// Diagnosis Date
+url += "&entry.1991623433="     + encodeURIComponent(document.getElementById("diagnosisDate").value);
+// Treatments Tried
+url += "&entry.2018797023="     + encodeURIComponent(document.getElementById("treatmentsTried").value);
+
+// Do you have a medical record?
+url += "&entry.787182730="      + encodeURIComponent(document.getElementById("hasMedicalRecord").value);
+
+// Caregiver 1 fields
+url += "&entry.1486195094="     + encodeURIComponent(document.getElementById("cg1_dl").value);
+url += "&entry.1684387053="     + encodeURIComponent(document.getElementById("cg1_lastName").value);
+url += "&entry.1479911648="     + encodeURIComponent(document.getElementById("cg1_firstName").value);
+url += "&entry.807121215="      + encodeURIComponent(document.getElementById("cg1_birthdate").value);
+url += "&entry.368727207="      + encodeURIComponent(document.getElementById("cg1Address").value);
+url += "&entry.1788534373="     + encodeURIComponent(document.getElementById("cg1_phone").value);
+url += "&entry.1721647753="     + encodeURIComponent(document.getElementById("cg1_email").value);
+
+// Caregiver 2 fields
+url += "&entry.1509977777="     + encodeURIComponent(document.getElementById("cg2_dl").value);
+url += "&entry.660108886="      + encodeURIComponent(document.getElementById("cg2_lastName").value);
+url += "&entry.1998511509="     + encodeURIComponent(document.getElementById("cg2_firstName").value);
+url += "&entry.1008047398="     + encodeURIComponent(document.getElementById("cg2_birthdate").value);
+url += "&entry.1286070865="     + encodeURIComponent(document.getElementById("cg2Address").value);
+url += "&entry.1663450780="     + encodeURIComponent(document.getElementById("cg2_phone").value);
+url += "&entry.811181725="      + encodeURIComponent(document.getElementById("cg2_email").value);
+
+// Finally assign it
+backupLink.href = url;
+
         // 3-step countdown without loops
         const countdownEl = document.getElementById("countdown");
         countdownEl.textContent = "3";
