@@ -1,118 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>US420DOC Cannabis Card Intake Form</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
     .section { background: #fff; border-radius: 10px; padding: 20px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     label { font-weight: bold; margin-top: 10px; display: block; }
     input, select, textarea, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #ff000d; color: white; border: none; font-size: 1em; cursor: pointer; }
+    button { background: #ff000d; color: white; border: none; font-size: 1em; cursor: pointer; margin-top: 20px; }
     button:hover { background: #c9000b; }
     .hidden { display: none; }
-    .note { font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 10px; }
     .error { color: red; font-weight: bold; margin-top: 10px; }
-    .welcome { background: #fff; padding: 15px; border: 1px solid #1a751a; border-radius: 8px; margin-bottom: 20px; text-align: center; }
   </style>
 </head>
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
 
-  <div class="welcome">
-    ✅ Welcome! Enter your Access Code to continue.<br>
-    (Your code is: <strong>US420PASS</strong>)
+  <div class="section">
+    ✅ Welcome! Enter your Access Code: <strong>US420PASS</strong>
   </div>
 
   <div id="form-area">
-    <form id="mainForm"
-          action="https://script.google.com/macros/s/AKfycbwp_r0AXXgXb1YX1VDIjSlYmDXF9cr87kCOXQl54GVoP3klr1XdKqkr3rU27bNBk6CX/exec"
-          method="POST"
-          enctype="multipart/form-data">
+    <form id="mainForm" action="https://script.google.com/macros/s/YOUR_EXEC_URL/exec" method="POST" enctype="multipart/form-data" novalidate>
 
-      <!-- Hidden payment values -->
-      <input type="hidden" id="payerEmail"   name="payerEmail">
-      <input type="hidden" id="paymentType"  name="paymentType">
-      <input type="hidden" id="amount"       name="amount">
-      <input type="hidden" id="last4"        name="last4">
+      <!-- Hidden square values -->
+      <input type="hidden" name="payerEmail" id="payerEmail">
+      <input type="hidden" name="paymentType" id="paymentType">
+      <input type="hidden" name="amount" id="amount">
+      <input type="hidden" name="last4" id="last4">
 
       <!-- Access Code -->
       <div class="section">
         <label for="access-code">Access Code:</label>
-        <input id="access-code" name="accessCode" type="text" required>
-        <div id="code-error" class="error hidden">❌ Incorrect Access Code.</div>
+        <input id="access-code" name="accessCode" type="text">
+        <div id="code-error" class="error hidden">Incorrect code.</div>
       </div>
 
       <!-- Patient Info -->
       <div class="section">
         <label for="lastName">Last Name:</label>
-        <input id="lastName" name="lastName" type="text" required>
+        <input id="lastName" name="lastName" type="text">
         <label for="firstName">First Name:</label>
-        <input id="firstName" name="firstName" type="text" required>
+        <input id="firstName" name="firstName" type="text">
         <label for="birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input id="birthdate" name="birthdate" type="text" required>
+        <input id="birthdate" name="birthdate" type="text" placeholder="MM/DD/YYYY">
       </div>
 
-      <!-- Address + Hidden fullAddress -->
+      <!-- Address -->
       <div class="section">
         <label for="street">Street Address:</label>
-        <input id="street" name="street" type="text" autocomplete="address-line1" placeholder="123 Main St" required>
+        <input id="street" name="street" type="text" placeholder="123 Main St">
         <label for="city">City:</label>
-        <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="Atlanta" required>
+        <input id="city" name="city" type="text" placeholder="Atlanta">
         <label for="state">State (2-letter):</label>
-        <input id="state" name="state" type="text" maxlength="2" autocomplete="region" placeholder="GA" required>
+        <input id="state" name="state" type="text" maxlength="2" placeholder="GA">
         <label for="zip">ZIP Code:</label>
-        <input id="zip" name="zip" type="text" pattern="\d{5}" autocomplete="postal-code" placeholder="30303" required>
-        <input type="hidden" id="fullAddress" name="fullAddress">
+        <input id="zip" name="zip" type="text" pattern="\d{5}" placeholder="30303">
+        <input id="fullAddress" name="fullAddress" type="hidden">
       </div>
 
-      <!-- Other Fields -->
+      <!-- Other -->
       <div class="section">
         <label for="yearsInGA">Years Living in Georgia:</label>
-        <input id="yearsInGA" name="yearsInGA" type="number" min="0" required>
+        <input id="yearsInGA" name="yearsInGA" type="number" min="0">
         <label for="phone">Cell Phone:</label>
-        <input id="phone" name="phone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}" placeholder="404-555-1234" required>
-        <p class="note">Allowed: 4045551234 or 404-555-1234</p>
+        <input id="phone" name="phone" type="tel" placeholder="404-555-1234">
         <label for="email">Email:</label>
-        <input id="email" name="email" type="email" required>
+        <input id="email" name="email" type="email">
         <label for="dlNumber">Driver’s License #:</label>
-        <input id="dlNumber" name="dlNumber" type="text" required>
+        <input id="dlNumber" name="dlNumber" type="text">
         <label for="dlFront">Upload DL Front:</label>
-        <input id="dlFront" name="dlFront" type="file" accept="image/*" required>
+        <input id="dlFront" name="dlFront" type="file" accept="image/*">
         <label for="dlBack">Upload DL Back:</label>
-        <input id="dlBack" name="dlBack" type="file" accept="image/*" required>
+        <input id="dlBack" name="dlBack" type="file" accept="image/*">
       </div>
 
       <!-- Medical Conditions -->
       <div class="section" id="conditions-section">
         <label>Please select at least one qualifying medical condition:</label>
-        <div>
-          <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
-          <label><input type="checkbox" name="conditions" value="PTSD"> PTSD (Anxiety, Stress, Depression)</label>
-          <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
-          <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
-          <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
-          <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
-          <label><input type="checkbox" name="conditions" value="Crohns Disease"> Crohn’s Disease</label>
-          <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
-          <label><input type="checkbox" name="conditions" value="Parkinsons"> Parkinson’s</label>
-          <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
-          <label><input type="checkbox" name="conditions" value="Tourettes"> Tourette’s</label>
-          <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
-          <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
-          <label><input type="checkbox" name="conditions" value="Alzheimers"> Alzheimer’s</label>
-          <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
-          <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
-          <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
-        </div>
-        <div id="conditions-error" class="error hidden">❌ Please select at least one condition.</div>
+        <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
+        <label><input type="checkbox" name="conditions" value="PTSD (Anxiety, Stress, Depression)"> PTSD (Anxiety, Stress, Depression)</label>
+        <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
+        <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
+        <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
+        <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
+        <label><input type="checkbox" name="conditions" value="Crohn’s Disease"> Crohn’s Disease</label>
+        <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
+        <label><input type="checkbox" name="conditions" value="Parkinson’s"> Parkinson’s</label>
+        <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
+        <label><input type="checkbox" name="conditions" value="Tourette’s"> Tourette’s</label>
+        <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
+        <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
+        <label><input type="checkbox" name="conditions" value="Alzheimer’s"> Alzheimer’s</label>
+        <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
+        <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
+        <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
+        <div id="conditions-error" class="error hidden">Select at least one condition.</div>
+      </div>
+
+      <!-- Diagnosis & Treatments -->
+      <div class="section">
+        <label for="diagnosisDate">Date of Diagnosis/Condition (MM/DD/YYYY):</label>
+        <input id="diagnosisDate" name="diagnosisDate" type="text" placeholder="MM/DD/YYYY">
+        <label for="treatmentsTried">What treatments have you tried?</label>
+        <textarea id="treatmentsTried" name="treatmentsTried" rows="3" placeholder="List any prior treatments"></textarea>
       </div>
 
       <!-- Medical Record & Proof Address -->
       <div class="section">
         <label for="hasMedicalRecord">Do you have a medical record?</label>
-        <select id="hasMedicalRecord" name="hasMedicalRecord" required>
+        <select id="hasMedicalRecord" name="hasMedicalRecord">
           <option value="">-- Please select --</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -121,10 +120,13 @@
           <label for="medicalRecord">Upload Medical Record:</label>
           <input id="medicalRecord" name="medicalRecord" type="file" accept="application/pdf,image/*">
         </div>
-        <div id="medical-record-note" class="hidden"><p>We will email instructions later.</p></div>
+        <div id="no-record-message" class="hidden section">We’ll email instructions on submitting your records.</div>
+      </div>
 
+      <!-- Proof of Address -->
+      <div class="section">
         <label for="proofAddressMatches">Does your address match your photo ID?</label>
-        <select id="proofAddressMatches" name="proofAddressMatches" required>
+        <select id="proofAddressMatches" name="proofAddressMatches">
           <option value="">-- Please select --</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -135,562 +137,117 @@
         </div>
       </div>
 
-      <!-- Caregiver 1 -->
-      <div id="caregiver1-section" class="section hidden">
-        <h3>Caregiver 1 Information</h3>
-        <label for="cg1_firstName">First Name:</label>
-        <input id="cg1_firstName" name="cg1_firstName" type="text" required>
-        <label for="cg1_lastName">Last Name:</label>
-        <input id="cg1_lastName" name="cg1_lastName" type="text" required>
-        <label for="cg1_birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input id="cg1_birthdate" name="cg1_birthdate" type="text" placeholder="MM/DD/YYYY" required>
-        <label for="cg1_phone">Phone:</label>
-        <input id="cg1_phone" name="cg1_phone" type="tel" pattern="[0-9\-\s]+" required>
-        <label for="cg1_email">Email:</label>
-        <input id="cg1_email" name="cg1_email" type="email" required>
-        <label for="cg1_dl">Driver’s License #:</label>
-        <input id="cg1_dl" name="cg1_dl" type="text" required>
-        <label for="cg1_dlFront">Upload DL Front:</label>
-        <input id="cg1_dlFront" name="cg1_dlFront" type="file" accept="image/*" required>
-        <label for="cg1_dlBack">Upload DL Back:</label>
-        <input id="cg1_dlBack" name="cg1_dlBack" type="file" accept="image/*" required>
-      </div>
-
-      <!-- Caregiver 2 (Optional) -->
-      <div id="caregiver2-section" class="section hidden">
-        <h3>Caregiver 2 Information (Optional)</h3>
-        <label for="cg2_firstName">First Name:</label>
-        <input id="cg2_firstName" name="cg2_firstName" type="text">
-        <label for="cg2_lastName">Last Name:</label>
-        <input id="cg2_lastName" name="cg2_lastName" type="text">
-        <label for="cg2_birthdate">Birthdate:</label>
-        <input id="cg2_birthdate" name="cg2_birthdate" type="text" placeholder="MM/DD/YYYY">
-        <label for="cg2_phone">Phone:</label>
-        <input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\s]+">
-        <label for="cg2_email">Email:</label>
-        <input id="cg2_email" name="cg2_email" type="email">
-        <label for="cg2_dl">Driver’s License #:</label>
-        <input id="cg2_dl" name="cg2_dl" type="text">
-        <label for="cg2_dlFront">Upload DL Front:</label>
-        <input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*">
-        <label for="cg2_dlBack">Upload DL Back:</label>
-        <input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*">
-      </div>
-
-      <!-- Caregiver selector -->
+      <!-- Caregiver Selector -->
       <div class="section">
         <label for="isCaregiver">Completing on behalf of someone else?</label>
-        <select id="isCaregiver" name="isCaregiver" required>
+        <select id="isCaregiver" name="isCaregiver">
           <option value="">-- Please select --</option>
           <option value="No">No</option>
           <option value="Yes">Yes</option>
         </select>
       </div>
+      <div id="caregiver1-section" class="hidden section">
+        <h3>Caregiver 1</h3>
+        <!-- caregiver1 fields -->
+      </div>
+      <div id="caregiver2-section" class="hidden section">
+        <h3>Caregiver 2 (Optional)</h3>
+        <!-- caregiver2 fields -->
+      </div>
 
-      <button id="submitBtn" name="submitBtn" type="submit">Submit Application</button>
+      <button type="submit">Submit Application</button>
     </form>
   </div>
 
-  <!-- No-record message -->
-  <div id="no-record-message" class="section hidden" style="text-align:center;">
-    <h2>📄 Medical Records Required</h2>
-    <p>We’ll email you instructions. You’ll schedule once we have them.</p>
+  <!-- Success & Redirect -->
+  <div id="success-message" class="hidden section" style="text-align:center;">
+    <h2>✅ Application Received!</h2>
+    <p>Redirecting in <span id="countdown">3</span> seconds…</p>
   </div>
 
-  <!-- Success message -->
-  <!-- after your existing success‐message div -->
-  <div id="success-message" class="section hidden" style="text-align:center;">
-     <h2>✅ Application Received! Thank YOU!</h2>
-     <p>
-       You’ll be redirected to schedule your telehealth appointment in 
-     <span id="countdown">3</span> seconds.
-     </p>
-</div>
-
-  <!-- new: review & save backup link -->
-  <div id="backup-container" class="section hidden" style="text-align:center;">
-     <h3>Review & Save Your Submission</h3>
-     <p>
-     <a id="backup-link" href="#" target="_blank">Click here</a> to review and save a copy of everything you submitted.
-     </p>
+  <!-- Backup Link -->
+  <div id="backup-container" class="hidden section" style="text-align:center;">
+    <a id="backup-link" href="#" target="_blank">Review & Save Your Submission</a>
   </div>
 
+  <!-- Bottom JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const form = document.getElementById("mainForm");
+      ["hasMedicalRecord","proofAddressMatches","isCaregiver"].forEach(id=>{
+        document.getElementById(id)
+          .addEventListener("change", e=>toggleSection(e.target.id, e.target.value));
+      });
+      form.addEventListener("submit", handleSubmit);
+    });
 
-
-  <!-- ─── Bottom‐of‐body JS ──────────────────────────────────────────────────── -->
- <script>
-  // 1) Bind event handlers once the page is ready
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("📦 Initializing form script…");
-
-    const form = document.getElementById("mainForm");
-    if (!form) {
-      console.error("❌ #mainForm not found");
-      return;
+    function toggleSection(id, val){
+      const map = {
+        hasMedicalRecord: ["medical-record-upload","no-record-message"],
+        proofAddressMatches: ["proof-address-upload"],
+        isCaregiver: ["caregiver1-section","caregiver2-section"]
+      };
+      map[id].forEach(secId=>{
+        const show = (id==="hasMedicalRecord"? val==="Yes"
+                   : id==="proofAddressMatches"? val==="No"
+                   : val==="Yes");
+        document.getElementById(secId).classList.toggle("hidden", !show);
+      });
     }
 
-    // When the user changes these selects, show/hide the file uploads
-    document.getElementById("hasMedicalRecord")
-      .addEventListener("change", e => toggleMedicalRecord(e.target.value));
-    document.getElementById("proofAddressMatches")
-      .addEventListener("change", e => toggleProofAddress(e.target.value));
-    document.getElementById("isCaregiver")
-      .addEventListener("change", e => toggleCaregiver(e.target.value));
+    function combineAddress(){
+      ["street","city","state","zip"].forEach(()=>{});
+      const vals=["street","city","state","zip"].map(i=>document.getElementById(i).value.trim());
+      document.getElementById("fullAddress").value=vals.join(", ");
+    }
 
-    // Intercept form submission
-    console.log("🔗 Binding validateForm to #mainForm");
-    form.addEventListener("submit", ev => {
-      console.log("🔔 validateForm() called");
-      if (!validateForm(ev)) {
-        ev.preventDefault();
-        console.warn("⚠️ Submission blocked by validateForm");
-      }
-    });
-  });
-
-  // 2) Show/hide helpers
-  function toggleMedicalRecord(value) {
-    document.getElementById("medical-record-upload").style.display =
-      value === "Yes" ? "block" : "none";
-    document.getElementById("medical-record-note").style.display =
-      value === "No" ? "block" : "none";
-  }
-  function toggleProofAddress(value) {
-    document.getElementById("proof-address-upload").style.display =
-      value === "No" ? "block" : "none";
-  }
-  function toggleCaregiver(value) {
-    const c1 = document.getElementById("caregiver1-section");
-    const c2 = document.getElementById("caregiver2-section");
-    const show = value === "Yes";
-    c1.style.display = c2.style.display = show ? "block" : "none";
-    c1.querySelectorAll("input").forEach(i => i.required = show);
-    c2.querySelectorAll("input").forEach(i => i.required = false);
-  }
-
-  // 3) Combine visible address into hidden fullAddress
-  function combineAddress() {
-    const st  = document.getElementById("street").value.trim();
-    const ci  = document.getElementById("city").value.trim();
-    const stt = document.getElementById("state").value.trim();
-    const zp  = document.getElementById("zip").value.trim();
-    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
-  }
-
-  // 4) Main validation + branching
-  function validateForm(event) {
-    try {
-      // Build the hidden address field
+    function handleSubmit(ev){
+      ev.preventDefault();
       combineAddress();
-      
-  function validateForm(event) {
-  // 0) Make sure we rebuild the address…
-  combineAddress();
-
-  // ————————————————————————————————————————————
-  // ✂️ NEW: Toggle required on hidden file inputs
-  const hasRecordValue   = document.getElementById("hasMedicalRecord").value;
-  const proofAddressVal  = document.getElementById("proofAddressMatches").value;
-
-  const medFile  = document.getElementById("medicalRecord");
-  const proofFile= document.getElementById("proofOfAddress");
-
-  if (medFile)  medFile.required  = (hasRecordValue   === "Yes");
-  if (proofFile) proofFile.required = (proofAddressVal  === "No");
-
-  // ————————————————————————————————————————————
-  // A) Native validity (skip checkboxes)
-  const invalidEls = Array.from(event.target.elements).filter(el =>
-    el.willValidate &&
-    el.type !== "checkbox" &&
-    !el.checkValidity()
-  );
-  if (invalidEls.length) {
-    const missing = invalidEls.map(el => {
-      const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
-      return lab ? lab.innerText : (el.name||el.placeholder||"Field");
-    });
-    alert("Please complete the following fields:\n• " + missing.join("\n• "));
-    return false;
-  }
-
-  // B) At least one condition
-  if (!document.querySelector("input[name='conditions']:checked")) {
-    document.getElementById("conditions-error").style.display = "block";
-    return false;
-  }
-  document.getElementById("conditions-error").style.display = "none";
-
-  // C) Access code…
-  // D) No/Yes record branching…
-  // etc.
-}
-
-      const form = event.target;
-
-    
-      // A) Native HTML5 validity — but skip all checkboxes
-   const invalidEls = Array.from(form.elements)
-     .filter(el => 
-       el.willValidate &&
-       el.type !== 'checkbox' &&    // ← ignore checkboxes here
-       !el.checkValidity()
-     );
-   if (invalidEls.length) {
-    const missing = invalidEls.map(el => {
-      const lab = el.id
-        ? document.querySelector(`label[for="${el.id}"]`)
-        : null;
-      return lab
-        ? lab.innerText
-        : (el.name || el.placeholder || 'This field');
-    });
-    alert("Please complete the following fields:\n• " + missing.join("\n• "));
-    return false;
-  }
-
-      if (invalidEls.length) {
-        const missing = invalidEls.map(el => {
-          if (el.type === "file") {
-            const lab = document.querySelector(`label[for="${el.id}"]`);
-            return lab ? lab.innerText : (el.name || el.id || "File");
-          }
-          const lab = document.querySelector(`label[for="${el.id}"]`);
-          return lab ? lab.innerText : (el.name || el.placeholder || "Field");
-        });
-        alert("Please complete the following fields:\n• " + missing.join("\n• "));
-        return false;
+      // simple required checks… including new fields
+      const required=[
+        {id:"access-code",lbl:"Access Code"},
+        {id:"lastName",lbl:"Last Name"},
+        {id:"firstName",lbl:"First Name"},
+        {id:"birthdate",lbl:"Birthdate"},
+        {id:"street",lbl:"Street"},
+        {id:"city",lbl:"City"},
+        {id:"state",lbl:"State"},
+        {id:"zip",lbl:"ZIP"},
+        {id:"yearsInGA",lbl:"Years in GA"},
+        {id:"phone",lbl:"Phone"},
+        {id:"email",lbl:"Email"},
+        {id:"dlNumber",lbl:"Driver’s License #"},
+        {id:"diagnosisDate",lbl:"Date of Diagnosis"},
+        {id:"treatmentsTried",lbl:"Treatments Tried"}
+      ];
+      for(const f of required){
+        const v=document.getElementById(f.id).value.trim();
+        if(!v) return alert(`Please fill in: ${f.lbl}`);
       }
-
-      // B) At least one condition
-      if (!document.querySelector("input[name='conditions']:checked")) {
-        document.getElementById("conditions-error").style.display = "block";
-        return false;
+      if(!document.querySelector("input[name='conditions']:checked")) return alert("Select ≥1 condition");
+      const rec=document.getElementById("hasMedicalRecord").value;
+      if(rec==="No"){ document.getElementById("form-area").classList.add("hidden");
+        document.getElementById("no-record-message").classList.remove("hidden");
+        return;
       }
-      document.getElementById("conditions-error").style.display = "none";
-
-      // C) Access code
-      const code = document.getElementById("access-code").value.trim();
-      if (code !== "US420PASS") {
-        document.getElementById("code-error").style.display = "block";
-        return false;
-      }
-      document.getElementById("code-error").style.display = "none";
-
- // D) medical-record branch
-const hasRecord = document.getElementById("hasMedicalRecord").value;
-if (hasRecord === "No") {
-  // user said they DON'T have records → show your “no-record” panel
-  event.preventDefault();
-  document.getElementById("form-area").style.display         = "none";
-  document.getElementById("no-record-message").style.display = "block";
-  return false;
-}
-else {  // they *did* say “Yes” → show success + countdown + backup link
-  event.preventDefault();
-
-  // hide the form, show the “thanks” panel
-  document.getElementById("form-area").style.display       = "none";
-  document.getElementById("success-message").style.display = "block";
-
-  // build your “review & save” link
-  buildBackupLink();
-
-  // countdown timer
-  let seconds       = 3;
-  const countdownEl = document.getElementById("countdown");
-  countdownEl.innerText = seconds;
-
-  const timer = setInterval(() => {
-    seconds--;
-    countdownEl.innerText = seconds;
-
-    if (seconds <= 0) {
-      clearInterval(timer);
-      window.location.href = "https://us420doc.com/urappt420";
-    }
-  }, 1000);
-
-  return false;
-}
-    
-
-// Access-Code “other” (if you capture that; otherwise skip)
-// url += "&entry.2018844368=" + encodeURIComponent(/* your accessCode or otherOption */);
-// url += "&entry.2018844368.other_option_response=" + encodeURIComponent(/* other text */);
-
-// Driver’s License Number
-url += "&entry.1443566450="     + encodeURIComponent(document.getElementById("dlNumber").value);
-// Last Name
-url += "&entry.2005620554="     + encodeURIComponent(document.getElementById("lastName").value);
-// First Name
-url += "&entry.1240065359="     + encodeURIComponent(document.getElementById("firstName").value);
-// Birthdate
-url += "&entry.831780182="      + encodeURIComponent(document.getElementById("birthdate").value);
-// Full Address
-url += "&entry.1065046570="     + encodeURIComponent(document.getElementById("fullAddress").value);
-// Cell Phone
-url += "&entry.1166974658="     + encodeURIComponent(document.getElementById("phone").value);
-// Email
-url += "&entry.101604311="      + encodeURIComponent(document.getElementById("email").value);
-
-// Medical Conditions (we join the checked boxes)
-const conditions = Array.from(
-  document.querySelectorAll("input[name='conditions']:checked")
-).map(cb => cb.value).join(", ");
-url += "&entry.839337160="      + encodeURIComponent(conditions.includes("Chronic Pain")              ? "√" : "");
-url += "&entry.1944367806="     + encodeURIComponent(conditions.includes("PTSD (Anxiety, Stress, Depression)") ? "√" : "");
-url += "&entry.1146759112="     + encodeURIComponent(conditions.includes("Cancer")                   ? "√" : "");
-url += "&entry.597256890="      + encodeURIComponent(conditions.includes("Seizures")                 ? "√" : "");
-url += "&entry.2113866318="     + encodeURIComponent(conditions.includes("Amyotrophic Lateral Sclerosis") ? "√" : "");
-url += "&entry.591094171="      + encodeURIComponent(conditions.includes("Multiple Sclerosis")       ? "√" : "");
-url += "&entry.837956208="      + encodeURIComponent(conditions.includes("Crohn’s Disease")          ? "√" : "");
-url += "&entry.373851050="      + encodeURIComponent(conditions.includes("Mitochondrial Disease")    ? "√" : "");
-url += "&entry.1594310054="     + encodeURIComponent(conditions.includes("Parkinson’s")             ? "√" : "");
-url += "&entry.436450057="      + encodeURIComponent(conditions.includes("Sickle Cell")             ? "√" : "");
-url += "&entry.1120660671="     + encodeURIComponent(conditions.includes("Tourette’s")              ? "√" : "");
-url += "&entry.1237105033="     + encodeURIComponent(conditions.includes("Autism Spectrum")         ? "√" : "");
-url += "&entry.201518932="      + encodeURIComponent(conditions.includes("Epidermolysis Bullosa")    ? "√" : "");
-url += "&entry.1872930144="     + encodeURIComponent(conditions.includes("Alzheimer’s")             ? "√" : "");
-url += "&entry.793470222="      + encodeURIComponent(conditions.includes("AIDS")                    ? "√" : "");
-url += "&entry.1216798359="     + encodeURIComponent(conditions.includes("Peripheral Neuropathy")   ? "√" : "");
-url += "&entry.1195824215="     + encodeURIComponent(conditions.includes("Hospice")                 ? "√" : "");
-
-// Diagnosis Date
-url += "&entry.1991623433="     + encodeURIComponent(document.getElementById("diagnosisDate").value);
-// Treatments Tried
-url += "&entry.2018797023="     + encodeURIComponent(document.getElementById("treatmentsTried").value);
-
-// Do you have a medical record?
-url += "&entry.787182730="      + encodeURIComponent(document.getElementById("hasMedicalRecord").value);
-
-// Caregiver 1 fields
-url += "&entry.1486195094="     + encodeURIComponent(document.getElementById("cg1_dl").value);
-url += "&entry.1684387053="     + encodeURIComponent(document.getElementById("cg1_lastName").value);
-url += "&entry.1479911648="     + encodeURIComponent(document.getElementById("cg1_firstName").value);
-url += "&entry.807121215="      + encodeURIComponent(document.getElementById("cg1_birthdate").value);
-url += "&entry.368727207="      + encodeURIComponent(document.getElementById("cg1Address").value);
-url += "&entry.1788534373="     + encodeURIComponent(document.getElementById("cg1_phone").value);
-url += "&entry.1721647753="     + encodeURIComponent(document.getElementById("cg1_email").value);
-
-// Caregiver 2 fields
-url += "&entry.1509977777="     + encodeURIComponent(document.getElementById("cg2_dl").value);
-url += "&entry.660108886="      + encodeURIComponent(document.getElementById("cg2_lastName").value);
-url += "&entry.1998511509="     + encodeURIComponent(document.getElementById("cg2_firstName").value);
-url += "&entry.1008047398="     + encodeURIComponent(document.getElementById("cg2_birthdate").value);
-url += "&entry.1286070865="     + encodeURIComponent(document.getElementById("cg2Address").value);
-url += "&entry.1663450780="     + encodeURIComponent(document.getElementById("cg2_phone").value);
-url += "&entry.811181725="      + encodeURIComponent(document.getElementById("cg2_email").value);
-
-// Finally assign it
-backupLink.href = url;
-
-        // 3-step countdown without loops
-        const countdownEl = document.getElementById("countdown");
-        countdownEl.textContent = "3";
-        setTimeout(() => { countdownEl.textContent = "2"; }, 1000);
-        setTimeout(() => { countdownEl.textContent = "1"; }, 2000);
-        setTimeout(() => {
-          window.location.href = "https://us420doc.com/urappt420";
-        }, 3000);
-
-        return false;
-      }
-
-    } catch (err) {
-      console.error("validateForm error:", err);
-      alert("Unexpected error: " + err.message);
-      return false;
-    }
-  }
-</script>
-
-</script>
-<!-- after your success‐message div -->
-<div id="backup-container" class="section hidden" style="text-align:center;">
-  <a id="backup-link"
-     href="#"
-     target="_blank"
-     style="display:inline-block; padding:12px 20px; background:#1a751a; color:white; text-decoration:none; border-radius:8px;">
-    📝 Review &amp; Save Your Responses
-  </a>
-</div>
-
-<script>
-  function safeVal(id) {
-    const el = document.getElementById(id);
-    return el ? el.value.trim() : '';
-  }
-
-  function safeCheckbox(val) {
-    const el = document.querySelector(`input[name="conditions"][value="${val}"]`);
-    return el && el.checked ? '√' : '';
-  }
-
-  function buildBackupLink() {
-    const base = 
-      "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url";
-    const p = [];
-
-    // text & selects
-    p.push(`entry.2005620554=${encodeURIComponent(safeVal("lastName"))}`);
-    p.push(`entry.1240065359=${encodeURIComponent(safeVal("firstName"))}`);
-    p.push(`entry.831780182=${encodeURIComponent(safeVal("birthdate"))}`);
-    p.push(`entry.1065046570=${encodeURIComponent(safeVal("fullAddress"))}`);
-    p.push(`entry.1166974658=${encodeURIComponent(safeVal("phone"))}`);
-    p.push(`entry.101604311=${encodeURIComponent(safeVal("email"))}`);
-    p.push(`entry.787182730=${encodeURIComponent(safeVal("hasMedicalRecord"))}`);
-    p.push(`entry.1991623433=${encodeURIComponent(safeVal("diagnosisDate"))}`);
-    p.push(`entry.2018797023=${encodeURIComponent(safeVal("treatmentsTried"))}`);
-
-    // each condition
-    const conds = [
-      ["Chronic Pain","839337160"],
-      ["PTSD (Anxiety, Stress, Depression)","1944367806"],
-      ["Cancer","1146759112"],
-      ["Amyotrophic Lateral Sclerosis","2113866318"],
-      ["Seizures","597256890"],
-      ["Multiple Sclerosis","591094171"],
-      ["Crohn’s Disease","837956208"],
-      ["Mitochondrial Disease","373851050"],
-      ["Parkinson’s","1594310054"],
-      ["Sickle Cell","436450057"],
-      ["Tourette’s","1120660671"],
-      ["Autism Spectrum","1237105033"],
-      ["Epidermolysis Bullosa","201518932"],
-      ["Alzheimer’s","1872930144"],
-      ["AIDS","793470222"],
-      ["Peripheral Neuropathy","1216798359"],
-      ["Hospice","1195824215"]
-    ];
-    conds.forEach(([label, id]) => {
-      p.push(`entry.${id}=${encodeURIComponent(safeCheckbox(label))}`);
-    });
-
-    // caregiver 1 (only if visible)
-    if (document.getElementById("caregiver1-section").style.display !== "none") {
-      p.push(`entry.1684387053=${encodeURIComponent(safeVal("cg1_lastName"))}`);
-      p.push(`entry.1479911648=${encodeURIComponent(safeVal("cg1_firstName"))}`);
-      p.push(`entry.807121215=${encodeURIComponent(safeVal("cg1_birthdate"))}`);
-      p.push(`entry.368727207=${encodeURIComponent(safeVal("cg1_address"))}`);
-      p.push(`entry.1788534373=${encodeURIComponent(safeVal("cg1_phone"))}`);
-      p.push(`entry.1721647753=${encodeURIComponent(safeVal("cg1_email"))}`);
-      p.push(`entry.1486195094=${encodeURIComponent(safeVal("cg1_dl"))}`);
+      document.getElementById("form-area").classList.add("hidden");
+      document.getElementById("success-message").classList.remove("hidden");
+      let sec=3;const cd=document.getElementById("countdown");
+      const timer=setInterval(()=>{sec--;cd.textContent=sec;if(sec<1){clearInterval(timer);buildBackupLink();window.location.href="https://us420doc.com/urappt420";}},1000);
     }
 
-    // caregiver 2 (optional)
-    if (document.getElementById("caregiver2-section").style.display !== "none") {
-      p.push(`entry.660108886=${encodeURIComponent(safeVal("cg2_lastName"))}`);
-      p.push(`entry.1998511509=${encodeURIComponent(safeVal("cg2_firstName"))}`);
-      p.push(`entry.1008047398=${encodeURIComponent(safeVal("cg2_birthdate"))}`);
-      p.push(`entry.1286070865=${encodeURIComponent(safeVal("cg2_address"))}`);
-      p.push(`entry.1663450780=${encodeURIComponent(safeVal("cg2_phone"))}`);
-      p.push(`entry.811181725=${encodeURIComponent(safeVal("cg2_email"))}`);
-      p.push(`entry.1509977777=${encodeURIComponent(safeVal("cg2_dl"))}`);
+    function buildBackupLink(){
+      const form=document.getElementById("mainForm");
+      const p=new URLSearchParams();
+      ["lastName","firstName","birthdate","fullAddress","yearsInGA","phone","email","dlNumber","diagnosisDate","treatmentsTried"].forEach(n=>p.set(n,form.elements[n].value));
+      const conds=Array.from(form.querySelectorAll("input[name='conditions']:checked")).map(c=>c.value).join(';');
+      p.set("conditions",conds);
+      const base="https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&";
+      const url=base+p.toString();
+      const link=document.getElementById("backup-link");link.href=url;
+      document.getElementById("backup-container").classList.remove("hidden");
     }
-
-    const link = document.getElementById("backup-link");
-    link.href = base + "&" + p.join("&");
-
-    // show the container now that href is set
-    document.getElementById("backup-container").style.display = "block";
-  }
-
-  // call **after** you display the success‐message
-  // e.g. at the end of your `if (hasRecord==="Yes") { … }` block:
-  //    buildBackupLink();
-</script>
-
-  /**
- * Collect every input/select/checkbox value and build the Google-Form prefill URL.
- */
-function buildBackupLink() {
-  const form = document.getElementById('mainForm');
-  const p = new URLSearchParams();
-
-  // simple fields — name attributes must match these keys!
-  ['firstName','lastName','birthdate','fullAddress',
-   'yearsInGA','phone','email','dlNumber'
-  ].forEach(name => {
-    p.set(name, form.elements[name].value);
-  });
-
-  // conditions — join all checked boxes
-  const conds = Array.from(
-    form.querySelectorAll('input[name="conditions"]:checked')
-  ).map(cb => cb.value).join('; ');
-  p.set('conditions', conds);
-
-  // caregiver (if shown)
-  if (form.elements.isCaregiver.value === 'Yes') {
-    ['cg1_firstName','cg1_lastName','cg1_birthdate','cg1_phone','cg1_email','cg1_dl'
-    ].forEach(name => {
-      p.set(name, form.elements[name].value);
-    });
-  }
-
-  // now point the link at your Google Form’s “pre‐filled” endpoint:
-  const base = 'https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&';
-  const fullUrl = base + p.toString();
-
-  document.getElementById('backup-link').href = fullUrl;
-  document.getElementById('backup-container').style.display = 'block';
-}
-
-  <!-- at the very bottom of <body>, after your intake <form> … -->
-
-<!-- success and backup containers -->
-<div id="success-message" class="section hidden" style="text-align:center;">
-  <h2>✅ Application Received! Thank YOU!</h2>
-  <p>
-    You’ll be redirected to schedule your telehealth appointment in 
-    <span id="countdown">3</span> seconds.
-  </p>
-</div>
-
-<div id="backup-container" class="section hidden" style="text-align:center;">
-  <h3>Review & Save Your Submission</h3>
-  <p>
-    <a id="backup-link" href="#" target="_blank">Click here</a> to review and save a copy of everything you submitted.
-  </p>
-</div>
-
-<script>
-  /**
-   * Gather all the form fields and build your Google Form prefilling URL,
-   * then show the "Review & Save" section.
-   */
-  function buildBackupLink() {
-    const form = document.getElementById('mainForm');
-    const p = new URLSearchParams();
-
-    // simple text/number fields (names must match!)
-    ['firstName','lastName','birthdate','fullAddress',
-     'yearsInGA','phone','email','dlNumber'
-    ].forEach(name => {
-      p.set(name, form.elements[name].value);
-    });
-
-    // conditions => semicolon-separated
-    const conds = Array.from(
-      form.querySelectorAll('input[name="conditions"]:checked')
-    ).map(cb => cb.value).join('; ');
-    p.set('conditions', conds);
-
-    // caregiver1 if shown
-    if (form.elements.isCaregiver.value === 'Yes') {
-      ['cg1_firstName','cg1_lastName','cg1_birthdate','cg1_phone','cg1_email','cg1_dl']
-        .forEach(name => p.set(name, form.elements[name].value));
-    }
-
-    // point at your Google Form "fill-in" URL
-    const base = 'https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&';
-    const fullUrl = base + p.toString();
-
-    document.getElementById('backup-link').href = fullUrl;
-    document.getElementById('backup-container').style.display = 'block';
-  }
-</script>
-
+  </script>
 </body>
 </html>
