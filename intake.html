@@ -282,6 +282,49 @@
     try {
       // Build the hidden address field
       combineAddress();
+      
+  function validateForm(event) {
+  // 0) Make sure we rebuild the address…
+  combineAddress();
+
+  // ————————————————————————————————————————————
+  // ✂️ NEW: Toggle required on hidden file inputs
+  const hasRecordValue   = document.getElementById("hasMedicalRecord").value;
+  const proofAddressVal  = document.getElementById("proofAddressMatches").value;
+
+  const medFile  = document.getElementById("medicalRecord");
+  const proofFile= document.getElementById("proofOfAddress");
+
+  if (medFile)  medFile.required  = (hasRecordValue   === "Yes");
+  if (proofFile) proofFile.required = (proofAddressVal  === "No");
+
+  // ————————————————————————————————————————————
+  // A) Native validity (skip checkboxes)
+  const invalidEls = Array.from(event.target.elements).filter(el =>
+    el.willValidate &&
+    el.type !== "checkbox" &&
+    !el.checkValidity()
+  );
+  if (invalidEls.length) {
+    const missing = invalidEls.map(el => {
+      const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
+      return lab ? lab.innerText : (el.name||el.placeholder||"Field");
+    });
+    alert("Please complete the following fields:\n• " + missing.join("\n• "));
+    return false;
+  }
+
+  // B) At least one condition
+  if (!document.querySelector("input[name='conditions']:checked")) {
+    document.getElementById("conditions-error").style.display = "block";
+    return false;
+  }
+  document.getElementById("conditions-error").style.display = "none";
+
+  // C) Access code…
+  // D) No/Yes record branching…
+  // etc.
+}
 
       const form = event.target;
 
