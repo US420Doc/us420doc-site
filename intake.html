@@ -210,136 +210,138 @@
 
 
   <!-- ─── Bottom‐of‐body JS ──────────────────────────────────────────────────── -->
-  <script>
-    // 1) Bind after DOM loaded
-    document.addEventListener("DOMContentLoaded", () => {
-      console.log("📦 Initializing form script…");
-      const form = document.getElementById("mainForm");
-      if (!form) return console.error("❌ #mainForm not found");
-      console.log("🔗 Binding validateForm to #mainForm");
-      form.addEventListener("submit", ev => {
-        console.log("🔔 validateForm() called");
-        if (!validateForm(ev)) {
-          ev.preventDefault();
-          console.warn("⚠️ Submission blocked by validateForm");
-        }
-      });
+ <script>
+  // 1) Bind event handlers once the page is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("📦 Initializing form script…");
 
-      // also wire up the toggle dropdowns
-      document.getElementById("hasMedicalRecord")
-        .addEventListener("change", e => toggleMedicalRecord(e.target.value));
-      document.getElementById("proofAddressMatches")
-        .addEventListener("change", e => toggleProofAddress(e.target.value));
-      document.getElementById("isCaregiver")
-        .addEventListener("change", e => toggleCaregiver(e.target.value));
+    const form = document.getElementById("mainForm");
+    if (!form) {
+      console.error("❌ #mainForm not found");
+      return;
+    }
+
+    // When the user changes these selects, show/hide the file uploads
+    document.getElementById("hasMedicalRecord")
+      .addEventListener("change", e => toggleMedicalRecord(e.target.value));
+    document.getElementById("proofAddressMatches")
+      .addEventListener("change", e => toggleProofAddress(e.target.value));
+    document.getElementById("isCaregiver")
+      .addEventListener("change", e => toggleCaregiver(e.target.value));
+
+    // Intercept form submission
+    console.log("🔗 Binding validateForm to #mainForm");
+    form.addEventListener("submit", ev => {
+      console.log("🔔 validateForm() called");
+      if (!validateForm(ev)) {
+        ev.preventDefault();
+        console.warn("⚠️ Submission blocked by validateForm");
+      }
     });
+  });
 
-    // 2) Helper toggles
-    function toggleMedicalRecord(v) {
-      document.getElementById("medical-record-upload").style.display   = v==="Yes" ? "block" : "none";
-      document.getElementById("medical-record-note").style.display     = v==="No"  ? "block" : "none";
-    }
-    function toggleProofAddress(v) {
-      document.getElementById("proof-address-upload").style.display = v==="No" ? "block" : "none";
-    }
-    function toggleCaregiver(v) {
-      const c1 = document.getElementById("caregiver1-section");
-      const c2 = document.getElementById("caregiver2-section");
-      c1.style.display = c2.style.display = (v==="Yes" ? "block" : "none");
-      c1.querySelectorAll("input").forEach(i => i.required = v==="Yes");
-      c2.querySelectorAll("input").forEach(i => i.required = false);
-    }
+  // 2) Show/hide helpers
+  function toggleMedicalRecord(value) {
+    document.getElementById("medical-record-upload").style.display =
+      value === "Yes" ? "block" : "none";
+    document.getElementById("medical-record-note").style.display =
+      value === "No" ? "block" : "none";
+  }
+  function toggleProofAddress(value) {
+    document.getElementById("proof-address-upload").style.display =
+      value === "No" ? "block" : "none";
+  }
+  function toggleCaregiver(value) {
+    const c1 = document.getElementById("caregiver1-section");
+    const c2 = document.getElementById("caregiver2-section");
+    const show = value === "Yes";
+    c1.style.display = c2.style.display = show ? "block" : "none";
+    c1.querySelectorAll("input").forEach(i => i.required = show);
+    c2.querySelectorAll("input").forEach(i => i.required = false);
+  }
 
-    // 3) Combine address into hidden field
-    function combineAddress() {
-      const st  = document.getElementById("street").value.trim();
-      const ci  = document.getElementById("city").value.trim();
-      const stt = document.getElementById("state").value.trim();
-      const zp  = document.getElementById("zip").value.trim();
-      document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
-    }
+  // 3) Combine visible address into hidden fullAddress
+  function combineAddress() {
+    const st  = document.getElementById("street").value.trim();
+    const ci  = document.getElementById("city").value.trim();
+    const stt = document.getElementById("state").value.trim();
+    const zp  = document.getElementById("zip").value.trim();
+    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
+  }
 
-    // 4) Main validation
-    function validateForm(event) {
-      try {
-        combineAddress();
+  // 4) Main validation + branching
+  function validateForm(event) {
+    try {
+      // Build the hidden address field
+      combineAddress();
 
-        const form = event.target;
-        // A) native HTML5 checks
-        const invalid = Array.from(form.elements)
-          .filter(el => el.willValidate && !el.checkValidity());
-        if (invalid.length) {
-          const missing = invalid.map(el => {
-            if (el.type==="file") {
-              const L = document.querySelector(`label[for="${el.id}"]`);
-              return L ? L.innerText : el.name||el.id||"File upload";
-            }
-            const L = document.querySelector(`label[for="${el.id}"]`);
-            return L ? L.innerText : el.name||el.placeholder||"Required field";
-          });
-          alert("Please complete:\n• " + missing.join("\n• "));
-          return false;
-        }
+      const form = event.target;
 
-        // B) at least one condition
-        if (!document.querySelector("input[name='conditions']:checked")) {
-          document.getElementById("conditions-error").style.display="block";
-          return false;
-        }
-        document.getElementById("conditions-error").style.display="none";
-
-        // C) access code
-        const code = document.getElementById("access-code").value.trim();
-        if (code!=="US420PASS") {
-          document.getElementById("code-error").style.display="block";
-          return false;
-        }
-        document.getElementById("code-error").style.display="none";
-
-       // D) medical-record branch
-const hasRecord = document.getElementById("hasMedicalRecord").value;
-
-if (hasRecord === "No") {
-  // No‐record branch
-  document.getElementById("form-area").style.display = "none";
-  document.getElementById("no-record-message").style.display = "block";
-  return false;
-
-} else {
-  // Yes‐record branch (show success and countdown+redirect)
-  document.getElementById("form-area").style.display = "none";
-  const success = document.getElementById("success-message");
-  success.style.display = "block";
-
- } else {
-  // Yes-record branch
-  document.getElementById("form-area").style.display = "none";
-  const success = document.getElementById("success-message");
-  success.style.display = "block";
-
-  // Countdown without loops:
-  const countdownEl = document.getElementById("countdown");
-  countdownEl.textContent = "3";
-  setTimeout(() => { countdownEl.textContent = "2"; }, 1000);
-  setTimeout(() => { countdownEl.textContent = "1"; }, 2000);
-  setTimeout(() => { window.location.href = "https://us420doc.com/ur420appt"; }, 3000);
-
-  return false;
-}
-  
-        }
-
-        // E) all good → show success & redirect
-        document.getElementById("form-area").style.display="none";
-        document.getElementById("success-message").style.display="block";
-        setTimeout(() => window.location.href = "https://us420doc.com/ur420appt", 3000);
-        return false; // prevent native POST; we redirect
-      } catch(err) {
-        console.error("validateForm error:", err);
-        alert("Unexpected error: "+err);
+      // A) Native HTML5 validity
+      const invalidEls = Array.from(form.elements)
+        .filter(el => el.willValidate && !el.checkValidity());
+      if (invalidEls.length) {
+        const missing = invalidEls.map(el => {
+          if (el.type === "file") {
+            const lab = document.querySelector(`label[for="${el.id}"]`);
+            return lab ? lab.innerText : (el.name || el.id || "File");
+          }
+          const lab = document.querySelector(`label[for="${el.id}"]`);
+          return lab ? lab.innerText : (el.name || el.placeholder || "Field");
+        });
+        alert("Please complete the following fields:\n• " + missing.join("\n• "));
         return false;
       }
+
+      // B) At least one condition
+      if (!document.querySelector("input[name='conditions']:checked")) {
+        document.getElementById("conditions-error").style.display = "block";
+        return false;
+      }
+      document.getElementById("conditions-error").style.display = "none";
+
+      // C) Access code
+      const code = document.getElementById("access-code").value.trim();
+      if (code !== "US420PASS") {
+        document.getElementById("code-error").style.display = "block";
+        return false;
+      }
+      document.getElementById("code-error").style.display = "none";
+
+      // D) Medical-record branch
+      const hasRecord = document.getElementById("hasMedicalRecord").value;
+
+      if (hasRecord === "No") {
+        // NO-record: show no-record message
+        document.getElementById("form-area").style.display       = "none";
+        document.getElementById("no-record-message").style.display = "block";
+        return false;
+
+      } else {
+        // YES-record: show success + countdown + redirect
+        document.getElementById("form-area").style.display     = "none";
+        const successMsg = document.getElementById("success-message");
+        successMsg.style.display = "block";
+
+        // 3-step countdown without loops
+        const countdownEl = document.getElementById("countdown");
+        countdownEl.textContent = "3";
+        setTimeout(() => { countdownEl.textContent = "2"; }, 1000);
+        setTimeout(() => { countdownEl.textContent = "1"; }, 2000);
+        setTimeout(() => {
+          window.location.href = "https://us420doc.com/ur420appt";
+        }, 3000);
+
+        return false;
+      }
+
+    } catch (err) {
+      console.error("validateForm error:", err);
+      alert("Unexpected error: " + err.message);
+      return false;
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
