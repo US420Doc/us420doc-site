@@ -316,35 +316,43 @@
       }
       document.getElementById("code-error").style.display = "none";
 
-      // D) Medical-record branch
-      const hasRecord = document.getElementById("hasMedicalRecord").value;
+ // D) medical-record branch
+const hasRecord = document.getElementById("hasMedicalRecord").value;
+if (hasRecord === "No") {
+  // user said they DON'T have records → show your “no-record” panel
+  event.preventDefault();
+  document.getElementById("form-area").style.display         = "none";
+  document.getElementById("no-record-message").style.display = "block";
+  return false;
+}
+else {  // they *did* say “Yes” → show success + countdown + backup link
+  event.preventDefault();
 
-     // …after you’ve done all your invalid‐field checks, condition checks, code check, and hasRecord==='No' branch…
-        if (hasRecord === 'Yes') {
-     // 1) hide the form, show success
-       document.getElementById('form-area').style.display = 'none';
-       document.getElementById('success-message').style.display = 'block';
+  // hide the form, show the “thanks” panel
+  document.getElementById("form-area").style.display       = "none";
+  document.getElementById("success-message").style.display = "block";
 
-    // 2) start the countdown
-    let seconds = 3;
-    const countdownEl = document.getElementById('countdown');
-    const timer = setInterval(() => {
-      seconds -= 1;
-      countdownEl.innerText = seconds;
-      if (seconds <= 0) {
-        clearInterval(timer);
-        window.location.href = 'https://us420doc.com/urappt420';
-      }
-    }, 1000);
+  // build your “review & save” link
+  buildBackupLink();
 
-    // 3) build & show the “backup” link
-    buildBackupLink();
+  // countdown timer
+  let seconds       = 3;
+  const countdownEl = document.getElementById("countdown");
+  countdownEl.innerText = seconds;
 
-    // 4) prevent the normal form submit so we can let the Apps Script handle it via JS
-    event.preventDefault();
-    return false;
-  }
+  const timer = setInterval(() => {
+    seconds--;
+    countdownEl.innerText = seconds;
 
+    if (seconds <= 0) {
+      clearInterval(timer);
+      window.location.href = "https://us420doc.com/urappt420";
+    }
+  }, 1000);
+
+  return false;
+}
+    
 
 // Access-Code “other” (if you capture that; otherwise skip)
 // url += "&entry.2018844368=" + encodeURIComponent(/* your accessCode or otherOption */);
@@ -567,6 +575,61 @@ function buildBackupLink() {
   document.getElementById('backup-link').href = fullUrl;
   document.getElementById('backup-container').style.display = 'block';
 }
+
+  <!-- at the very bottom of <body>, after your intake <form> … -->
+
+<!-- success and backup containers -->
+<div id="success-message" class="section hidden" style="text-align:center;">
+  <h2>✅ Application Received! Thank YOU!</h2>
+  <p>
+    You’ll be redirected to schedule your telehealth appointment in 
+    <span id="countdown">3</span> seconds.
+  </p>
+</div>
+
+<div id="backup-container" class="section hidden" style="text-align:center;">
+  <h3>Review & Save Your Submission</h3>
+  <p>
+    <a id="backup-link" href="#" target="_blank">Click here</a> to review and save a copy of everything you submitted.
+  </p>
+</div>
+
+<script>
+  /**
+   * Gather all the form fields and build your Google Form prefilling URL,
+   * then show the "Review & Save" section.
+   */
+  function buildBackupLink() {
+    const form = document.getElementById('mainForm');
+    const p = new URLSearchParams();
+
+    // simple text/number fields (names must match!)
+    ['firstName','lastName','birthdate','fullAddress',
+     'yearsInGA','phone','email','dlNumber'
+    ].forEach(name => {
+      p.set(name, form.elements[name].value);
+    });
+
+    // conditions => semicolon-separated
+    const conds = Array.from(
+      form.querySelectorAll('input[name="conditions"]:checked')
+    ).map(cb => cb.value).join('; ');
+    p.set('conditions', conds);
+
+    // caregiver1 if shown
+    if (form.elements.isCaregiver.value === 'Yes') {
+      ['cg1_firstName','cg1_lastName','cg1_birthdate','cg1_phone','cg1_email','cg1_dl']
+        .forEach(name => p.set(name, form.elements[name].value));
+    }
+
+    // point at your Google Form "fill-in" URL
+    const base = 'https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&';
+    const fullUrl = base + p.toString();
+
+    document.getElementById('backup-link').href = fullUrl;
+    document.getElementById('backup-container').style.display = 'block';
+  }
+</script>
 
 </body>
 </html>
