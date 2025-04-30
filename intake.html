@@ -416,75 +416,101 @@ backupLink.href = url;
     }
   }
 </script>
+
+</script>
+<!-- after your success‐message div -->
+<div id="backup-container" class="section hidden" style="text-align:center;">
+  <a id="backup-link"
+     href="#"
+     target="_blank"
+     style="display:inline-block; padding:12px 20px; background:#1a751a; color:white; text-decoration:none; border-radius:8px;">
+    📝 Review &amp; Save Your Responses
+  </a>
+</div>
+
 <script>
-  // ——— Build “Review & Save” prefill URL ———
-  function buildBackupLink() {
-    const formUrlBase = 
-      "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url";
-    const params = [];
-
-    // simple text inputs:
-    const byId = id => document.getElementById(id).value.trim();
-    params.push(`entry.2005620554=${encodeURIComponent(byId("lastName"))}`);
-    params.push(`entry.1240065359=${encodeURIComponent(byId("firstName"))}`);
-    params.push(`entry.831780182=${encodeURIComponent(byId("birthdate"))}`);
-    params.push(`entry.1065046570=${encodeURIComponent(byId("fullAddress"))}`);
-    params.push(`entry.1166974658=${encodeURIComponent(byId("phone"))}`);
-    params.push(`entry.101604311=${encodeURIComponent(byId("email"))}`);
-    params.push(`entry.1991623433=${encodeURIComponent(byId("diagnosisDate")||"")}`);
-    params.push(`entry.2018797023=${encodeURIComponent(byId("treatmentsTried")||"")}`);
-
-    // medical-record select:
-    params.push(`entry.787182730=${encodeURIComponent(byId("hasMedicalRecord"))}`);
-
-    // Conditions checkboxes (√ or empty)
-    function cb(id, entryId){
-      const el = document.querySelector(`input[name="conditions"][value="${id}"]`);
-      return el && el.checked ? `entry.${entryId}=${encodeURIComponent("√")}` : `entry.${entryId}=`;
-    }
-    params.push(cb("Chronic Pain",       "839337160"));
-    params.push(cb("PTSD (Anxiety, Stress, Depression)", "1944367806"));
-    params.push(cb("Cancer",              "1146759112"));
-    params.push(cb("Amyotrophic Lateral Sclerosis","2113866318"));
-    params.push(cb("Seizures",           "597256890"));
-    params.push(cb("Multiple Sclerosis", "591094171"));
-    params.push(cb("Crohn’s Disease",    "837956208"));
-    params.push(cb("Mitochondrial Disease","373851050"));
-    params.push(cb("Parkinson’s",        "1594310054"));
-    params.push(cb("Sickle Cell",        "436450057"));
-    params.push(cb("Tourette’s",         "1120660671"));
-    params.push(cb("Autism Spectrum",    "1237105033"));
-    params.push(cb("Epidermolysis Bullosa","201518932"));
-    params.push(cb("Alzheimer’s",        "1872930144"));
-    params.push(cb("AIDS",               "793470222"));
-    params.push(cb("Peripheral Neuropathy","1216798359"));
-    params.push(cb("Hospice",            "1195824215"));
-
-    // caregivers:
-    params.push(`entry.1486195094=${encodeURIComponent(byId("cg1_dl")||"")}`);
-    params.push(`entry.1684387053=${encodeURIComponent(byId("cg1_lastName")||"")}`);
-    params.push(`entry.1479911648=${encodeURIComponent(byId("cg1_firstName")||"")}`);
-    params.push(`entry.807121215=${encodeURIComponent(byId("cg1_birthdate")||"")}`);
-    params.push(`entry.368727207=${encodeURIComponent(byId("cg1_address")||"")}`);
-    params.push(`entry.1788534373=${encodeURIComponent(byId("cg1_phone")||"")}`);
-    params.push(`entry.1721647753=${encodeURIComponent(byId("cg1_email")||"")}`);
-
-    params.push(`entry.1509977777=${encodeURIComponent(byId("cg2_dl")||"")}`);
-    params.push(`entry.660108886=${encodeURIComponent(byId("cg2_lastName")||"")}`);
-    params.push(`entry.1998511509=${encodeURIComponent(byId("cg2_firstName")||"")}`);
-    params.push(`entry.1008047398=${encodeURIComponent(byId("cg2_birthdate")||"")}`);
-    params.push(`entry.1286070865=${encodeURIComponent(byId("cg2_address")||"")}`);
-    params.push(`entry.1663450780=${encodeURIComponent(byId("cg2_phone")||"")}`);
-    params.push(`entry.811181725=${encodeURIComponent(byId("cg2_email")||"")}`);
-
-    // join & assign href
-    const backupLink = document.getElementById("backup-link");
-    backupLink.href = formUrlBase + "&" + params.join("&");
+  function safeVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
   }
 
-  // ➤ Call it as soon as the user sees the success screen:
-  //    (inside your “Yes, records ready” branch, right after you show #success-message)
-  buildBackupLink();
+  function safeCheckbox(val) {
+    const el = document.querySelector(`input[name="conditions"][value="${val}"]`);
+    return el && el.checked ? '√' : '';
+  }
+
+  function buildBackupLink() {
+    const base = 
+      "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url";
+    const p = [];
+
+    // text & selects
+    p.push(`entry.2005620554=${encodeURIComponent(safeVal("lastName"))}`);
+    p.push(`entry.1240065359=${encodeURIComponent(safeVal("firstName"))}`);
+    p.push(`entry.831780182=${encodeURIComponent(safeVal("birthdate"))}`);
+    p.push(`entry.1065046570=${encodeURIComponent(safeVal("fullAddress"))}`);
+    p.push(`entry.1166974658=${encodeURIComponent(safeVal("phone"))}`);
+    p.push(`entry.101604311=${encodeURIComponent(safeVal("email"))}`);
+    p.push(`entry.787182730=${encodeURIComponent(safeVal("hasMedicalRecord"))}`);
+    p.push(`entry.1991623433=${encodeURIComponent(safeVal("diagnosisDate"))}`);
+    p.push(`entry.2018797023=${encodeURIComponent(safeVal("treatmentsTried"))}`);
+
+    // each condition
+    const conds = [
+      ["Chronic Pain","839337160"],
+      ["PTSD (Anxiety, Stress, Depression)","1944367806"],
+      ["Cancer","1146759112"],
+      ["Amyotrophic Lateral Sclerosis","2113866318"],
+      ["Seizures","597256890"],
+      ["Multiple Sclerosis","591094171"],
+      ["Crohn’s Disease","837956208"],
+      ["Mitochondrial Disease","373851050"],
+      ["Parkinson’s","1594310054"],
+      ["Sickle Cell","436450057"],
+      ["Tourette’s","1120660671"],
+      ["Autism Spectrum","1237105033"],
+      ["Epidermolysis Bullosa","201518932"],
+      ["Alzheimer’s","1872930144"],
+      ["AIDS","793470222"],
+      ["Peripheral Neuropathy","1216798359"],
+      ["Hospice","1195824215"]
+    ];
+    conds.forEach(([label, id]) => {
+      p.push(`entry.${id}=${encodeURIComponent(safeCheckbox(label))}`);
+    });
+
+    // caregiver 1 (only if visible)
+    if (document.getElementById("caregiver1-section").style.display !== "none") {
+      p.push(`entry.1684387053=${encodeURIComponent(safeVal("cg1_lastName"))}`);
+      p.push(`entry.1479911648=${encodeURIComponent(safeVal("cg1_firstName"))}`);
+      p.push(`entry.807121215=${encodeURIComponent(safeVal("cg1_birthdate"))}`);
+      p.push(`entry.368727207=${encodeURIComponent(safeVal("cg1_address"))}`);
+      p.push(`entry.1788534373=${encodeURIComponent(safeVal("cg1_phone"))}`);
+      p.push(`entry.1721647753=${encodeURIComponent(safeVal("cg1_email"))}`);
+      p.push(`entry.1486195094=${encodeURIComponent(safeVal("cg1_dl"))}`);
+    }
+
+    // caregiver 2 (optional)
+    if (document.getElementById("caregiver2-section").style.display !== "none") {
+      p.push(`entry.660108886=${encodeURIComponent(safeVal("cg2_lastName"))}`);
+      p.push(`entry.1998511509=${encodeURIComponent(safeVal("cg2_firstName"))}`);
+      p.push(`entry.1008047398=${encodeURIComponent(safeVal("cg2_birthdate"))}`);
+      p.push(`entry.1286070865=${encodeURIComponent(safeVal("cg2_address"))}`);
+      p.push(`entry.1663450780=${encodeURIComponent(safeVal("cg2_phone"))}`);
+      p.push(`entry.811181725=${encodeURIComponent(safeVal("cg2_email"))}`);
+      p.push(`entry.1509977777=${encodeURIComponent(safeVal("cg2_dl"))}`);
+    }
+
+    const link = document.getElementById("backup-link");
+    link.href = base + "&" + p.join("&");
+
+    // show the container now that href is set
+    document.getElementById("backup-container").style.display = "block";
+  }
+
+  // call **after** you display the success‐message
+  // e.g. at the end of your `if (hasRecord==="Yes") { … }` block:
+  //    buildBackupLink();
 </script>
 
 </body>
