@@ -104,6 +104,19 @@
         <div id="conditions-error" class="error hidden">❌ Please select at least one condition.</div>
       </div>
 
+        <!-- Diagnosis & Treatments -->
+        <div class="section">
+          <label for="diagnosisDate">Date of Diagnosis:</label>
+          <input id="diagnosisDate" name="diagnosisDate" type="date" required>
+
+          <label for="treatmentsTried">Treatments You’ve Tried:</label>
+          <textarea id="treatmentsTried"
+              name="treatmentsTried"
+              rows="3"
+              placeholder="e.g. physical therapy, medications…"
+              required></textarea>
+     </div>
+
       <!-- Medical Record & Proof Address -->
       <div class="section">
         <label for="hasMedicalRecord">Do you have a medical record?</label>
@@ -248,6 +261,7 @@ function validateForm(event) {
     if (el.type === "file" && el.offsetParent === null)
       return false;                                    // skip hidden file inputs
     return !el.checkValidity();                        // now check validity
+    
   });
   if (invalidEls.length) {
     const missing = invalidEls.map(el => {
