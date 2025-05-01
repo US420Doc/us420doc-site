@@ -239,68 +239,98 @@
     document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  function validateForm(event) {
-    combineAddress();
+  <script>
+function validateForm(event) {
+  event.preventDefault();              // we’ll submit via AJAX
+  combineAddress();                    // rebuild fullAddress
 
-    // 1) Native validity (skip checkboxes)
-    const form = document.getElementById("mainForm");
-    const invalid = Array.from(form.elements)
-      .filter(el => el.willValidate && el.type!=="checkbox" && !el.checkValidity());
-    if (invalid.length) {
-      alert("Please complete all required fields.");
-      return;
-    }
-    // 2) At least one condition
-    if (!document.querySelector("input[name='conditions']:checked")) {
-      alert("Please select at least one medical condition.");
-      return;
-    }
-    // 3) Access Code
-    if (document.getElementById("access-code").value.trim() !== "US420PASS") {
-      alert("Incorrect Access Code.");
-      return;
-    }
-    // 4) Medical‐record branch
-    const hasRecord = document.getElementById("hasMedicalRecord").value;
-    const medInput  = document.getElementById("medicalRecord");
-    if (hasRecord === "No") {
-      document.getElementById("form-area").style.display = "none";
-      document.getElementById("no-record-message").style.display = "block";
-      return;
-    }
-    // force file if “Yes”
-    if (!medInput.files.length) {
-      alert("Please upload your medical record to continue.");
-      medInput.required = true;
-      medInput.focus();
-      return;
-    }
-    // 5) AJAX POST
-    const data = new FormData(form);
-    fetch(form.action, { method:"POST", body:data })
-      .then(r => r.text())
-      .then(txt => {
-        if (/Success/.test(txt)) {
-          document.getElementById("form-area").style.display = "none";
-          document.getElementById("success-message").style.display = "block";
-          buildBackupLink();
-          // countdown
-          let sec = 3, el = document.getElementById("countdown");
-          el.innerText = sec;
-          const timer = setInterval(() => {
-            if (--sec < 1) {
-              clearInterval(timer);
-              window.location.href = "https://us420doc.com/urappt420";
-            } else {
-              el.innerText = sec;
-            }
-          }, 1000);
-        } else {
-          alert("Submission failed: " + txt);
-        }
-      })
-      .catch(err => alert("Network error: " + err.message));
+  const form = document.getElementById("mainForm");
+
+  // 1) Native HTML5 validity (ignore hidden file inputs & checkboxes)
+  const invalidEls = Array.from(form.elements).filter(el => {
+    if (!el.willValidate) return false;                // skip non‐validatable
+    if (el.type === "checkbox") return false;          // skip checkboxes here
+    if (el.type === "file" && el.offsetParent === null)
+      return false;                                    // skip hidden file inputs
+    return !el.checkValidity();                        // now check validity
+  });
+  if (invalidEls.length) {
+    const missing = invalidEls.map(el => {
+      const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
+      return lab
+        ? lab.innerText
+        : el.name || el.placeholder || "This field";
+    });
+    alert(
+      "Please complete the following fields correctly:\n" +
+      missing.map(m => "• " + m).join("\n")
+    );
+    return false;
   }
+
+  // 2) At least one medical condition
+  if (!document.querySelector("input[name='conditions']:checked")) {
+    alert("Please select at least one medical condition.");
+    return false;
+  }
+
+  // 3) Access Code
+  if (document.getElementById("access-code").value.trim() !== "US420PASS") {
+    alert("Incorrect Access Code.");
+    return false;
+  }
+
+  // 4) Medical‐record branch
+  const hasRecord = document.getElementById("hasMedicalRecord").value;
+  const medInput  = document.getElementById("medicalRecord");
+
+  if (hasRecord === "No") {
+    // show the “no‐record” panel
+    document.getElementById("form-area").style.display = "none";
+    document.getElementById("no-record-message").style.display = "block";
+    return false;
+  }
+
+  // if “Yes”, make sure they uploaded
+  if (!medInput.files.length) {
+    alert("Please upload your medical record to continue.");
+    medInput.required = true;
+    medInput.focus();
+    return false;
+  }
+
+  // 5) All checks passed → AJAX POST
+  const data = new FormData(form);
+  fetch(form.action, { method: "POST", body: data })
+    .then(r => r.text())
+    .then(txt => {
+      if (/Success/.test(txt)) {
+        // hide form, show success + backup link + countdown
+        document.getElementById("form-area").style.display     = "none";
+        document.getElementById("success-message").style.display = "block";
+        buildBackupLink();
+
+        let sec = 3;
+        const countdownEl = document.getElementById("countdown");
+        countdownEl.innerText = sec;
+        const timer = setInterval(() => {
+          if (--sec < 1) {
+            clearInterval(timer);
+            window.location.href = "https://us420doc.com/urappt420";
+          } else {
+            countdownEl.innerText = sec;
+          }
+        }, 1000);
+      } else {
+        alert("Submission failed: " + txt);
+      }
+    })
+    .catch(err => alert("Network error: " + err.message));
+
+  return false; // prevent default form submit
+}
+</script>
+
 
   function buildBackupLink() {
     const form = document.getElementById("mainForm");
