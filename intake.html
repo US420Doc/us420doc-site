@@ -326,6 +326,29 @@ function validateForm(event) {
 }
 </script>
 
+  <!-- ─── Bottom‐of‐body JS ─────────────────────────────────────────────────── -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1) When "Do you have a medical record?" changes:
+      document
+        .getElementById("hasMedicalRecord")
+        .addEventListener("change", e => {
+          const show = e.target.value === "Yes";
+          document.getElementById("medical-record-upload").style.display = show ? "block" : "none";
+        });
+
+      // 2) When "Does your address match your photo ID?" changes:
+      document
+        .getElementById("proofAddressMatches")
+        .addEventListener("change", e => {
+          const show = e.target.value === "No";
+          document.getElementById("proof-address-upload").style.display = show ? "block" : "none";
+        });
+
+      // (Re-apply any other handlers you already have…)
+    });
+  </script>
+  <!-- ─────────────────────────────────────────────────────────────────────────── -->
 
   function buildBackupLink() {
     const form = document.getElementById("mainForm");
