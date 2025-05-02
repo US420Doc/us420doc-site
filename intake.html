@@ -219,13 +219,24 @@
     const form = document.getElementById("mainForm");
 
     // 1) Show/hide file inputs on select changes
-    document.getElementById("hasMedicalRecord").addEventListener("change", e => {
-      document.getElementById("medical-record-upload")
-              .style.display = (e.target.value === "Yes") ? "block" : "none";
-    });
-    document.getElementById("proofAddressMatches").addEventListener("change", e => {
-      document.getElementById("proof-address-upload")
-              .style.display = (e.target.value === "No")  ? "block" : "none";
+   document.getElementById("hasMedicalRecord")
+  .addEventListener("change", e => {
+    const show = e.target.value === "Yes";
+    const medDiv = document.getElementById("medical-record-upload");
+    const medInput = document.getElementById("medicalRecord");
+    medDiv.style.display = show ? "block" : "none";
+    medInput.required   = show;     // ← toggle required
+  });
+
+   document.getElementById("proofAddressMatches")
+  .addEventListener("change", e => {
+    const show = e.target.value === "No";
+    const addrDiv = document.getElementById("proof-address-upload");
+    const addrInput = document.getElementById("proofOfAddress");
+    addrDiv.style.display     = show ? "block" : "none";
+    addrInput.required        = show;  // ← toggle required
+  });
+
     });
     document.getElementById("isCaregiver").addEventListener("change", e => {
       const show = e.target.value === "Yes";
@@ -261,9 +272,20 @@
       return !el.checkValidity();
     });
     if (invalidEls.length) {
-      alert("Please complete all required fields.");
-      return;
-    }
+    // build a nice list of labels/placeholders
+      const names = invalidEls.map(el => {
+      const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
+      return lab
+      ? lab.innerText
+      : (el.name || el.placeholder || el.id || el.type);
+  });
+  alert(
+    "Please complete the following fields:\n• " +
+    names.join("\n• ")
+  );
+  return false;
+}
+
 
     // 2) At least one condition
     if (!document.querySelector("input[name='conditions']:checked")) {
