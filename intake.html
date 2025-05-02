@@ -331,6 +331,31 @@
   </script>
   <!-- ──────────────────────────────────────────────────────────────────────────── -->
 
+ /**
+ * Build your Google-Form prefill URL and show the “Review & Save” link.
+ */
+function buildBackupLink() {
+  const form = document.getElementById("mainForm");
+  const p    = new URLSearchParams();
+  // map your fields → entry IDs
+  p.set("entry.2005620554", form.lastName.value);
+  p.set("entry.1240065359", form.firstName.value);
+  p.set("entry.831780182",  form.birthdate.value);
+  p.set("entry.1065046570", form.fullAddress.value);
+  p.set("entry.1166974658", form.phone.value);
+  p.set("entry.101604311",  form.payeremail.value);
+  p.set("entry.787182730",  form.hasMedicalRecord.value);
+  // each condition
+  const conds = Array.from(form.querySelectorAll("input[name='conditions']:checked"))
+                     .map(cb => cb.value);
+  p.set("entry.839337160", conds.includes("Chronic Pain") ? "√" : "");
+  // …and so on for the rest of your conditions and any other fields…
   
+  // now point the link at the pre-fill URL
+  const link = document.getElementById("backup-link");
+  link.href = "https://docs.google.com/forms/d/e/…/viewform?usp=pp_url&" + p.toString();
+  document.getElementById("backup-container").style.display = "block";
+}
+ 
 </body>
 </html>
