@@ -251,6 +251,8 @@
 function validateForm(event) {
   event.preventDefault();              // we’ll submit via AJAX
   combineAddress();                    // rebuild fullAddress
+  
+console.log("🔍 fullAddress =", document.getElementById("fullAddress").value);
 
   const form = document.getElementById("mainForm");
 
@@ -276,6 +278,8 @@ function validateForm(event) {
     );
     return false;
   }
+
+  
 
   // 2) At least one medical condition
   if (!document.querySelector("input[name='conditions']:checked")) {
