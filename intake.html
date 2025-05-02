@@ -213,108 +213,111 @@
 
   <!-- ─── Bottom‐of‐body JS ─────────────────────────────────────────────────── -->
   
+   <!-- ─── Bottom‐of‐body JS ─────────────────────────────────────────────────── -->
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("mainForm");
-    const hasRecSel = document.getElementById("hasMedicalRecord");
-    const proofSel  = document.getElementById("proofAddressMatches");
-    const careSel   = document.getElementById("isCaregiver");
-    const medDiv    = document.getElementById("medical-record-upload");
-    const proofDiv  = document.getElementById("proof-address-upload");
-    const c1        = document.getElementById("caregiver1-section");
-    const c2        = document.getElementById("caregiver2-section");
-    const medInput  = document.getElementById("medicalRecord");
-    const proofInput= document.getElementById("proofOfAddress");
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("mainForm");
 
-    // Show/hide file‐upload sections
-    hasRecSel.addEventListener("change", e => {
-      const show = e.target.value === "Yes";
-      medDiv.style.display = show ? "block" : "none";
-      medInput.required    = show;
-    });
-    proofSel.addEventListener("change", e => {
-      const show = e.target.value === "No";
-      proofDiv.style.display = show ? "block" : "none";
-      proofInput.required    = show;
-    });
-    careSel.addEventListener("change", e => {
-      const show = e.target.value === "Yes";
-      c1.style.display = c2.style.display = show ? "block" : "none";
-      c1.querySelectorAll("input,textarea").forEach(i => i.required = show);
-      c2.querySelectorAll("input,textarea").forEach(i => i.required = false);
-    });
+      // 1) Show/hide file inputs
+      document.getElementById("hasMedicalRecord")
+        .addEventListener("change", e => {
+          document.getElementById("medical-record-upload")
+            .style.display = e.target.value === "Yes" ? "block" : "none";
+        });
+      document.getElementById("proofAddressMatches")
+        .addEventListener("change", e => {
+          document.getElementById("proof-address-upload")
+            .style.display = e.target.value === "No" ? "block" : "none";
+        });
+      document.getElementById("isCaregiver")
+        .addEventListener("change", e => {
+          const show = e.target.value === "Yes";
+          document.getElementById("caregiver1-section").style.display = show ? "block" : "none";
+          document.getElementById("caregiver2-section").style.display = show ? "block" : "none";
+        });
 
-    // Intercept submit
-    form.addEventListener("submit", ev => {
-      ev.preventDefault();
-      validateForm();
-    });
-  });
-
-  // Combine street/city/state/zip → hidden fullAddress
-  function combineAddress() {
-    const st  = document.getElementById("street").value.trim();
-    const ci  = document.getElementById("city").value.trim();
-    const stt = document.getElementById("state").value.trim();
-    const zp  = document.getElementById("zip").value.trim();
-    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
-  }
-
-  function validateForm() {
-    combineAddress();  // always rebuild fullAddress first
-
-    const form = document.getElementById("mainForm");
-    // 1) Native validity: skip checkboxes + skip hidden file inputs
-    const invalidEls = Array.from(form.elements).filter(el => {
-      if (!el.willValidate) return false;
-      if (el.type === "checkbox") return false;
-      if (el.type === "file" && el.offsetParent === null) return false;
-      return !el.checkValidity();
-    });
-
-    if (invalidEls.length) {
-      const missing = invalidEls.map(el => {
-        const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
-        return lab ? lab.innerText : (el.name || el.placeholder || "This field");
+      // 2) Intercept submit
+      form.addEventListener("submit", ev => {
+        ev.preventDefault();
+        validateForm(ev);
       });
-      alert("Please complete the following fields:\n• " + missing.join("\n• "));
-      return;
+    });
+
+    // Rebuilds your hidden fullAddress field
+    function combineAddress() {
+      const st  = document.getElementById("street").value.trim();
+      const ci  = document.getElementById("city").value.trim();
+      const stt = document.getElementById("state").value.trim();
+      const zp  = document.getElementById("zip").value.trim();
+      document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
     }
 
-    // 2) At least one condition
-    if (!document.querySelector("input[name='conditions']:checked")) {
-      alert("Please select at least one condition.");
-      return;
-    }
-    // 3) Access code
-    if (document.getElementById("access-code").value.trim() !== "US420PASS") {
-      alert("Incorrect Access Code.");
-      return;
-    }
-    // 4) Medical‐record branch
-    const hasRec = document.getElementById("hasMedicalRecord").value;
-    if (hasRec === "No") {
-      document.getElementById("form-area").style.display       = "none";
-      document.getElementById("no-record-message").style.display = "block";
-      return;
-    }
+    // Runs all your checks, then does AJAX post
+    function validateForm(event) {
+      combineAddress();
 
-    // 5) Submit via AJAX
-    const data = new FormData(form);
-    fetch(form.action, { method: "POST", body: data })
+      const form = document.getElementById("mainForm");
+      // 1) Native validity (skip hidden files & checkboxes)
+      const invalidEls = Array.from(form.elements).filter(el => {
+        if (!el.willValidate) return false;
+        if (el.type === "checkbox") return false;
+        if (el.type === "file" && el.offsetParent === null) return false;
+        return !el.checkValidity();
+      });
+      if (invalidEls.length) {
+        const missing = invalidEls.map(el => {
+          const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
+          return lab ? lab.innerText : (el.name || el.placeholder || "This field");
+        });
+        alert("Please complete the following fields correctly:\n• " + missing.join("\n• "));
+        return;
+      }
+
+      // 2) Conditions
+      if (!document.querySelector("input[name='conditions']:checked")) {
+        alert("Please select at least one medical condition.");
+        return;
+      }
+
+      // 3) Access Code
+      if (document.getElementById("access-code").value.trim() !== "US420PASS") {
+        alert("Incorrect Access Code.");
+        return;
+      }
+
+      // 4) Medical‐record branch
+      const hasRecord = document.getElementById("hasMedicalRecord").value;
+      const medInput  = document.getElementById("medicalRecord");
+      if (hasRecord === "No") {
+        document.getElementById("form-area").style.display         = "none";
+        document.getElementById("no-record-message").style.display = "block";
+        return;
+      }
+      if (!medInput.files.length) {
+        alert("Please upload your medical record to continue.");
+        medInput.required = true;
+        medInput.focus();
+        return;
+      }
+
+      // 5) AJAX POST
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form)
+      })
       .then(r => r.text())
       .then(txt => {
         if (/Success/.test(txt)) {
           document.getElementById("form-area").style.display       = "none";
           document.getElementById("success-message").style.display = "block";
           buildBackupLink();
-
-          // 3-second countdown
-          let sec = 3, el = document.getElementById("countdown");
+          // countdown + redirect
+          let sec = 3;
+          const el = document.getElementById("countdown");
           el.innerText = sec;
-          const t = setInterval(() => {
+          const timer = setInterval(() => {
             if (--sec < 1) {
-              clearInterval(t);
+              clearInterval(timer);
               window.location.href = "https://us420doc.com/urappt420";
             } else {
               el.innerText = sec;
@@ -324,38 +327,43 @@
           alert("Submission failed: " + txt);
         }
       })
-      .catch(err => alert("Network error: " + err.message));
-  }
+      .catch(err => {
+        alert("Network error: " + err.message);
+      });
+    }
 
-  // …your buildBackupLink() stays exactly as you already have it…
+    // Builds your “Review & Save” Google Form prefill link
+    function buildBackupLink() {
+      const form = document.getElementById("mainForm");
+      const p    = new URLSearchParams();
+      // text fields → entry IDs
+      p.set("entry.2005620554", form.lastName.value);
+      p.set("entry.1240065359", form.firstName.value);
+      p.set("entry.831780182",  form.birthdate.value);
+      p.set("entry.1065046570", form.fullAddress.value);
+      p.set("entry.1166974658", form.phone.value);
+      p.set("entry.101604311",  form.payeremail.value);
+      p.set("entry.787182730",  form.hasMedicalRecord.value);
+      p.set("entry.739766237",  form.proofAddressMatches.value);
+      p.set("entry.1991623433", form.diagnosisDate.value);
+      p.set("entry.2018797023", form.treatmentsTried.value);
+      // conditions → individual checkboxes
+      const conds = Array.from(form.querySelectorAll("input[name='conditions']:checked"))
+                        .map(cb => cb.value);
+      p.set("entry.839337160", conds.includes("Chronic Pain") ? "√" : "");
+      p.set("entry.1944367806", conds.includes("PTSD (Anxiety, Stress, Depression)") ? "√" : "");
+      // …repeat p.set for each of your conditions and any other fields…
 
+      // attach to the link
+      const link = document.getElementById("backup-link");
+      link.href = "https://docs.google.com/forms/d/e/1FAIpQLSeeexMZT0Qz6s3CN6hVWIpOBCIhiE5njao_frvtrKkKGzO9zg/viewform?usp=pp_url&"
+                  + p.toString();
+      document.getElementById("backup-container").style.display = "block";
+    }
+  </script>
   <!-- ──────────────────────────────────────────────────────────────────────────── -->
-
- /**
- * Build your Google-Form prefill URL and show the “Review & Save” link.
- */
-function buildBackupLink() {
-  const form = document.getElementById("mainForm");
-  const p    = new URLSearchParams();
-  // map your fields → entry IDs
-  p.set("entry.2005620554", form.lastName.value);
-  p.set("entry.1240065359", form.firstName.value);
-  p.set("entry.831780182",  form.birthdate.value);
-  p.set("entry.1065046570", form.fullAddress.value);
-  p.set("entry.1166974658", form.phone.value);
-  p.set("entry.101604311",  form.payeremail.value);
-  p.set("entry.787182730",  form.hasMedicalRecord.value);
-  // each condition
-  const conds = Array.from(form.querySelectorAll("input[name='conditions']:checked"))
-                     .map(cb => cb.value);
-  p.set("entry.839337160", conds.includes("Chronic Pain") ? "√" : "");
-  // …and so on for the rest of your conditions and any other fields…
-  
-  // now point the link at the pre-fill URL
-  const link = document.getElementById("backup-link");
-  link.href = "https://docs.google.com/forms/d/e/…/viewform?usp=pp_url&" + p.toString();
-  document.getElementById("backup-container").style.display = "block";
-}
- </script> 
+</body>
+</html>
+ 
 </body>
 </html>
