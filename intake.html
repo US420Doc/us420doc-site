@@ -213,146 +213,90 @@
 
  
   <!-- ─── All page JS in one place ─────────────────────────────────────────── -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("mainForm");
+ 
+  <!-- …your HTML form above… -->
 
-      // show/hide medical record upload
-      document.getElementById("hasMedicalRecord")
-        .addEventListener("change", e => {
-          document.getElementById("medical-record-upload").style.display =
-            e.target.value === "Yes" ? "block" : "none";
-        });
+<!-- Bottom‐of‐body JS -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // show/hide uploads…
+    document.getElementById("hasMedicalRecord")
+      .addEventListener("change", e => {
+        document.getElementById("medical-record-upload")
+                .style.display = e.target.value==="Yes"?"block":"none";
+      });
+    document.getElementById("proofAddressMatches")
+      .addEventListener("change", e => {
+        document.getElementById("proof-address-upload")
+                .style.display = e.target.value==="No"?"block":"none";
+      });
+    document.getElementById("isCaregiver")
+      .addEventListener("change", e => {
+        const show = e.target.value === "Yes";
+        document.getElementById("caregiver1-section").style.display = show?"block":"none";
+        document.getElementById("caregiver2-section").style.display = show?"block":"none";
+      });
 
-      // show/hide proof-of-address upload
-      document.getElementById("proofAddressMatches")
-        .addEventListener("change", e => {
-          document.getElementById("proof-address-upload").style.display =
-            e.target.value === "No" ? "block" : "none";
-        });
-
-      // show/hide caregiver sections
-      document.getElementById("isCaregiver")
-        .addEventListener("change", e => {
-          const show = e.target.value === "Yes";
-          document.getElementById("caregiver1-section").style.display = show ? "block" : "none";
-          document.getElementById("caregiver2-section").style.display = show ? "block" : "none";
-        });
-
-      // intercept normal submit
-      form.addEventListener("submit", ev => {
+    // intercept form submit
+    document.getElementById("mainForm")
+      .addEventListener("submit", ev => {
         ev.preventDefault();
         validateForm();
       });
-    });
+  });
 
-    // build the hidden fullAddress field
-    function combineAddress() {
-      const st  = document.getElementById("street").value.trim();
-      const ci  = document.getElementById("city").value.trim();
-      const stt = document.getElementById("state").value.trim();
-      const zp  = document.getElementById("zip").value.trim();
-      document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
-    }
+  function combineAddress() {
+    const st  = document.getElementById("street").value.trim();
+    const ci  = document.getElementById("city").value.trim();
+    const stt = document.getElementById("state").value.trim();
+    const zp  = document.getElementById("zip").value.trim();
+    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
+  }
 
-    // the one-and-only validator + AJAX submit + countdown + backup link
-    function validateForm() {
-      combineAddress();
+  function validateForm() {
+    combineAddress();
+    const form = document.getElementById("mainForm");
+    // …all your validations here…
+    // on success:
+    fetch(form.action, { method: "POST", body: new FormData(form) })
+      .then(r=>r.text()).then(txt=>{
+        if(/Success/.test(txt)) {
+          document.getElementById("form-area").style.display = "none";
+          document.getElementById("success-message").style.display = "block";
+          buildBackupLink();
+          // …countdown code…
+        } else {
+          alert("Submission failed: " + txt);
+        }
+      })
+      .catch(err=>alert("Network error: "+err.message));
+  }
 
-      const form = document.getElementById("mainForm");
-      // 1) HTML5 validity (ignore checkboxes + hidden files)
-      const invalidEls = Array.from(form.elements).filter(el => {
-        if (!el.willValidate) return false;
-        if (el.type === "checkbox") return false;
-        if (el.type === "file" && el.offsetParent === null) return false;
-        return !el.checkValidity();
-      });
-      if (invalidEls.length) {
-        const missing = invalidEls.map(el => {
-          const lab = el.id && document.querySelector(`label[for="${el.id}"]`);
-          return lab ? lab.innerText : (el.name || el.placeholder || "This field");
-        });
-        return alert(
-          "Please complete the following fields correctly:\n" +
-          missing.map(m => "• " + m).join("\n")
-        );
-      }
+  function buildBackupLink() {
+    const form = document.getElementById("mainForm");
+    const p = new URLSearchParams();
+    // US420DOC real entryIDs for GA Medical Cannabis Form:
+    p.set("entry.108858182", form.lastName.value);
+    p.set("entry.743055084", form.firstName.value);
+    p.set("entry.181019342", form.birthdate.value);
+    p.set("entry.1116232685", form.fullAddress.value);
+    p.set("entry.1098362217", form.phone.value);
+    p.set("entry.664065288", form.ptemail.value);
+    p.set("entry.1207369305", form.hasMedicalRecord.value);
+    p.set("entry.1941088993", form.proofAddressMatches.value);
+    // for your checkbox list you can either join them into one entry
+    // or set each question’s individual entryID
+    const conds = Array.from(
+      form.querySelectorAll("input[name='conditions']:checked")
+    ).map(cb => cb.value).join(", ");
+    p.set("entry.1360668836", conds);
 
-      // 2) at least one condition
-      if (!document.querySelector("input[name='conditions']:checked")) {
-        return alert("Please select at least one medical condition.");
-      }
+    const link = document.getElementById("backup-link");
+    link.href = "https://docs.google.com/forms/d/e/1fkHP58J1HAyTR9sSX-v7Vf4kDnRCKEe8Er_mL9lhJqE/viewform?usp=pp_url&" + p;
+    document.getElementById("backup-container").style.display = "block";
+  }
+</script>
+<!-- End bottom‐of‐body JS -->
 
-      // 3) correct access code
-      if (document.getElementById("access-code").value.trim() !== "US420PASS") {
-        return alert("Incorrect Access Code.");
-      }
-
-      // 4) medical-record branch
-      const hasRec = document.getElementById("hasMedicalRecord").value;
-      const medInp = document.getElementById("medicalRecord");
-      if (hasRec === "No") {
-        document.getElementById("form-area").style.display       = "none";
-        document.getElementById("no-record-message").style.display = "block";
-        return;
-      }
-      if (!medInp.files.length) {
-        medInp.required = true;
-        medInp.focus();
-        return alert("Please upload your medical record to continue.");
-      }
-
-      // 5) all good → AJAX POST
-      const data = new FormData(form);
-      fetch(form.action, { method: "POST", body: data })
-        .then(r => r.text())
-        .then(txt => {
-          if (/Success/.test(txt)) {
-            document.getElementById("form-area").style.display     = "none";
-            document.getElementById("success-message").style.display = "block";
-            buildBackupLink();
-
-            let sec = 3;
-            const countdownEl = document.getElementById("countdown");
-            countdownEl.innerText = sec;
-            const timer = setInterval(() => {
-              if (--sec < 1) {
-                clearInterval(timer);
-                window.location.href = "https://us420doc.com/urappt420";
-              } else {
-                countdownEl.innerText = sec;
-              }
-            }, 1000);
-          } else {
-            alert("Submission failed: " + txt);
-          }
-        })
-        .catch(err => alert("Network error: " + err.message));
-    }
-
-    // generate a pre-filled Google-Form link for backup
-    function buildBackupLink() {
-      const form = document.getElementById("mainForm");
-      const p = new URLSearchParams();
-      // map your HTML names → Google entry IDs:
-      p.set("entry.2005620554", form.lastName.value);
-      p.set("entry.1240065359", form.firstName.value);
-      p.set("entry.831780182", form.birthdate.value);
-      p.set("entry.1065046570", form.fullAddress.value);
-      p.set("entry.1166974658", form.phone.value);
-      p.set("entry.101604311", form.ptemail.value);
-      p.set("entry.787182730", form.hasMedicalRecord.value);
-      p.set("entry.739766237", form.proofAddressMatches.value);
-      const conds = Array.from(form.querySelectorAll("input[name='conditions']:checked"))
-                         .map(cb => cb.value).join(", ");
-      p.set("entry.839337160", conds);
-
-      const link = document.getElementById("backup-link");
-      link.href = "https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/viewform?usp=pp_url&" + p.toString();
-      document.getElementById("backup-container").style.display = "block";
-    }
-  </script>
-  <!-- ──────────────────────────────────────────────────────────────────────────── -->
-  
      </body>
      </html>
