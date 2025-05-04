@@ -246,101 +246,92 @@
  
 <!-- ─── All page JS in one place ─────────────────────────────────────────── -->
 
-   <!-- ─── Bottom‐of‐body JS ─────────────────────────────────────────────────── -->
+  <!-- ─── Bottom-of-body JS ─────────────────────────────────────────────────── -->
   <script>
+  // 1️⃣ Prefill hidden fields from URL
   document.addEventListener("DOMContentLoaded", () => {
-    console.log("📦 Script ready");
-
-    // Prefill hidden payment & phone fields from URL
     const params = new URLSearchParams(window.location.search);
-    ["paymentEmail","paymentType","amount","last4","squarePhone"].forEach(id=>{
-      if (params.has(id) && document.getElementById(id)) {
-        document.getElementById(id).value = decodeURIComponent(params.get(id));
-      }
+    ["paymentEmail","paymentType","amount","last4","squarePhone"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && params.has(id)) el.value = decodeURIComponent(params.get(id));
     });
 
-    // Toggle file inputs
+    // 2️⃣ Show/hide file inputs
     document.getElementById("hasMedicalRecord")
-      .addEventListener("change", e=>{
-        console.log("hasMedicalRecord:", e.target.value);
+      .addEventListener("change", e => {
         document.getElementById("medical-record-upload")
-                .style.display = e.target.value==="Yes" ? "block" : "none";
+                .style.display = e.target.value === "Yes" ? "block" : "none";
       });
     document.getElementById("proofAddressMatches")
-      .addEventListener("change", e=>{
-        console.log("proofAddressMatches:", e.target.value);
+      .addEventListener("change", e => {
         document.getElementById("proof-address-upload")
-                .style.display = e.target.value==="No" ? "block" : "none";
+                .style.display = e.target.value === "No" ? "block" : "none";
       });
     document.getElementById("isCaregiver")
-      .addEventListener("change", e=>{
-        const show = e.target.value==="Yes";
-        document.getElementById("caregiver1-section").style.display = show?"block":"none";
-        document.getElementById("caregiver2-section").style.display = show?"block":"none";
+      .addEventListener("change", e => {
+        const show = e.target.value === "Yes";
+        document.getElementById("caregiver1-section").style.display = show ? "block" : "none";
+        document.getElementById("caregiver2-section").style.display = show ? "block" : "none";
       });
 
-    // Intercept form submit
+    // 3️⃣ Intercept submit
     const form = document.getElementById("mainForm");
-    form.addEventListener("submit", ev=>{
+    console.log("📦 Script ready");
+    form.addEventListener("submit", ev => {
       ev.preventDefault();
       console.log("🔔 Submit clicked");
       validateForm();
     });
   });
 
-  // Rebuild the hidden fullAddress
+  // helper to build the fullAddress
   function combineAddress() {
     const st  = document.getElementById("street").value.trim();
     const ci  = document.getElementById("city").value.trim();
     const stt = document.getElementById("state").value.trim();
     const zp  = document.getElementById("zip").value.trim();
-    const full = `${st}, ${ci}, ${stt} ${zp}`;
-    console.log("🧱 fullAddress:", full);
-    document.getElementById("fullAddress").value = full;
+    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  // Main validation + AJAX + review/print + countdown
- 
+  // your validation + AJAX post
   function validateForm() {
     combineAddress();
+    const form = document.getElementById("mainForm");           // ← grab it here!
 
-    // grab your form here so “form” is defined
-    const form = document.getElementById("mainForm");
-
-    // 1) Access code
-    if (document.getElementById("access-code").value.trim() !== "US420PASS") {
+    // Access Code
+    if (form.accessCode.value.trim() !== "US420PASS") {
       return alert("❌ Incorrect Access Code.");
     }
 
-    // 2) At least one condition
+    // At least one condition
     if (!document.querySelector("input[name='conditions']:checked")) {
       return alert("❌ Please select at least one condition.");
     }
 
-    // 3) Medical‐record branch
-    const hasRec = document.getElementById("hasMedicalRecord").value;
-    const medIn  = document.getElementById("medicalRecord");
+    // Medical-record branch
+    const hasRec = form.hasMedicalRecord.value;
     if (hasRec === "No") {
       document.getElementById("form-area").style.display = "none";
-      return document.getElementById("no-record-message").classList.remove("hidden");
+      return document.getElementById("no-record-message")
+                     .classList.remove("hidden");
     }
-    if (hasRec === "Yes" && !medIn.files.length) {
-      medIn.required = true;
-      medIn.focus();
+    if (hasRec === "Yes" && !form.medicalRecord.files.length) {
+      form.medicalRecord.required = true;
+      form.medicalRecord.focus();
       return alert("❌ Please upload your medical record.");
     }
 
-    // 4) AJAX POST
-    console.log("🚀 Sending form…");
+    // 5️⃣ AJAX POST
+    console.log("🚀 Sending form… fullAddress =", form.fullAddress.value);
     const data = new FormData(form);
     fetch(form.action, { method: "POST", body: data })
       .then(r => r.text())
       .then(txt => {
         console.log("📨 Response:", txt);
         if (/Success/.test(txt)) {
-          document.getElementById("form-area").style.display     = "none";
-          populateReview();
+          document.getElementById("form-area").style.display      = "none";
           document.getElementById("review-panel").classList.remove("hidden");
+          populateReview(form);
         } else {
           alert("❌ Submission failed: " + txt);
         }
@@ -351,38 +342,24 @@
       });
   }
 
-  // Copy form values into your review table
-  function populateReview() {
-    const f = document.getElementById("mainForm").elements;
-    [
-      "firstName","lastName","birthdate","fullAddress",
-      "phone","email","conditions","diagnosisDate","treatmentsTried"
-    ].forEach(name=>{
-      const el = document.getElementById("rev-"+name);
-      if (!el) return;
-      if (name==="conditions") {
-        el.innerText = Array.from(
-          document.querySelectorAll("input[name='conditions']:checked")
-        ).map(cb=>cb.value).join(", ");
-      } else {
-        el.innerText = f[name].value;
-      }
-    });
-
-    // now show the backup link
-    document.getElementById("backup-container").classList.remove("hidden");
-
-    // start redirect countdown
-    let sec = 5;
-    const cd = document.getElementById("countdown");
-    cd.innerText = sec;
-    setInterval(()=>{
-      if (--sec < 1) location.href = "https://us420doc.com/urappt420";
-      else cd.innerText = sec;
-    }, 1000);
+  // fill in the review table before printing
+  function populateReview(form) {
+    document.getElementById("rev-firstName").innerText     = form.firstName.value;
+    document.getElementById("rev-lastName").innerText      = form.lastName.value;
+    document.getElementById("rev-birthdate").innerText     = form.birthdate.value;
+    document.getElementById("rev-fullAddress").innerText   = form.fullAddress.value;
+    document.getElementById("rev-phone").innerText         = form.phone.value;
+    document.getElementById("rev-email").innerText         = form.email.value;
+    document.getElementById("rev-conditions").innerText    = 
+      Array.from(form.querySelectorAll("input[name='conditions']:checked"))
+           .map(cb => cb.value).join(", ");
+    document.getElementById("rev-diagnosisDate").innerText = form.diagnosisDate.value;
+    document.getElementById("rev-treatmentsTried").innerText =
+      form.treatmentsTried.value;
   }
   </script>
   <!-- ──────────────────────────────────────────────────────────────────────────── -->
+
 </body>
 </html>
 
@@ -391,5 +368,4 @@
 
 <!-- End bottom‐of‐body JS -->
 
-     </body>
-     </html>
+  
