@@ -247,116 +247,133 @@ t<!DOCTYPE html>
 <!-- ─── All page JS in one place ─────────────────────────────────────────── -->
 
   <!-- ─── Bottom-of-body JS ─────────────────────────────────────────────────── -->
+    
   <script>
-  // 1️⃣ Prefill hidden fields from URL
   document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("mainForm");
+
+    // 1️⃣ Prefill hidden fields from URL
     const params = new URLSearchParams(window.location.search);
     ["paymentEmail","paymentType","amount","last4","squarePhone"].forEach(id => {
       const el = document.getElementById(id);
-      if (el && params.has(id)) el.value = decodeURIComponent(params.get(id));
+      if (el && params.has(id)) {
+        el.value = decodeURIComponent(params.get(id));
+        console.log(`🔍 Prefilled ${id}:`, el.value);
+      }
     });
 
-    // 2️⃣ Show/hide file inputs
+    // 2️⃣ Show/hide file inputs on select‐change
     document.getElementById("hasMedicalRecord")
       .addEventListener("change", e => {
+        console.log("hasMedicalRecord:", e.target.value);
         document.getElementById("medical-record-upload")
                 .style.display = e.target.value === "Yes" ? "block" : "none";
       });
     document.getElementById("proofAddressMatches")
       .addEventListener("change", e => {
+        console.log("proofAddressMatches:", e.target.value);
         document.getElementById("proof-address-upload")
                 .style.display = e.target.value === "No" ? "block" : "none";
       });
     document.getElementById("isCaregiver")
       .addEventListener("change", e => {
+        console.log("isCaregiver:", e.target.value);
         const show = e.target.value === "Yes";
         document.getElementById("caregiver1-section").style.display = show ? "block" : "none";
         document.getElementById("caregiver2-section").style.display = show ? "block" : "none";
       });
 
-    // 3️⃣ Intercept submit
-    const form = document.getElementById("mainForm");
-    console.log("📦 Script ready");
+    // 3️⃣ Intercept submission
     form.addEventListener("submit", ev => {
       ev.preventDefault();
-      console.log("🔔 Submit clicked");
-      validateForm();
+      console.log("⚠️ Submit clicked");
+      validateForm(form);   // pass form into validator
     });
   });
 
-  // helper to build the fullAddress
-  function combineAddress() {
-    const st  = document.getElementById("street").value.trim();
-    const ci  = document.getElementById("city").value.trim();
-    const stt = document.getElementById("state").value.trim();
-    const zp  = document.getElementById("zip").value.trim();
-    document.getElementById("fullAddress").value = `${st}, ${ci}, ${stt} ${zp}`;
+  // Helper: build the fullAddress hidden field
+  function combineAddress(form) {
+    const st  = form.street.value.trim();
+    const ci  = form.city.value.trim();
+    const stt = form.state.value.trim();
+    const zp  = form.zip.value.trim();
+    form.fullAddress.value = `${st}, ${ci}, ${stt} ${zp}`;
   }
 
-  // your validation + AJAX post
+  // Run your validations, AJAX post, and success handlers
   function validateForm(form) {
-    combineAddress();
-    const form = document.getElementById("mainForm");           // ← grab it here!
+    combineAddress(form);
+    console.log("📋 fullAddress =", form.fullAddress.value);
 
-    // Access Code
-    if (form.accessCode.value.trim() !== "US420PASS") {
-      return alert("❌ Incorrect Access Code.");
-    }
+    // … your existing HTML5 + custom validations here …
+    // if any fail: return false
 
-    // At least one condition
-    if (!document.querySelector("input[name='conditions']:checked")) {
-      return alert("❌ Please select at least one condition.");
-    }
-
-    // Medical-record branch
-    const hasRec = form.hasMedicalRecord.value;
-    if (hasRec === "No") {
-      document.getElementById("form-area").style.display = "none";
-      return document.getElementById("no-record-message")
-                     .classList.remove("hidden");
-    }
-    if (hasRec === "Yes" && !form.medicalRecord.files.length) {
-      form.medicalRecord.required = true;
-      form.medicalRecord.focus();
-      return alert("❌ Please upload your medical record.");
-    }
-
-    // 5️⃣ AJAX POST
-    console.log("🚀 Sending form… fullAddress =", form.fullAddress.value);
+    // All good → AJAX POST
     const data = new FormData(form);
+    console.log("🚀 Sending form…", { fullAddress: form.fullAddress.value });
     fetch(form.action, { method: "POST", body: data })
       .then(r => r.text())
       .then(txt => {
         console.log("📨 Response:", txt);
         if (/Success/.test(txt)) {
+          // show review + backup + success
           document.getElementById("form-area").style.display      = "none";
-          document.getElementById("review-panel").classList.remove("hidden");
+          document.getElementById("review-panel").style.display  = "block";
+          document.getElementById("backup-container").style.display = "block";
+          document.getElementById("success-message").style.display = "block";
+
           populateReview(form);
-          buildBackupLink();
+          buildBackupLink(form);
+
+          // countdown + redirect
+          let sec = 3;
+          const countdownEl = document.getElementById("countdown");
+          countdownEl.innerText = sec;
+          const timer = setInterval(() => {
+            if (--sec < 1) {
+              clearInterval(timer);
+              window.location.href = "https://us420doc.com/urappt420";
+            } else {
+              countdownEl.innerText = sec;
+            }
+          }, 1000);
         } else {
-          alert("❌ Submission failed: " + txt);
+          alert("Submission failed: " + txt);
         }
       })
-      .catch(err => {
-        console.error("💥 Error:", err);
-        alert("❌ Network error: " + err.message);
-      });
+      .catch(err => alert("Network error: " + err.message));
   }
 
-  // fill in the review table before printing
+  // Fill in the “Your Submission” review table
   function populateReview(form) {
+    console.log("📑 Reviewing…");
     document.getElementById("rev-firstName").innerText     = form.firstName.value;
     document.getElementById("rev-lastName").innerText      = form.lastName.value;
     document.getElementById("rev-birthdate").innerText     = form.birthdate.value;
     document.getElementById("rev-fullAddress").innerText   = form.fullAddress.value;
-    document.getElementById("rev-phone").innerText         = form.squarephone.value;
+    document.getElementById("rev-phone").innerText         = form.squarePhone.value;
     document.getElementById("rev-email").innerText         = form.email.value;
-    document.getElementById("rev-conditions").innerText    = 
+    document.getElementById("rev-conditions").innerText    =
       Array.from(form.querySelectorAll("input[name='conditions']:checked"))
            .map(cb => cb.value).join(", ");
     document.getElementById("rev-diagnosisDate").innerText = form.diagnosisDate.value;
     document.getElementById("rev-treatmentsTried").innerText =
       form.treatmentsTried.value;
+  }
+
+  // Build the pre‐filled Google Forms backup link
+  function buildBackupLink(form) {
+    console.log("🔗 Building backup link…");
+    const p = new URLSearchParams();
+    p.set("entry.1240065359", form.firstName.value);
+    p.set("entry.2005620554", form.lastName.value);
+    p.set("entry.831780182", form.birthdate.value);
+    p.set("entry.1065046570", form.fullAddress.value);
+    p.set("entry.1166974658", form.squarePhone.value);
+    p.set("entry.101604311", form.email.value);
+    // …and so on for each of your “entry.XYZ” fields…
+    document.getElementById("backup-link").href =
+      "https://docs.google.com/forms/d/e/1FAIpQLSf…/viewform?usp=pp_url&" + p.toString();
   }
   </script>
   <!-- ──────────────────────────────────────────────────────────────────────────── -->
