@@ -300,49 +300,52 @@
   }
 
   // Main validation + AJAX + review/print + countdown
+ 
   function validateForm() {
     combineAddress();
 
-    // 1) access code
+    // grab your form here so “form” is defined
+    const form = document.getElementById("mainForm");
+
+    // 1) Access code
     if (document.getElementById("access-code").value.trim() !== "US420PASS") {
       return alert("❌ Incorrect Access Code.");
     }
 
-    // 2) condition
+    // 2) At least one condition
     if (!document.querySelector("input[name='conditions']:checked")) {
       return alert("❌ Please select at least one condition.");
     }
 
-    // 3) medical record
+    // 3) Medical‐record branch
     const hasRec = document.getElementById("hasMedicalRecord").value;
-    const medIn = document.getElementById("medicalRecord");
-    if (hasRec==="No") {
+    const medIn  = document.getElementById("medicalRecord");
+    if (hasRec === "No") {
       document.getElementById("form-area").style.display = "none";
       return document.getElementById("no-record-message").classList.remove("hidden");
     }
-    if (hasRec==="Yes" && (!medIn.files.length)) {
+    if (hasRec === "Yes" && !medIn.files.length) {
       medIn.required = true;
       medIn.focus();
       return alert("❌ Please upload your medical record.");
     }
 
-    // 4) AJAX post
-    const data = new FormData(document.getElementById("mainForm"));
+    // 4) AJAX POST
     console.log("🚀 Sending form…");
-    fetch(form.action, { method:"POST", body:data })
-      .then(r=> r.text())
-      .then(txt=>{
+    const data = new FormData(form);
+    fetch(form.action, { method: "POST", body: data })
+      .then(r => r.text())
+      .then(txt => {
         console.log("📨 Response:", txt);
         if (/Success/.test(txt)) {
-          // hide form → show review panel → populate it
-          document.getElementById("form-area").style.display = "none";
+          document.getElementById("form-area").style.display     = "none";
           populateReview();
           document.getElementById("review-panel").classList.remove("hidden");
         } else {
           alert("❌ Submission failed: " + txt);
         }
       })
-      .catch(err=>{
+      .catch(err => {
         console.error("💥 Error:", err);
         alert("❌ Network error: " + err.message);
       });
