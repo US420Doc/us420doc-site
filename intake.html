@@ -332,6 +332,7 @@
           document.getElementById("form-area").style.display      = "none";
           document.getElementById("review-panel").classList.remove("hidden");
           populateReview(form);
+          buildBackupLink();
         } else {
           alert("❌ Submission failed: " + txt);
         }
