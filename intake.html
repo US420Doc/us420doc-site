@@ -25,7 +25,7 @@ t<!DOCTYPE html>
   </div>
 
   <div id="form-area">
-    <form id="mainForm" action="https://script.google.com/macros/s/AKfycbyhWkzwe9KO2McvZiaH3de80ZiUhwEGgKHNha2xYggZstasfD3E3V1Is5av0dsLNUUg/exec" method="POST" enctype="multipart/form-data" novalidate>
+    <form id="mainForm" action="https://script.google.com/macros/s/AKfycbyWIHNmHu_TwQHqTnpSfj_BOo5eP7Kvn5_R-KS6W7DLfx5Oy_nTDf21hOVJ6bam5q0/exec" method="POST" enctype="multipart/form-data" novalidate>
       <!-- Hidden payment values -->
       <input type="hidden" id="paymentEmail" name="paymentEmail">
       <input type="hidden" id="paymentType" name="paymentType">
@@ -69,10 +69,10 @@ t<!DOCTYPE html>
         <label for="yearsInGA">Years Living in Georgia:</label>
         <input id="yearsInGA" name="yearsInGA" type="number" min="0" required>
         <label for="Phone">Cell Phone:</label>
-        <input id="squarePhone" name="squarePhone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}" placeholder="404-555-1234" required>
+        <input id="phone" name="phone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}" placeholder="404-555-1234" required>
         <p class="note">Allowed: 4045551234 or 404-555-1234</p>
-        <label for="paymentemail">Email:</label>
-        <input id="paymentemail" name="email" type="paymentemail" required>
+        <label for="email">Email:</label>
+        <input id="email" name="email" type="email" required>
         <label for="dlNumber">Driver’s License #:</label>
         <input id="dlNumber" name="dlNumber" type="text" required>
         <label for="dlFront">Upload DL Front:</label>
