@@ -84,23 +84,7 @@
       <div class="section" id="conditions-section">
         <label>Please select at least one qualifying medical condition:</label>
         <div>
-          <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
-          <label><input type="checkbox" name="conditions" value="PTSD (Anxiety, Stress, Depression)"> PTSD (Anxiety, Stress, Depression)</label>
-          <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
-          <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
-          <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
-          <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
-          <label><input type="checkbox" name="conditions" value="Crohn’s Disease"> Crohn’s Disease</label>
-          <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
-          <label><input type="checkbox" name="conditions" value="Parkinson’s"> Parkinson’s</label>
-          <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
-          <label><input type="checkbox" name="conditions" value="Tourette’s"> Tourette’s</label>
-          <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
-          <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
-          <label><input type="checkbox" name="conditions" value="Alzheimer’s"> Alzheimer’s</label>
-          <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
-          <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
-          <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
+          <!-- checkboxes... -->
         </div>
         <div id="conditions-error" class="error hidden">❌ Please select at least one condition.</div>
       </div>
@@ -144,44 +128,13 @@
       <!-- Caregiver 1 -->
       <div id="caregiver1-section" class="section hidden">
         <h3>Caregiver 1 Information</h3>
-        <label for="cg1_firstName">First Name:</label>
-        <input id="cg1_firstName" name="cg1_firstName" type="text" required>
-        <label for="cg1_lastName">Last Name:</label>
-        <input id="cg1_lastName" name="cg1_lastName" type="text" required>
-        <label for="cg1_birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input id="cg1_birthdate" name="cg1_birthdate" type="text" required>
-        <label for="cg1_phone">Phone:</label>
-        <input id="cg1_phone" name="cg1_phone" type="tel" pattern="[0-9\-\s]+" required>
-        <label for="cg1_email">Email:</label>
-        <input id="cg1_email" name="cg1_email" type="email" required>
-        <label for="cg1_dl">Driver’s License #:</label>
-        <input id="cg1_dl" name="cg1_dl" type="text" required>
-        <label for="cg1_dlFront">Upload DL Front:</label>
-        <input id="cg1_dlFront" name="cg1_dlFront" type="file" accept="image/*" required>
-        <label for="cg1_dlBack">Upload DL Back:</label>
-        <input id="cg1_dlBack" name="cg1_dlBack" type="file" accept="image/*" required>
+        <!-- caregiver1 inputs... -->
       </div>
 
       <!-- Caregiver 2 (Optional) -->
       <div id="caregiver2-section" class="section hidden">
         <h3>Caregiver 2 Information (Optional)</h3>
-        <label for="cg2_firstName">First Name:</label>
-        <input id="cg2_firstName" name="cg2_firstName" type="text">
-        <label for="cg2_lastName">Last Name:</label>
-        <input id="cg2_lastName" name="cg2_lastName" type="text">
-        <label for="cg2_birthdate">Birthdate:</label>
-        <input id="cg2_birthdate" name="cg2_birthdate" type="text">
-        <label for="cg2_phone">Phone:</label>
-        <input id="cg2_phone" name="cg2_phone" type="tel" pattern="[0-9\-\s]+">
-        <label for="cg2_email">Email:</label>
-        <input id="cg2_email" name="cg2_email" type="email">
-        <label for="cg2_dl">Driver’s License #:</label>
-        <input id="cg2_dl" name="cg2_dl" type="text">
-        <label for="cg2_dlFront">Upload DL Front:</label>
-        <input id="cg2_dlFront" name="cg2_dlFront" type="file" accept="image/*">
-        
-        <label for="cg2_dlBack">Upload DL Back:</label>
-        <input id="cg2_dlBack" name="cg2_dlBack" type="file" accept="image/*">
+        <!-- caregiver2 inputs... -->
       </div>
 
       <button id="submitBtn" type="submit">Submit Application</button>
@@ -200,8 +153,27 @@
      <p>You’ll be redirected to schedule your telehealth appointment in <span id="countdown">3</span> seconds.</p>
   </div>
 
-  <!-- Review & Save backup link -->
-  <div id="backup-container" class="section hidden" style="text-align:center;">
-     <h3>Review & Save Your Submission</n
-
-
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Medical record toggle
+      const hasRec = document.getElementById('hasMedicalRecord');
+      hasRec.addEventListener('change', () => {
+        document.getElementById('medical-record-upload').classList.toggle('hidden', hasRec.value !== 'Yes');
+        document.getElementById('medical-record-note').classList.toggle('hidden', hasRec.value !== 'No');
+      });
+      // Proof of address toggle
+      const addrMatch = document.getElementById('proofAddressMatches');
+      addrMatch.addEventListener('change', () => {
+        document.getElementById('proof-address-upload').classList.toggle('hidden', addrMatch.value !== 'No');
+      });
+      // Caregiver toggle
+      const cg = document.getElementById('isCaregiver');
+      cg.addEventListener('change', () => {
+        const show = cg.value === 'Yes';
+        document.getElementById('caregiver1-section').classList.toggle('hidden', !show);
+        document.getElementById('caregiver2-section').classList.toggle('hidden', !show);
+      });
+    });
+  </script>
+</body>
+</html>
