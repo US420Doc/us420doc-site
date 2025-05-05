@@ -25,7 +25,14 @@ t<!DOCTYPE html>
   </div>
 
   <div id="form-area">
-    <form id="mainForm" action="https://script.google.com/macros/s/AKfycbyJVR_gws23Cg5ds0O09hTQ1Xd97ZUY6bjJMctUqgB8bybvfu1Q-xgboFq9fWxWgkti/exec" novalidate>
+    <form
+  id="mainForm"
+  action="https://script.google.com/macros/s/AKfycbyJVR_gws23Cg5ds0O09hTQ1Xd97ZUY6bjJMctUqgB8bybvfu1Q-xgboFq9fWxWgkti/exec"  method="POST"  enctype="multipart/form-data"  novalidate
+  >
+  <!-- your inputs, including <input type="file" name="…" /> -->
+  <button type="submit">Submit</button>
+</form>
+
       <!-- Hidden payment values -->
       <input type="hidden" id="paymentEmail" name="paymentEmail">
       <input type="hidden" id="paymentType" name="paymentType">
