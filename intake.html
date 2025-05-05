@@ -1,175 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Cannabis Card Intake Form</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
     .section { background: #fff; border-radius: 10px; padding: 20px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     label { font-weight: bold; margin-top: 10px; display: block; }
-    input, select, textarea, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: #ff000d; color: white; border: none; font-size: 1em; cursor: pointer; }
-    button:hover { background: #c9000b; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
     .hidden { display: none; }
-    .note { font-size: 0.9em; color: #777; margin-top: -5px; margin-bottom: 10px; }
-    .error { color: red; font-weight: bold; margin-top: 10px; }
-    .welcome { background: #fff; padding: 15px; border: 1px solid #1a751a; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+    .note { font-size: 0.9em; color: #777; margin: 5px 0 10px; }
+    .conditions-list label { display: block; margin-bottom: 5px; }
+    button { background: #ff000d; color: #fff; border: none; cursor: pointer; padding: 12px; font-size: 1em; }
+    button:hover { background: #c9000b; }
   </style>
 </head>
 <body>
   <h2 style="text-align:center;">US420DOC Cannabis Card Intake Form</h2>
-  <div class="welcome">
-    ✅ Welcome! Enter your Access Code to continue.<br>
-    (Your code is: <strong>US420PASS</strong>)
-  </div>
+  <form id="mainForm" action="https://script.google.com/macros/s/AKfycbyJVR_gws23Cg5ds0O09hTQ1Xd97ZUY6bjJMctUqgB8bybvfu1Q-xgboFq9fWxWgkti/exec" method="POST" enctype="multipart/form-data" novalidate>
 
-  <div id="form-area">
-    <form id="mainForm" action="https://script.google.com/macros/s/AKfycbyJVR_gws23Cg5ds0O09hTQ1Xd97ZUY6bjJMctUqgB8bybvfu1Q-xgboFq9fWxWgkti/exec" method="POST" enctype="multipart/form-data" novalidate>
-      <!-- Hidden payment values -->
-      <input type="hidden" id="paymentEmail" name="paymentEmail">
-      <input type="hidden" id="paymentType" name="paymentType">
-      <input type="hidden" id="amount" name="amount">
-      <input type="hidden" id="last4" name="last4">
-      <input type="hidden" id="squarePhone" name="squarePhone">
+    <!-- Patient Info -->
+    <div class="section">
+      <label for="access-code">Access Code:</label>
+      <input id="access-code" name="accessCode" type="text" required>
+      <label for="lastName">Last Name:</label>
+      <input id="lastName" name="lastName" type="text" required>
+      <label for="firstName">First Name:</label>
+      <input id="firstName" name="firstName" type="text" required>
+      <label for="birthdate">Birthdate (MM/DD/YYYY):</label>
+      <input id="birthdate" name="birthdate" type="text" required>
+    </div>
 
-      <!-- Access Code -->
-      <div class="section">
-        <label for="access-code">Access Code:</label>
-        <input id="access-code" name="accessCode" type="text" required>
-        <div id="code-error" class="error hidden">❌ Incorrect Access Code.</div>
+    <!-- Address -->
+    <div class="section">
+      <label for="street">Street Address:</label>
+      <input id="street" name="street" type="text" required>
+      <label for="city">City:</label>
+      <input id="city" name="city" type="text" required>
+      <label for="state">State (2-letter):</label>
+      <input id="state" name="state" type="text" maxlength="2" required>
+      <label for="zip">ZIP Code:</label>
+      <input id="zip" name="zip" type="text" pattern="\d{5}" required>
+    </div>
+
+    <!-- Contact -->
+    <div class="section">
+      <label for="yearsInGA">Years in GA:</label>
+      <input id="yearsInGA" name="yearsInGA" type="number" min="0" required>
+      <label for="phone">Cell Phone:</label>
+      <input id="phone" name="phone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}" required>
+      <label for="email">Email:</label>
+      <input id="email" name="email" type="email" required>
+    </div>
+
+    <!-- DL -->
+    <div class="section">
+      <label for="dlNumber">Driver’s License #:</label>
+      <input id="dlNumber" name="dlNumber" type="text" required>
+      <label for="dlFront">Upload DL Front:</label>
+      <input id="dlFront" name="dlFront" type="file" accept="image/*" required>
+      <label for="dlBack">Upload DL Back:</label>
+      <input id="dlBack" name="dlBack" type="file" accept="image/*" required>
+    </div>
+
+    <!-- Conditions -->
+    <div class="section">
+      <label>Select Qualifying Condition(s):</label>
+      <div class="conditions-list">
+        <label><input type="checkbox" name="conditions" value="Chronic Pain"> Chronic Pain</label>
+        <label><input type="checkbox" name="conditions" value="PTSD"> PTSD (Anxiety, Stress, Depression)</label>
+        <label><input type="checkbox" name="conditions" value="Cancer"> Cancer</label>
+        <label><input type="checkbox" name="conditions" value="Amyotrophic Lateral Sclerosis"> Amyotrophic Lateral Sclerosis</label>
+        <label><input type="checkbox" name="conditions" value="Seizures"> Seizures</label>
+        <label><input type="checkbox" name="conditions" value="Multiple Sclerosis"> Multiple Sclerosis</label>
+        <label><input type="checkbox" name="conditions" value="Crohn’s Disease"> Crohn’s Disease</label>
+        <label><input type="checkbox" name="conditions" value="Mitochondrial Disease"> Mitochondrial Disease</label>
+        <label><input type="checkbox" name="conditions" value="Parkinson’s"> Parkinson’s</label>
+        <label><input type="checkbox" name="conditions" value="Sickle Cell"> Sickle Cell</label>
+        <label><input type="checkbox" name="conditions" value="Tourette’s"> Tourette’s</label>
+        <label><input type="checkbox" name="conditions" value="Autism Spectrum"> Autism Spectrum</label>
+        <label><input type="checkbox" name="conditions" value="Epidermolysis Bullosa"> Epidermolysis Bullosa</label>
+        <label><input type="checkbox" name="conditions" value="Alzheimer’s"> Alzheimer’s</label>
+        <label><input type="checkbox" name="conditions" value="AIDS"> AIDS</label>
+        <label><input type="checkbox" name="conditions" value="Peripheral Neuropathy"> Peripheral Neuropathy</label>
+        <label><input type="checkbox" name="conditions" value="Hospice"> Hospice</label>
       </div>
+    </div>
 
-      <!-- Patient Info -->
-      <div class="section">
-        <label for="lastName">Last Name:</label>
-        <input id="lastName" name="lastName" type="text" required>
-        <label for="firstName">First Name:</label>
-        <input id="firstName" name="firstName" type="text" required>
-        <label for="birthdate">Birthdate (MM/DD/YYYY):</label>
-        <input id="birthdate" name="birthdate" type="text" required>
+    <!-- Medical Record -->
+    <div class="section">
+      <label for="hasMedicalRecord">Have Medical Records?</label>
+      <select id="hasMedicalRecord" name="hasMedicalRecord" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div id="medical-record-upload" class="hidden">
+        <label for="medicalRecord">Upload Medical Record:</label>
+        <input id="medicalRecord" name="medicalRecord" type="file" accept="application/pdf,image/*">
       </div>
+      <div id="medical-record-note" class="note hidden">We will email next steps.</div>
+    </div>
 
-      <!-- Address -->
-      <div class="section">
-        <label for="street">Street Address:</label>
-        <input id="street" name="street" type="text" placeholder="123 Main St" required>
-        <label for="city">City:</label>
-        <input id="city" name="city" type="text" placeholder="Atlanta" required>
-        <label for="state">State (2-letter):</label>
-        <input id="state" name="state" type="text" maxlength="2" placeholder="GA" required>
-        <label for="zip">ZIP Code:</label>
-        <input id="zip" name="zip" type="text" pattern="\d{5}" placeholder="30303" required>
-        <input type="hidden" id="fullAddress" name="fullAddress">
+    <!-- Proof of Address -->
+    <div class="section">
+      <label for="proofAddressMatches">Address matches DL?</label>
+      <select id="proofAddressMatches" name="proofAddressMatches" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <div id="proof-address-upload" class="hidden">
+        <label for="proofOfAddress">Upload Proof of Address:</label>
+        <input id="proofOfAddress" name="proofOfAddress" type="file" accept="application/pdf,image/*">
       </div>
+    </div>
 
-      <!-- Other Fields -->
-      <div class="section">
-        <label for="yearsInGA">Years Living in Georgia:</label>
-        <input id="yearsInGA" name="yearsInGA" type="number" min="0" required>
-        <label for="phone">Cell Phone:</label>
-        <input id="phone" name="phone" type="tel" pattern="\d{10}|\d{3}-\d{3}-\d{4}" placeholder="404-555-1234" required>
-        <p class="note">Allowed: 4045551234 or 404-555-1234</p>
-        <label for="email">Email:</label>
-        <input id="email" name="email" type="email" required>
-        <label for="dlNumber">Driver’s License #:</label>
-        <input id="dlNumber" name="dlNumber" type="text" required>
-        <label for="dlFront">Upload DL Front:</label>
-        <input id="dlFront" name="dlFront" type="file" accept="image/*" required>
-        <label for="dlBack">Upload DL Back:</label>
-        <input id="dlBack" name="dlBack" type="file" accept="image/*" required>
-      </div>
+    <!-- Caregiver -->
+    <div class="section">
+      <label for="isCaregiver">On behalf of someone else?</label>
+      <select id="isCaregiver" name="isCaregiver" required>
+        <option value="">-- Select --</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+    </div>
 
-      <!-- Medical Conditions -->
-      <div class="section" id="conditions-section">
-        <label>Please select at least one qualifying medical condition:</label>
-        <div>
-          <!-- checkboxes... -->
-        </div>
-        <div id="conditions-error" class="error hidden">❌ Please select at least one condition.</div>
-      </div>
+    <div id="caregiver1-section" class="section hidden">
+      <h3>Caregiver 1</h3>
+      <label>First Name:</label><input name="cg1_firstName" type="text" required>
+      <label>Last Name:</label><input name="cg1_lastName" type="text" required>
+      <label>Birthdate:</label><input name="cg1_birthdate" type="text" required>
+      <label>Street:</label><input name="cg1_street" type="text" required>
+      <label>City:</label><input name="cg1_city" type="text" required>
+      <label>State:</label><input name="cg1_state" type="text" maxlength="2" required>
+      <label>ZIP:</label><input name="cg1_zip" type="text" pattern="\d{5}" required>
+      <label>DL Front:</label><input name="cg1_dlFront" type="file" accept="image/*" required>
+      <label>DL Back:</label><input name="cg1_dlBack" type="file" accept="image/*" required>
+    </div>
 
-      <!-- Medical Record & Proof Address -->
-      <div class="section">
-        <label for="hasMedicalRecord">Do you have a medical record?</label>
-        <select id="hasMedicalRecord" name="hasMedicalRecord" required>
-          <option value="">-- Please select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        <div id="medical-record-upload" class="hidden">
-          <label for="medicalRecord">Upload Medical Record:</label>
-          <input id="medicalRecord" name="medicalRecord" type="file" accept="application/pdf,image/*">
-        </div>
-        <div id="medical-record-note" class="hidden"><p>We will email instructions later.</p></div>
+    <div id="caregiver2-section" class="section hidden">
+      <h3>Caregiver 2</h3>
+      <label>First Name:</label><input name="cg2_firstName" type="text">
+      <label>Last Name:</label><input name="cg2_lastName" type="text">
+      <label>Birthdate:</label><input name="cg2_birthdate" type="text">
+      <label>Street:</label><input name="cg2_street" type="text">
+      <label>City:</label><input name="cg2_city" type="text">
+      <label>State:</label><input name="cg2_state" type="text" maxlength="2">
+      <label>ZIP:</label><input name="cg2_zip" type="text" pattern="\d{5}">
+      <label>DL Front:</label><input name="cg2_dlFront" type="file" accept="image/*">
+      <label>DL Back:</label><input name="cg2_dlBack" type="file" accept="image/*">
+    </div>
 
-        <label for="proofAddressMatches">Does your address match your photo ID?</label>
-        <select id="proofAddressMatches" name="proofAddressMatches" required>
-          <option value="">-- Please select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        <div id="proof-address-upload" class="hidden">
-          <label for="proofOfAddress">Upload Proof of Address:</label>
-          <input id="proofOfAddress" name="proofOfAddress" type="file" accept="application/pdf,image/*">
-        </div>
-      </div>
-
-      <!-- Caregiver selector -->
-      <div class="section">
-        <label for="isCaregiver">Completing on behalf of someone else?</label>
-        <select id="isCaregiver" name="isCaregiver" required>
-          <option value="">-- Please select --</option>
-          <option value="No">No</option>
-          <option value="Yes">Yes</option>
-        </select>
-      </div>
-
-      <!-- Caregiver 1 -->
-      <div id="caregiver1-section" class="section hidden">
-        <h3>Caregiver 1 Information</h3>
-        <!-- caregiver1 inputs... -->
-      </div>
-
-      <!-- Caregiver 2 (Optional) -->
-      <div id="caregiver2-section" class="section hidden">
-        <h3>Caregiver 2 Information (Optional)</h3>
-        <!-- caregiver2 inputs... -->
-      </div>
-
-      <button id="submitBtn" type="submit">Submit Application</button>
-    </form>
-  </div>
-
-  <!-- No-record message -->
-  <div id="no-record-message" class="section hidden" style="text-align:center;">
-    <h2>📄 Medical Records Required</h2>
-    <p>We’ll email you instructions. You’ll schedule once we have them.</p>
-  </div>
-
-  <!-- Success message -->
-  <div id="success-message" class="section hidden" style="text-align:center;">
-     <h2>✅ Application Received! Thank YOU!</h2>
-     <p>You’ll be redirected to schedule your telehealth appointment in <span id="countdown">3</span> seconds.</p>
-  </div>
+    <button type="submit">Submit Application</button>
+  </form>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Medical record toggle
-      const hasRec = document.getElementById('hasMedicalRecord');
-      hasRec.addEventListener('change', () => {
-        document.getElementById('medical-record-upload').classList.toggle('hidden', hasRec.value !== 'Yes');
-        document.getElementById('medical-record-note').classList.toggle('hidden', hasRec.value !== 'No');
+      document.getElementById('hasMedicalRecord').addEventListener('change', e => {
+        document.getElementById('medical-record-upload').classList.toggle('hidden', e.target.value !== 'Yes');
+        document.getElementById('medical-record-note').classList.toggle('hidden', e.target.value === 'Yes');
       });
-      // Proof of address toggle
-      const addrMatch = document.getElementById('proofAddressMatches');
-      addrMatch.addEventListener('change', () => {
-        document.getElementById('proof-address-upload').classList.toggle('hidden', addrMatch.value !== 'No');
+      document.getElementById('proofAddressMatches').addEventListener('change', e => {
+        document.getElementById('proof-address-upload').classList.toggle('hidden', e.target.value !== 'No');
       });
-      // Caregiver toggle
-      const cg = document.getElementById('isCaregiver');
-      cg.addEventListener('change', () => {
-        const show = cg.value === 'Yes';
+      document.getElementById('isCaregiver').addEventListener('change', e => {
+        const show = e.target.value === 'Yes';
         document.getElementById('caregiver1-section').classList.toggle('hidden', !show);
         document.getElementById('caregiver2-section').classList.toggle('hidden', !show);
       });
