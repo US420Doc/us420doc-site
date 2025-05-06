@@ -117,24 +117,20 @@
       </div>
     </div>
 
-    <!-- Caregiver -->
+   <!-- Caregiver Section (updated) -->
     <div class="section">
-      <label for="isCaregiver">On behalf of someone else?</label>
+      <label for="isCaregiver">Completing on behalf of someone else?</label>
       <select id="isCaregiver" name="isCaregiver" required>
-        <select id="isCaregiver" name="isCaregiver" required>…</select>
-
-        <div id="caregiver1-section" class="section hidden">…</div>
-        <div id="caregiver2-section" class="section hidden">…</div>
-
-        <option value="">-- Select --</option>
+        <option value="" disabled selected>Select...</option>
         <option value="No">No</option>
         <option value="Yes">Yes</option>
       </select>
     </div>
 
     <div id="caregiver1-section" class="section hidden">
-      <h3>Caregiver 1</h3>
-      <label>First Name:</label><input name="cg1_firstName" type="text" required>
+      <h3>Caregiver 1 Information</h3>
+      <label for="cg1_firstName">First Name:</label>
+      <input id="cg1_firstName" name="cg1_firstName" type="text" required>
       <label>Last Name:</label><input name="cg1_lastName" type="text" required>
       <label>Birthdate:</label><input name="cg1_birthdate" type="text" required>
       <label>Street:</label><input name="cg1_street" type="text" required>
@@ -146,8 +142,9 @@
     </div>
 
     <div id="caregiver2-section" class="section hidden">
-      <h3>Caregiver 2</h3>
-      <label>First Name:</label><input name="cg2_firstName" type="text">
+      <h3>Caregiver 2 Information</h3>
+      <label for="cg2_firstName">First Name:</label>
+      <input id="cg2_firstName" name="cg2_firstName" type="text">
       <label>Last Name:</label><input name="cg2_lastName" type="text">
       <label>Birthdate:</label><input name="cg2_birthdate" type="text">
       <label>Street:</label><input name="cg2_street" type="text">
@@ -156,7 +153,7 @@
       <label>ZIP:</label><input name="cg2_zip" type="text" pattern="\d{5}">
       <label>DL Front:</label><input name="cg2_dlFront" type="file" accept="image/*">
       <label>DL Back:</label><input name="cg2_dlBack" type="file" accept="image/*">
-    </div>
+     </div>
 
     <button type="submit">Submit Application</button>
   </form>
