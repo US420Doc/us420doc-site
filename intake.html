@@ -144,7 +144,7 @@
       <label>DL Back:</label><input name="cg1_dlBack" type="file" accept="image/*" required>
 
       <!-- Caregiver 1 hidden full address -->
-      <input type="hidden" id="cg1_fullAddress" name="cg1_address">       
+      <input type="hidden" id="cg1_Address" name="cg1_address">       
     </div>
 
     <div id="caregiver2-section" class="section hidden">
@@ -161,7 +161,7 @@
       <label>DL Back:</label><input name="cg2_dlBack" type="file" accept="image/*">
 
       <!-- Caregiver 2 hidden full address -->
-      <input type="hidden" id="cg2_fullAddress" name="cg2_address">  
+      <input type="hidden" id="cg2_Address" name="cg2_address">  
      </div>
 
     <button type="submit">Submit Application</button>
@@ -184,7 +184,7 @@
       const c1ci = document.getElementById('cg1_city').value.trim();
       const c1stt= document.getElementById('cg1_state').value.trim();
       const c1zp = document.getElementById('cg1_zip').value.trim();
-      document.getElementById('cg1_fullAddress').value = `${c1st}, ${c1ci}, ${c1stt} ${c1zp}`;
+      document.getElementById('cg1_Address').value = `${c1st}, ${c1ci}, ${c1stt} ${c1zp}`;
     }
 
     // Caregiver 2, if shown
@@ -193,7 +193,7 @@
       const c2ci = document.getElementById('cg2_city').value.trim();
       const c2stt= document.getElementById('cg2_state').value.trim();
       const c2zp = document.getElementById('cg2_zip').value.trim();
-      document.getElementById('cg2_fullAddress').value = `${c2st}, ${c2ci}, ${c2stt} ${c2zp}`;
+      document.getElementById('cg2_Address').value = `${c2st}, ${c2ci}, ${c2stt} ${c2zp}`;
     }
   });
 });
