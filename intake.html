@@ -121,6 +121,11 @@
     <div class="section">
       <label for="isCaregiver">On behalf of someone else?</label>
       <select id="isCaregiver" name="isCaregiver" required>
+        <select id="isCaregiver" name="isCaregiver" required>…</select>
+
+        <div id="caregiver1-section" class="section hidden">…</div>
+        <div id="caregiver2-section" class="section hidden">…</div>
+
         <option value="">-- Select --</option>
         <option value="No">No</option>
         <option value="Yes">Yes</option>
@@ -171,6 +176,16 @@
         document.getElementById('caregiver2-section').classList.toggle('hidden', !show);
       });
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const cg = document.getElementById('isCaregiver');
+    cg.addEventListener('change', e => {
+      const show = e.target.value === 'Yes';
+      document.getElementById('caregiver1-section').classList.toggle('hidden', !show);
+      document.getElementById('caregiver2-section').classList.toggle('hidden', !show);
+    });
+  });
+    
   </script>
 </body>
 </html>
