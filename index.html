@@ -36,46 +36,32 @@
   </form>
 
   <script>
-    document.getElementById('payment-form').addEventListener('submit', async e => {
+  document.getElementById('payment-form')
+    .addEventListener('submit', async e => {
       e.preventDefault();
 
-      // Gather form values
+      // gather values…
       const firstName = document.getElementById('firstName').value.trim();
       const lastName  = document.getElementById('lastName').value.trim();
       const email     = document.getElementById('email').value.trim();
       const phone     = document.getElementById('phone').value.trim();
 
-      // Call Netlify Function to create a Square checkout link
       try {
         const resp = await fetch('/.netlify/functions/create-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ firstName, lastName, email, phone })
         });
-        if (!resp.ok) {
-          const err = await resp.text();
-          throw new Error(err || resp.statusText);
-        }
+        if (!resp.ok) throw new Error(await resp.text());
+
         const { checkoutUrl } = await resp.json();
-        // Redirect to Square’s hosted checkout
+        // send the user to Square’s hosted checkout:
         window.location.href = checkoutUrl;
+
       } catch (err) {
-        alert('Error creating checkout: ' + err.message);
-        console.error(err);
+        alert('Payment error: ' + err.message);
       }
     });
-
- 
-  document.addEventListener('DOMContentLoaded', () => {
-    const p = new URLSearchParams(window.location.search);
-    const fields = ['firstName','lastName','email','phone'];
-    fields.forEach(name => {
-      const val = p.get(name);
-      if (!val) return;
-      const input = document.querySelector(`input[name="${name}"], input#${name}`);
-      if (input) input.value = val;
-    });
-  });
 </script>
 
 </body>
