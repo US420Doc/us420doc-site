@@ -32,7 +32,7 @@
       <label for="phone">Phone</label>
       <input id="phone" name="phone" type="tel" required>
     </div>
-    <button type="submit">Pay $150.00</button>
+    <button type="submit">APPLY ONLINE</button>
   </form>
 
   <script>
@@ -64,6 +64,19 @@
         console.error(err);
       }
     });
-  </script>
+
+ 
+  document.addEventListener('DOMContentLoaded', () => {
+    const p = new URLSearchParams(window.location.search);
+    const fields = ['firstName','lastName','email','phone'];
+    fields.forEach(name => {
+      const val = p.get(name);
+      if (!val) return;
+      const input = document.querySelector(`input[name="${name}"], input#${name}`);
+      if (input) input.value = val;
+    });
+  });
+</script>
+
 </body>
 </html>
