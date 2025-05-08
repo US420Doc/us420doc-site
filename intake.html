@@ -1,3 +1,22 @@
-./netlify/functions/create-checkout.js
+<div id="jotformEmbed"></div>
+<script>
+  // 1. Grab your stored data (from localStorage or however you saved it)
+  const firstName = localStorage.getItem('firstName') || '';
+  const lastName  = localStorage.getItem('lastName')  || '';
+  const email     = localStorage.getItem('email')     || '';
+  const phone     = localStorage.getItem('phone')     || '';
 
-<script type="text/javascript" src="https://form.jotform.com/jsform/251263863957064"></script>
+  // 2. Build the query string that matches your JotForm Unique Names
+  const params = new URLSearchParams();
+  if (firstName) params.set('firstName', firstName);
+  if (lastName ) params.set('lastName',  lastName);
+  if (email    ) params.set('email',     email);
+  if (phone    ) params.set('phone',     phone);
+
+  // 3. Create the JotForm <script> tag with that query string
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://form.jotform.com/jsform/251263863957064?' + params.toString();
+  document.getElementById('jotformEmbed').appendChild(script);
+</script>
+
