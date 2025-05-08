@@ -25,8 +25,8 @@
   </header>
 
   <form id="paymentForm" onsubmit="redirectToSquare(event)">
-    <input type="text" name="fname" placeholder="First Name" required />
-    <input type="text" name="lname" placeholder="Last Name" required />
+    <input type="text" name="firstName" placeholder="First Name" required />
+    <input type="text" name="lastName" placeholder="Last Name" required />
     <input type="email" name="email" placeholder="Email" required />
     <input type="tel" name="phone" placeholder="Phone Number" required />
     <input type="text" name="coupon" placeholder="Enter Coupon Code (optional)" />
@@ -38,8 +38,8 @@
     function redirectToSquare(event) {
       event.preventDefault();
       const form = event.target;
-      const fname = encodeURIComponent(form.fname.value);
-      const lname = encodeURIComponent(form.lname.value);
+      const firstName = encodeURIComponent(form.fname.value);
+      const lastName = encodeURIComponent(form.lname.value);
       const email = encodeURIComponent(form.email.value);
       const phone = encodeURIComponent(form.phone.value);
       const coupon = encodeURIComponent(form.coupon.value);
