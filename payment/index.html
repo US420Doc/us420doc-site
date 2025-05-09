@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>US420DOC Payment</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
+    .form-group { margin-bottom: 1em; }
+    label { display: block; font-weight: bold; margin-bottom: 0.5em; }
+    input, button { width: 100%; padding: 0.75em; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    button { background: #ff000d; color: #fff; border: none; cursor: pointer; font-size: 1em; }
+    button:hover { background: #c9000b; }
+  </style>
+</head>
+<body>
+  <h1>US420DOC Cannabis Card Payment</h1>
+  <form id="payment-form">
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input id="firstName" name="firstName" type="text" required>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input id="lastName" name="lastName" type="text" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required>
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input id="phone" name="phone" type="tel" required>
+    </div>
+    <button type="submit">APPLY ONLINE</button>
+  </form>
+
+  <script>
+  document.getElementById('payment-form')
+    .addEventListener('submit', async e => {
+      e.preventDefault();
+
+      // gather values…
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName  = document.getElementById('lastName').value.trim();
+      const email     = document.getElementById('email').value.trim();
+      const phone     = document.getElementById('phone').value.trim();
+
+      try {
+        const resp = await fetch('/.netlify/functions/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, lastName, email, phone })
+        });
+        if (!resp.ok) throw new Error(await resp.text());
+
+        const { checkoutUrl } = await resp.json();
+        // send the user to Square’s hosted checkout:
+        window.location.href = checkoutUrl;
+
+      } catch (err) {
+        alert('Payment error: ' + err.message);
+      }
+    });
+</script>
+
+</body>
+</html>
