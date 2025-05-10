@@ -6,59 +6,54 @@
   <title>US420DOC Quick Checkout</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; background: #f9f9f9; color: #14532d; }
-    .checkout-container { max-width: 400px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .checkout-container h2 { margin: 0 0 16px; text-align: center; color: #14532d; }
-    .checkout-container input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
-    .checkout-container button { width: 100%; background: #ff000d; color: #fff; padding: 12px; font-size: 1em; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .checkout-container button:hover { background: #c9000b; }
+    /* …your existing styles… */
   </style>
 </head>
 <body>
   <div class="checkout-container">
     <h2>Let’s Get Started</h2>
-    <!-- no form tag so no unintended POST -->
     <div id="checkoutForm">
       <input id="firstName" placeholder="First Name" required>
       <input id="lastName"  placeholder="Last Name"  required>
-      <input id="email"     type="email" placeholder="Email"      required>
+      <input id="email"     type="email" placeholder="Email" required>
       <input id="phone"     placeholder="Phone"      required>
-      <button id="goToPayment" type="button">CONTINUE to Payment →</button>
+      <button id="goToPayment" type="button">
+        CONTINUE to Payment →
+      </button>
     </div>
   </div>
 
   <script>
     console.log('⚙️ Checkout script loaded');
-    alert('Checkout script loaded');
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('goToPayment');
-      if (!btn) {
-        console.error('❌ goToPayment button not found');
-        return;
-      }
+      if (!btn) return console.error('❌ goToPayment button not found');
+
       btn.addEventListener('click', () => {
         console.log('🔘 goToPayment clicked');
+
         const fn = document.getElementById('firstName').value.trim();
         const ln = document.getElementById('lastName').value.trim();
         const em = document.getElementById('email').value.trim();
         const ph = document.getElementById('phone').value.trim();
 
         if (!fn || !ln || !em || !ph) {
-          alert('Please fill out all four fields.');
-          return;
+          return alert('Please fill out all four fields.');
         }
-      // Save for the next page
-      localStorage.setItem('firstName', fn);
-      localStorage.setItem('lastName',  ln);
-      localStorage.setItem('email',     em);
-      localStorage.setItem('phone',     ph);
 
-      // Then build & redirect
+        // ⇩⇩ Store into localStorage ⇩⇩
+        localStorage.setItem('firstName', fn);
+        localStorage.setItem('lastName',  ln);
+        localStorage.setItem('email',     em);
+        localStorage.setItem('phone',     ph);
+        console.log('💾 Saved to localStorage:', fn, ln, em, ph);
+
+        // ⇩⇩ Redirect ⇩⇩
         const link = new URL('https://square.link/u/gvk4q7Az');
         link.searchParams.set('prefill[buyer_name]',  `${fn} ${ln}`);
         link.searchParams.set('prefill[buyer_email]', em);
         link.searchParams.set('prefill[buyer_phone]', ph);
-        window.location.href = link.toString();      
+        window.location.href = link.toString();
       });
     });
   </script>
