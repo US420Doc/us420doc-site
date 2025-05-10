@@ -60,24 +60,30 @@
       <input id="lastName"  name="lastName"      placeholder="Last Name"  required>
       <input id="email"     name="email" type="email" placeholder="Email"      required>
       <input id="phone"     name="phone"          placeholder="Phone"      required>
-      <button type="submit">CONTINUE to Payment →</button>
+      <button id="goToPayment" type="button">Continue to Payment →</button>
     </form>
   </div>
 
   <script>
-    document.getElementById('checkoutForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const fn = e.target.firstName.value.trim();
-      const ln = e.target.lastName .value.trim();
-      const em = e.target.email     .value.trim();
-      const ph = e.target.phone     .value.trim();
-      if (!fn||!ln||!em||!ph) return alert('Please fill out all four fields.');
+  document.addEventListener('DOMContentLoaded', ()=> {
+    const btn = document.getElementById('goToPayment');
+    btn.addEventListener('click', () => {
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName  = document.getElementById('lastName').value.trim();
+      const email     = document.getElementById('email').value.trim();
+      const phone     = document.getElementById('phone').value.trim();
+      if (!firstName||!lastName||!email||!phone) {
+        return alert('Please fill out all four fields.');
+      }
+      // build your Square URL exactly as before
       const link = new URL('https://buy.square.site/checkout/WBCJYSR36OQ2WPIEYR63NB4R');
-      link.searchParams.set('prefill[buyer_name]',  `${fn} ${ln}`);
-      link.searchParams.set('prefill[buyer_email]', em);
-      link.searchParams.set('prefill[buyer_phone]', ph);
-      window.location.href = link.toString();
+      link.searchParams.set('prefill[buyer_email]', email);
+      link.searchParams.set('prefill[buyer_phone]', phone);
+      link.searchParams.set('prefill[buyer_name]',  `${firstName} ${lastName}`);
+      window.location.href = link;
     });
+  });
   </script>
+
 </body>
 </html>
