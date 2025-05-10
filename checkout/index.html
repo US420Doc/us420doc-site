@@ -47,14 +47,18 @@
           alert('Please fill out all four fields.');
           return;
         }
+      // Save for the next page
+      localStorage.setItem('firstName', fn);
+      localStorage.setItem('lastName',  ln);
+      localStorage.setItem('email',     em);
+      localStorage.setItem('phone',     ph);
 
-        const link = new URL('https://square.link/u/gvk4q7Az');
+      // Then build & redirect
+        const link = new URL('https://buy.square.site/checkout/YOUR_CHECKOUT_ID');
         link.searchParams.set('prefill[buyer_name]',  `${fn} ${ln}`);
         link.searchParams.set('prefill[buyer_email]', em);
         link.searchParams.set('prefill[buyer_phone]', ph);
-
-        console.log('🔗 Redirecting to:', link.toString());
-        window.location.href = link.toString();
+        window.location.href = link.toString();      
       });
     });
   </script>
