@@ -1,22 +1,21 @@
-<!-- checkout.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>US420DOC Payment</title>
+  <title>US420DOC Quick Checkout</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
     .form-group { margin-bottom: 1em; }
     label { display: block; font-weight: bold; margin-bottom: 0.5em; }
-    input, button { width: 100%; padding: 0.75em; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-    button { background: #ff000d; color: #fff; border: none; cursor: pointer; font-size: 1em; }
+    input { width: 100%; padding: 0.75em; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    button { background: #ff000d; color: #fff; border: none; cursor: pointer; font-size: 1em; padding: 0.75em; width: 100%; border-radius: 5px; }
     button:hover { background: #c9000b; }
   </style>
 </head>
 <body>
   <h1>US420DOC Cannabis Card Payment</h1>
-  <form id="payment-form">
+  <form id="quick-checkout">
     <div class="form-group">
       <label for="firstName">First Name</label>
       <input id="firstName" name="firstName" type="text" required>
@@ -33,34 +32,24 @@
       <label for="phone">Phone</label>
       <input id="phone" name="phone" type="tel" required>
     </div>
-    <button type="submit">Continue to Payment →</button>
+    <button type="submit">Continue to Square Checkout →</button>
   </form>
 
   <script>
-    document.getElementById('payment-form').addEventListener('submit', async e => {
+    document.getElementById('quick-checkout').addEventListener('submit', e => {
       e.preventDefault();
+      const fn = e.target.firstName.value.trim();
+      const ln = e.target.lastName.value.trim();
+      const em = e.target.email.value.trim();
+      const ph = e.target.phone.value.trim();
 
-      const data = {
-        firstName: e.target.firstName.value.trim(),
-        lastName:  e.target.lastName.value.trim(),
-        email:     e.target.email.value.trim(),
-        phone:     e.target.phone.value.trim()
-      };
+      // Put your real Square checkout ID here:
+      const url = new URL('https://buy.square.site/checkout/YOUR_SQUARE_CHECKOUT_ID');
+      url.searchParams.set('prefill[buyer_name]', `${fn} ${ln}`);
+      url.searchParams.set('prefill[buyer_email]', em);
+      url.searchParams.set('prefill[buyer_phone]', ph);
 
-      // 1️⃣ Call our Netlify Function to build the Square link
-      const resp = await fetch('/.netlify/functions/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!resp.ok) {
-        alert('Oops, payment setup failed.');
-        return;
-      }
-      const { checkoutUrl } = await resp.json();
-
-      // 2️⃣ Redirect the browser to Square
-      window.location.href = checkoutUrl;
+      window.location.href = url.toString();
     });
   </script>
 </body>
