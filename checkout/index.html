@@ -17,7 +17,7 @@
 <body>
   <div class="checkout-container">
     <h2>Let’s Get Started</h2>
-    <!-- no action attribute, so no POST -->
+    <!-- no form tag so no unintended POST -->
     <div id="checkoutForm">
       <input id="firstName" placeholder="First Name" required>
       <input id="lastName"  placeholder="Last Name"  required>
@@ -28,16 +28,24 @@
   </div>
 
   <script>
+    console.log('⚙️ Checkout script loaded');
+    alert('Checkout script loaded');
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('goToPayment');
+      if (!btn) {
+        console.error('❌ goToPayment button not found');
+        return;
+      }
       btn.addEventListener('click', () => {
+        console.log('🔘 goToPayment clicked');
         const fn = document.getElementById('firstName').value.trim();
         const ln = document.getElementById('lastName').value.trim();
         const em = document.getElementById('email').value.trim();
         const ph = document.getElementById('phone').value.trim();
 
         if (!fn || !ln || !em || !ph) {
-          return alert('Please fill out all four fields.');
+          alert('Please fill out all four fields.');
+          return;
         }
 
         const link = new URL('https://buy.square.site/checkout/WBCJYSR36OQ2WPIEYR63NB4R');
@@ -45,6 +53,7 @@
         link.searchParams.set('prefill[buyer_email]', em);
         link.searchParams.set('prefill[buyer_phone]', ph);
 
+        console.log('🔗 Redirecting to:', link.toString());
         window.location.href = link.toString();
       });
     });
