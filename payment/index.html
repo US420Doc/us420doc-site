@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>US420DOC Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>US420DOC Cannabis Card Payment</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f0fdf4; padding: 20px; color: #1a751a; }
     .form-group { margin-bottom: 1em; }
     label { display: block; font-weight: bold; margin-bottom: 0.5em; }
-    input, button { width: 100%; padding: 0.75em; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-    button { background: #ff000d; color: #fff; border: none; cursor: pointer; font-size: 1em; }
+    input { width: 100%; padding: 0.75em; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    button { background: #ff000d; color: #fff; border: none; cursor: pointer; font-size: 1em; padding: 0.75em; width: 100%; border-radius: 5px; }
     button:hover { background: #c9000b; }
   </style>
 </head>
@@ -32,37 +32,30 @@
       <label for="phone">Phone</label>
       <input id="phone" name="phone" type="tel" required>
     </div>
-    <button type="submit">APPLY ONLINE</button>
+    <button type="submit">Continue to Checkout</button>
   </form>
 
   <script>
-  document.getElementById('payment-form')
-    .addEventListener('submit', async e => {
+    document.getElementById('payment-form').addEventListener('submit', e => {
       e.preventDefault();
+      // Gather
+      const fn = e.target.firstName.value.trim();
+      const ln = e.target.lastName.value.trim();
+      const em = e.target.email.value.trim();
+      const ph = e.target.phone.value.trim();
 
-      // gather values…
-      const firstName = document.getElementById('firstName').value.trim();
-      const lastName  = document.getElementById('lastName').value.trim();
-      const email     = document.getElementById('email').value.trim();
-      const phone     = document.getElementById('phone').value.trim();
-
-      try {
-        const resp = await fetch('/.netlify/functions/create-checkout', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ firstName, lastName, email, phone })
-        });
-        if (!resp.ok) throw new Error(await resp.text());
-
-        const { checkoutUrl } = await resp.json();
-        // send the user to Square’s hosted checkout:
+      // TODO: replace this URL with your actual Netlify Function endpoint
+      fetch('/.netlify/functions/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
+      })
+      .then(r => r.json())
+      .then(({ checkoutUrl }) => {
         window.location.href = checkoutUrl;
-
-      } catch (err) {
-        alert('Payment error: ' + err.message);
-      }
+      })
+      .catch(err => alert('Payment error: ' + err));
     });
-</script>
-
+  </script>
 </body>
 </html>
