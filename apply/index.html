@@ -21,16 +21,14 @@
       const em = localStorage.getItem('email')     || '';
       const ph = localStorage.getItem('phone')     || '';
 
-      // Your actual JotForm ID here
       const FORM_ID = '251263863957064';
-      const url = new URL(`https://form.jotform.com/251263863957064`);
-      if (fn) url.searchParams.set('firstName', fn);
-      if (ln) url.searchParams.set('lastName',  ln);
-      if (em) url.searchParams.set('email',     em);
-      if (ph) url.searchParams.set('phone',     ph);
+      // Construct embed URL with prefill
+      const embedSrc = `https://https://form.jotform.com/251263863957064?firstName=${encodeURIComponent(fn)}&lastName=${encodeURIComponent(ln)}&email=${encodeURIComponent(em)}&phone=${encodeURIComponent(ph)}`;
 
+      // Inject the JotForm script tag directly
       const s = document.createElement('script');
-      s.src = url.toString();
+      s.type = 'text/javascript';
+      s.src = embedSrc;
       document.getElementById('jotform-container').appendChild(s);
     })();
   </script>
