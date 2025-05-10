@@ -2,34 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>US420DOC Medical Intake</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Complete Your Medical Intake</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
   <style>
-    body { font-family: Arial, sans-serif; margin:0; padding:20px; background:#f0fdf4; }
-    h1 { color:#14532d; text-align:center; }
-    #jotform-container { max-width:600px; margin:40px auto; }
+    body {
+      font-family: 'Poppins',sans-serif;
+      margin:0;
+      padding:20px;
+      background:#f0fdf4;
+      color:#14532d;
+    }
+    h1 { text-align:center; margin-top:40px; }
+    #jotformEmbed {
+      max-width:600px;
+      margin:30px auto;
+    }
   </style>
 </head>
 <body>
   <h1>Complete Your Medical Intake</h1>
-  <div id="jotform-container"></div>
+  <div id="jotformEmbed"></div>
 
   <script>
-    (function() {
-      const fn = localStorage.getItem('firstName') || '';
-      const ln = localStorage.getItem('lastName')  || '';
-      const em = localStorage.getItem('email')     || '';
-      const ph = localStorage.getItem('phone')     || '';
+    (function(){
+      // 1) Grab stored values
+      const firstName = localStorage.getItem('firstName') || '';
+      const lastName  = localStorage.getItem('lastName')  || '';
+      const email     = localStorage.getItem('email')     || '';
+      const phone     = localStorage.getItem('phone')     || '';
 
-      const FORM_ID = '251263863957064';
-      // Construct embed URL with prefill
-      const embedSrc = `https://https://form.jotform.com/251263863957064?firstName=${encodeURIComponent(fn)}&lastName=${encodeURIComponent(ln)}&email=${encodeURIComponent(em)}&phone=${encodeURIComponent(ph)}`;
+      // 2) Build querystring matching your JotForm field names
+      const params = new URLSearchParams();
+      if (firstName) params.set('firstName', firstName);
+      if (lastName ) params.set('lastName',  lastName);
+      if (email    ) params.set('email',     email);
+      if (phone    ) params.set('phone',     phone);
 
-      // Inject the JotForm script tag directly
-      const s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.src = embedSrc;
-      document.getElementById('jotform-container').appendChild(s);
+      // 3) Create the embed script tag
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      // replace 251263863957064 with your real form ID
+      script.src  = 'https://form.jotform.com/jsform/251263863957064?' + params.toString();
+
+      // 4) Insert it
+      document.getElementById('jotformEmbed').appendChild(script);
     })();
   </script>
 </body>
