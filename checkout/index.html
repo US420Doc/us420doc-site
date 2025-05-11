@@ -41,7 +41,14 @@
         localStorage.setItem('email',     em);
         localStorage.setItem('phone',     ph);
         // 2) redirect to Square
-        const link = new URL('https://square.link/u/gvk4q7Az');
+        
+        const resp = await fetch('/.netlify/functions/create-checkout', {
+        method: 'POST',
+        body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
+        });
+        const { url } = await resp.json();
+        window.location.href = url;
+
         link.searchParams.set('prefill[buyer_name]',  `${fn} ${ln}`);
         link.searchParams.set('prefill[buyer_email]', em);
         link.searchParams.set('prefill[buyer_phone]', ph);
