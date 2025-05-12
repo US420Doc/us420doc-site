@@ -1,12 +1,49 @@
 export default async function handler(event) {
-  // Parse the four inputs from the client
-  const { firstName, lastName, email, phone } = JSON.parse(event.body);
+  // ─── 0) Figure out what we actually got in event.body ─────────────
+  let payload;
+  if (typeof event.body === 'string') {
+    try {
+      payload = JSON.parse(event.body);
+    } catch (err) {
+      console.error('❌ Failed to JSON.parse(event.body):', event.body);
+      return { statusCode: 400, body: 'Invalid JSON' };
+    }
+  } else if (typeof event.body === 'object' && event.body !== null) {
+    payload = event.body;
+  } else if (event.body && typeof event.body.getReader === 'function') {
+    // some runtimes give you a ReadableStream here:
+    const reader = event.body.getReader();
+    let chunks = [], done, value;
+    while (!( { done, value } = await reader.read() ).done) {
+      chunks.push(value);
+    }
+    const text = Buffer.concat(chunks).toString();
+    try {
+      payload = JSON.parse(text);
+    } catch (err) {
+      console.error('❌ Failed to parse streamed body:', text);
+      return { statusCode: 400, body: 'Invalid JSON stream' };
+    }
+  } else {
+    console.error('❌ Unknown body type:', typeof event.body, event.body);
+    return { statusCode: 400, body: 'No body' };
+  }
 
-  // Read your Square credentials & location from environment
+  console.log('✅ Parsed payload:', payload);
+
+  // ─── 1) pull your four fields ──────────────────────────────────────
+  const { firstName, lastName, email, phone } = payload;
+
+  // validate:
+  if (!firstName || !lastName || !email || !phone) {
+    return { statusCode: 400, body: 'Missing one of firstName/lastName/email/phone' };
+  }
+
+  // ─── 2) your Square creds & location from env ─────────────────────
   const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
   const SECRET      = process.env.SQUARE_SECRET;
 
-  // 1) Call Square’s CreateCheckout endpoint
+  // ─── 3) talk to Square ─────────────────────────────────────────────
   const resp = await fetch(
     `https://connect.squareup.com/v2/locations/${LOCATION_ID}/checkouts`,
     {
@@ -17,40 +54,29 @@ export default async function handler(event) {
         'Accept':        'application/json'
       },
       body: JSON.stringify({
-        idempotency_key: crypto.randomUUID(),   // ensures idempotency
+        idempotency_key: crypto.randomUUID(),
         order: {
           order: {
             location_id: LOCATION_ID,
             line_items: [
-              {
-                name: 'Consultation + Card',
-                quantity: '1',
-                base_price_money: { amount: 5000, currency: 'USD' }
-              }
+              { name: 'Consultation + Card', quantity: '1', base_price_money: { amount: 5000, currency: 'USD' } }
             ]
           }
         },
-        // After payment, send them back to your apply page:
         redirect_url: 'https://us420doc-apply.netlify.app/'
       })
     }
   );
 
-  // 2) Handle errors
   if (!resp.ok) {
     const text = await resp.text();
-    console.error('❌ Square API error:', resp.status, text);
-    return {
-      statusCode: resp.status,
-      body: `Square API error: ${text}`
-    };
+    console.error('❌ Square API returned', resp.status, text);
+    return { statusCode: resp.status, body: `Square API error: ${text}` };
   }
 
-  // 3) Return the generated checkout URL
   const { checkout } = await resp.json();
   return {
     statusCode: 200,
     body: JSON.stringify({ url: checkout.checkout_page_url })
   };
 }
-
