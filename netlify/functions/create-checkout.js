@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export default async function handler(event) {
   // Parse the four inputs from the client
   const { firstName, lastName, email, phone } = JSON.parse(event.body);
@@ -10,7 +8,8 @@ export default async function handler(event) {
 
   // 1) Call Square’s CreateCheckout endpoint
   const resp = await fetch(
-    `https://connect.squareup.com/v2/locations/${LOCATION_ID}/checkouts`, {
+    `https://connect.squareup.com/v2/locations/${LOCATION_ID}/checkouts`,
+    {
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
@@ -40,6 +39,7 @@ export default async function handler(event) {
   // 2) Handle errors
   if (!resp.ok) {
     const text = await resp.text();
+    console.error('❌ Square API error:', resp.status, text);
     return {
       statusCode: resp.status,
       body: `Square API error: ${text}`
@@ -53,3 +53,4 @@ export default async function handler(event) {
     body: JSON.stringify({ url: checkout.checkout_page_url })
   };
 }
+
