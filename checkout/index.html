@@ -1,48 +1,83 @@
-<script>
-  console.log('⚙️ Checkout script loaded');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>US420DOC Quick Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; background: #f9f9f9; color: #14532d; }
+    .checkout-container { max-width: 400px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .checkout-container h2 { margin: 0 0 16px; text-align: center; color: #14532d; }
+    .checkout-container input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
+    .checkout-container button { width: 100%; background: #ff000d; color: #fff; padding: 12px; font-size: 1em; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .checkout-container button:hover { background: #c9000b; }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <h2>Let’s Get Started</h2>
+    <div id="checkoutForm">
+      <input id="firstName" placeholder="First Name" required>
+      <input id="lastName"  placeholder="Last Name"  required>
+      <input id="email"     type="email" placeholder="Email"      required>
+      <input id="phone"     placeholder="Phone"      required>
+      <button id="goToPayment" type="button">CONTINUE to Payment →</button>
+    </div>
+  </div>
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('goToPayment');
-    btn.addEventListener('click', async () => {
-      // 1) Gather the four inputs
-      const fn = document.getElementById('firstName').value.trim();
-      const ln = document.getElementById('lastName').value.trim();
-      const em = document.getElementById('email').value.trim();
-      const ph = document.getElementById('phone').value.trim();
+  <script>
+    console.log('⚙️ Checkout script loaded');
 
-      if (!fn || !ln || !em || !ph) {
-        alert('Please fill out all four fields.');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('goToPayment');
+      if (!btn) {
+        console.error('❌ goToPayment button not found!');
         return;
       }
 
-      // 2) POST to your Netlify Function
-      let resp;
-      try {
-        resp = await fetch('/.netlify/functions/create-checkout', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
-        });
-      } catch (err) {
-        console.error('🛑 Failed to call function:', err);
-        return alert('There was a network error. Please try again.');
-      }
+      btn.addEventListener('click', async () => {
+        // 1) Collect inputs
+        const fn = document.getElementById('firstName').value.trim();
+        const ln = document.getElementById('lastName').value.trim();
+        const em = document.getElementById('email').value.trim();
+        const ph = document.getElementById('phone').value.trim();
 
-      // 3) Handle errors from your function
-      if (!resp.ok) {
-        const text = await resp.text();
-        console.error('🛑 Function error:', resp.status, text);
-        return alert('Sorry, something went wrong on our end.');
-      }
+        if (!fn || !ln || !em || !ph) {
+          return alert('Please fill out all four fields.');
+        }
 
-      // 4) Parse out the checkout URL and redirect
-      const { url } = await resp.json();
-      if (!url) {
-        console.error('🛑 No URL returned from function', await resp.text());
-        return alert('Unexpected error: no checkout URL returned.');
-      }
+        // 2) Call your Netlify Function to create a Square checkout
+        let resp;
+        try {
+          resp = await fetch('/.netlify/functions/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
+          });
+        } catch (err) {
+          console.error('🛑 Network error:', err);
+          return alert('Network error — please try again.');
+        }
 
-      window.location.href = url;
+        // 3) Handle function errors
+        if (!resp.ok) {
+          const text = await resp.text();
+          console.error('🛑 Function error:', resp.status, text);
+          return alert('Server error — please try again later.');
+        }
+
+        // 4) Redirect to the Square checkout URL
+        const { url } = await resp.json();
+        if (!url) {
+          console.error('🛑 No checkout URL!', await resp.text());
+          return alert('Unexpected error; please contact us.');
+        }
+
+        window.location.href = url;
+      });
     });
-  });
-</script>
+  </script>
+</body>
+</html>
+
