@@ -1,6 +1,6 @@
 export default async function handler(event) {
   // 1) Parse user input
-  const { firstName, lastName, email, phone } = JSON.parse(event.body);
+  const { firstName, lastName, email, phone } = await event.json();
 
   // 2) Read your Square credentials
   const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
