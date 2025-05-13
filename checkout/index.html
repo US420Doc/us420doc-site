@@ -48,7 +48,6 @@
         }
 
         // 2) Call your Netlify Function to create a Square checkout
-        let resp;
 
         const resp = await fetch('/.netlify/functions/create-checkout', {
            method: 'POST',
