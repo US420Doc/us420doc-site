@@ -1,4 +1,4 @@
-export default async function handler(event) {
+exports.handler = async function(event, context) { 
   // 1) Parse user input
   const { firstName, lastName, email, phone } = await event.json();
 
