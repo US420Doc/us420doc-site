@@ -49,16 +49,12 @@
 
         // 2) Call your Netlify Function to create a Square checkout
         let resp;
-        try {
-          resp = await fetch('/.netlify/functions/create-checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
-          });
-        } catch (err) {
-          console.error('🛑 Network error:', err);
-          return alert('Network error — please try again.');
-        }
+
+        const resp = await fetch('/.netlify/functions/create-checkout', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json'},
+           body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
+        });
 
         // 3) Handle function errors
         if (!resp.ok) {
