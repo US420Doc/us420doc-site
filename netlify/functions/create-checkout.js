@@ -37,18 +37,24 @@ export default async function handler(event) {
   );
 
   // 4) If Square errored, forward that error
-  if (!resp.ok) {
-    const text = await resp.text();
-    return {
-      statusCode: resp.status,
-      body:       JSON.stringify({ error: text })
-    };
-  }
 
+    return new  Response(
+       JSON.stringify({ error: test }),
+       {
+         status: resp.status,
+         headers: { 'Content-Type': 'application/json' }
+       }
+     )
+    
   // 5) Otherwise extract the checkout URL and return it
-  const { checkout } = await resp.json();
-  return {
-    statusCode: 200,
-    body:       JSON.stringify({ url: checkout.checkout_page_url })
-  };
-}
+
+     const { checkout } = await resp.json();
+     return new Response(
+         JSON.stringify({ url: checkout.checkout_page_url }),
+         {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+         }
+       )
+
+
