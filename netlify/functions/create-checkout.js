@@ -37,6 +37,11 @@ exports.handler = async function(event, context) {
   };
 
   // 3) Send it to Square
+
+console.log('▶️ Using SECRET:', process.env.SQUARE_SECRET?.slice(0,6), '…');
+console.log('▶️ Calling sandbox at:', `https://connect.squareupsandbox.com/v2/locations/${LOCATION_ID}/checkouts`);
+console.log('▶️ Payload:', JSON.stringify({ firstName, lastName, email, phone }));
+
   let resp;
   try {
     resp = await fetch(
