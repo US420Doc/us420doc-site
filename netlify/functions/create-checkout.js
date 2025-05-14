@@ -2,7 +2,6 @@
 // netlify/functions/create-checkout.js
 
 const crypto = require('crypto');
-const fetch = require('node-fetch');     // only if you actually installed node-fetch in dependencies
 
 // read your Square credentials from Netlify env vars
 const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
