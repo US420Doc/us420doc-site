@@ -1,80 +1,78 @@
-
 // netlify/functions/create-checkout.js
 
-const crypto = require('crypto');
-
-// read your Square credentials from Netlify env vars
-const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
-const SECRET      = process.env.SQUARE_SECRET;
-
+// 1) Use CommonJS exports.handler = … (you’ve already done this)
 exports.handler = async function(event, context) {
-  // 1) Parse the incoming JSON payload
-  let data;
+  // 🔥 Log entry and raw body
+  console.log('🏁 create-checkout invoked');
+  console.log('Incoming event.body:', event.body);
+
+  // 2) Parse the JSON
+  let payload;
   try {
-    data = JSON.parse(event.body);
+    payload = JSON.parse(event.body);
+    console.log('✅ Parsed payload:', payload);
   } catch (err) {
+    console.error('❌ JSON.parse failed:', err);
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Invalid JSON' }),
+      body: 'Bad JSON'
     };
   }
-  const { firstName, lastName, email, phone } = data;
 
-  // 2) Build Square CreateCheckout request
-  const body = {
-    idempotency_key: crypto.randomUUID(),
-    order: {
-      order: {
-        location_id: LOCATION_ID,
-        line_items: [{
-          name: 'Consultation + Card',
-          quantity: '1',
-          base_price_money: { amount: 5000, currency: 'USD' }
-        }]
-      }
-    },
-    redirect_url: 'https://us420doc-apply.netlify.app/'
-  };
+  const { firstName, lastName, email, phone } = payload;
 
-  // 3) Send it to Square
+  // 🔥 Log the individual fields
+  console.log('Fields →', { firstName, lastName, email, phone });
 
-console.log('▶️ Using SECRET:', process.env.SQUARE_SECRET?.slice(0,6), '…');
-console.log('▶️ Calling sandbox at:', `https://connect.squareupsandbox.com/v2/locations/${LOCATION_ID}/checkouts`);
-console.log('▶️ Payload:', JSON.stringify({ firstName, lastName, email, phone }));
-
+  // 3) Call Square
   let resp;
   try {
+    console.log('▶️ Calling Square CreateCheckout…');
     resp = await fetch(
-      `https://connect.squareupsandbox.com/v2/locations/${LOCATION_ID}/checkouts`,
+      `https://connect.squareupsandbox.com/v2/locations/${process.env.SQUARE_LOCATION_ID}/checkouts`,
       {
-        method:  'POST',
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${SECRET}`,
-          'Content-Type':  'application/json',
-          'Accept':        'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.SQUARE_SECRET}`,
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+          idempotency_key: crypto.randomUUID(),
+          order: {
+            location_id: process.env.SQUARE_LOCATION_ID,
+            line_items: [
+              { name: 'Consultation + Card', quantity: '1', base_price_money: { amount: 5000, currency: 'USD' } }
+            ]
+          },
+          redirect_url: 'https://us420doc-apply.netlify.app/'
+        })
       }
     );
+    console.log(`🟦 Square responded with status ${resp.status}`);
   } catch (err) {
-    console.error('Fetch error:', err);
-    return { statusCode: 502, body: 'Square request failed' };
+    console.error('❌ Fetch to Square failed:', err);
+    return {
+      statusCode: 502,
+      body: 'Square request failed'
+    };
   }
 
-  // 4) Handle a non-2xx from Square
+  // 4) Handle non-2xx
   if (!resp.ok) {
     const text = await resp.text();
+    console.error('❌ Square non-2xx body:', text);
     return {
       statusCode: resp.status,
       body: JSON.stringify({ error: text })
     };
   }
 
-  // 5) Everything succeeded—return the checkout URL
+  // 5) Everything’s good—return the URL
   const { checkout } = await resp.json();
+  console.log('✅ Checkout URL:', checkout.checkout_page_url);
   return {
     statusCode: 200,
     body: JSON.stringify({ url: checkout.checkout_page_url })
   };
 };
-
