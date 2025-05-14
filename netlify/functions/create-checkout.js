@@ -1,60 +1,76 @@
-exports.handler = async function(event, context) { 
-  // 1) Parse user input
-  const { firstName, lastName, email, phone } = await event.json();
 
-  // 2) Read your Square credentials
-  const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
-  const SECRET      = process.env.SQUARE_SECRET;
+// netlify/functions/create-checkout.js
 
-  // 3) Call Square’s CreateCheckout endpoint using the built-in fetch
-  const resp = await fetch(
-    `https://connect.squareupsandbox.com/v2/locations/${LOCATION_ID}/checkouts`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${SECRET}`,
-        'Accept':        'application/json',
-      },
-      body: JSON.stringify({
-        idempotency_key: crypto.randomUUID(),
-        order: {
-          order: {
-            location_id: LOCATION_ID,
-            line_items: [
-              {
-                name: 'Consultation + Card',
-                quantity: '1',
-                base_price_money: { amount: 5000, currency: 'USD' },
-              }
-            ]
-          }
+const crypto = require('crypto');
+const fetch = require('node-fetch');     // only if you actually installed node-fetch in dependencies
+
+// read your Square credentials from Netlify env vars
+const LOCATION_ID = process.env.SQUARE_LOCATION_ID;
+const SECRET      = process.env.SQUARE_SECRET;
+
+exports.handler = async function(event, context) {
+  // 1) Parse the incoming JSON payload
+  let data;
+  try {
+    data = JSON.parse(event.body);
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid JSON' }),
+    };
+  }
+  const { firstName, lastName, email, phone } = data;
+
+  // 2) Build Square CreateCheckout request
+  const body = {
+    idempotency_key: crypto.randomUUID(),
+    order: {
+      order: {
+        location_id: LOCATION_ID,
+        line_items: [{
+          name: 'Consultation + Card',
+          quantity: '1',
+          base_price_money: { amount: 5000, currency: 'USD' }
+        }]
+      }
+    },
+    redirect_url: 'https://us420doc-apply.netlify.app/'
+  };
+
+  // 3) Send it to Square
+  let resp;
+  try {
+    resp = await fetch(
+      `https://connect.squareupsandbox.com/v2/locations/${LOCATION_ID}/checkouts`,
+      {
+        method:  'POST',
+        headers: {
+          'Authorization': `Bearer ${SECRET}`,
+          'Content-Type':  'application/json',
+          'Accept':        'application/json'
         },
-        // sandbox redirect back to your apply page
-        redirect_url: 'https://us420doc-apply.netlify.app/'
-      })
-    }
-  );
+        body: JSON.stringify(body)
+      }
+    );
+  } catch (err) {
+    console.error('Fetch error:', err);
+    return { statusCode: 502, body: 'Square request failed' };
+  }
 
-  // 4) If Square errored, forward that error
+  // 4) Handle a non-2xx from Square
+  if (!resp.ok) {
+    const text = await resp.text();
+    return {
+      statusCode: resp.status,
+      body: JSON.stringify({ error: text })
+    };
+  }
 
-    return new  Response(
-       JSON.stringify({ error: test }),
-       {
-         status: resp.status,
-         headers: { 'Content-Type': 'application/json' }
-       }
-     )
-    
-  // 5) Otherwise extract the checkout URL and return it
-
-     const { checkout } = await resp.json();
-     return new Response(
-         JSON.stringify({ url: checkout.checkout_page_url }),
-         {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
-         }
-       )
-
+  // 5) Everything succeeded—return the checkout URL
+  const { checkout } = await resp.json();
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ url: checkout.checkout_page_url })
+  };
+};
 
