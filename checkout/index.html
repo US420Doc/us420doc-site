@@ -59,50 +59,35 @@
     </form>
   </div>
 
-  <script>
-    document.getElementById('checkout-form').addEventListener('submit', e => {
-      e.preventDefault();
-
-      // grab & encode the values
-      const fn = encodeURIComponent(e.target.firstName.value.trim());
-      const ln = encodeURIComponent(e.target.lastName.value.trim());
-      const em = encodeURIComponent(e.target.email.value.trim());
-      const ph = encodeURIComponent(e.target.phone.value.trim());
-
-      // your Square (test or prod) link
-      const base = 'https://square.link/u/Z0VIALUG';
-
-      // correct param names:
-      // buyer_name, buyer_email, buyer_phone_number
-      const params =
-        `?prefill[buyer_name]=${fn}%20${ln}` +
-        `&prefill[buyer_email]=${em}` +
-        `&prefill[buyer_phone_number]=${ph}`;
-
-      window.location.href = base + params;
-    });
-  </script>
-</body>
-</html>
 <script>
-  document.getElementById('checkout-form').addEventListener('submit', e => {
+  // 1️⃣ Make the listener async
+  document.getElementById('checkout-form').addEventListener('submit', async e => {
     e.preventDefault();
 
-    // grab & encode the values
-    const fn = encodeURIComponent(e.target.firstName.value.trim());
-    const ln = encodeURIComponent(e.target.lastName.value.trim());
-    const em = encodeURIComponent(e.target.email.value.trim());
-    const ph = encodeURIComponent(e.target.phone.value.trim());
+    // 2️⃣ Grab & trim your form values
+    const firstName = e.target.firstName.value.trim();
+    const lastName  = e.target.lastName.value.trim();
+    const email     = e.target.email.value.trim();
+    const phone     = e.target.phone.value.trim();
 
-    // your Square test link
-    const base = 'https://square.link/u/Z0VIALUG';
+    try {
+      // 3️⃣ Kick off the Netlify Function
+      const resp = await fetch('/.netlify/functions/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, phone })
+      });
 
-    // NOTICE: the correct param name for phone is buyer_phone_number
-    const params =
-      `?prefill[buyer_name]=${fn}%20${ln}` +
-      `&prefill[buyer_email]=${em}` +
-      `&prefill[buyer_phone_number]=${ph}`;
+      // 4️⃣ Make sure it came back OK, then pull out the URL
+      if (!resp.ok) throw new Error(`Function error ${resp.status}`);
+      const { url } = await resp.json();
 
-    window.location.href = base + params;
+      // 5️⃣ Finally redirect the browser into Square’s hosted checkout
+      window.location.assign(url);
+
+    } catch (err) {
+      console.error('Checkout kickoff failed:', err);
+      alert('🛑 Sorry, we couldn’t start checkout. Please try again.');
+    }
   });
 </script>
