@@ -1,4 +1,3 @@
-const fetch = require('node-fetch')
 const crypto = require('crypto')
 
 // Use CommonJS exports for Netlify functions
