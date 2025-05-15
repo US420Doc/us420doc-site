@@ -1,23 +1,7 @@
 {
   "name": "us420doc-site",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/US420Doc/us420doc-site.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/US420Doc/us420doc-site/issues"
-  },
-  "homepage": "https://github.com/US420Doc/us420doc-site#readme",
-  "description": "",
   "dependencies": {
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^3.0.0"
   }
 }
