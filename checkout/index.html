@@ -1,78 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>US420DOC Quick Checkout</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; background: #f9f9f9; color: #14532d; }
-    .checkout-container { max-width: 400px; margin: 40px auto; background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .checkout-container h2 { margin: 0 0 16px; text-align: center; color: #14532d; }
-    .checkout-container input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 1em; }
-    .checkout-container button { width: 100%; background: #ff000d; color: #fff; padding: 12px; font-size: 1em; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
-    .checkout-container button:hover { background: #c9000b; }
+    body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin:0 }
+    .card { background: #fff; padding:2rem; border-radius:.5rem; box-shadow:0 2px 10px rgba(0,0,0,.1); width:320px }
+    input { width:100%; padding:.5rem; margin-bottom:1rem; border:1px solid #ccc; border-radius:.25rem }
+    button { width:100%; padding:.75rem; background:#c00; color:#fff; border:none; border-radius:.25rem; cursor:pointer }
   </style>
 </head>
 <body>
-  <div class="checkout-container">
+
+  <div class="card">
     <h2>Let’s Get Started</h2>
-    <div id="checkoutForm">
-      <input id="firstName" placeholder="First Name" required>
-      <input id="lastName"  placeholder="Last Name"  required>
-      <input id="email"     type="email" placeholder="Email"      required>
-      <input id="phone"     placeholder="Phone"      required>
-      <button id="goToPayment" type="button">CONTINUE to Payment →</button>
-    </div>
+    <form id="checkout-form">
+      <input id="firstName" name="firstName" type="text"     placeholder="First name" required />
+      <input id="lastName"  name="lastName"  type="text"     placeholder="Last name"  required />
+      <input id="email"     name="email"     type="email"    placeholder="Email address" required />
+      <input id="phone"     name="phone"     type="tel"      placeholder="Phone number"   required />
+      <button type="submit">CONTINUE to Payment →</button>
+    </form>
   </div>
 
   <script>
-    console.log('⚙️ Checkout script loaded');
+    document.getElementById('checkout-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const fn = encodeURIComponent(e.target.firstName.value.trim());
+      const ln = encodeURIComponent(e.target.lastName.value.trim());
+      const em = encodeURIComponent(e.target.email.value.trim());
+      const ph = encodeURIComponent(e.target.phone.value.trim());
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('goToPayment');
-      if (!btn) {
-        console.error('❌ goToPayment button not found!');
-        return;
-      }
-
-      btn.addEventListener('click', async () => {
-        // 1) Collect inputs
-        const fn = document.getElementById('firstName').value.trim();
-        const ln = document.getElementById('lastName').value.trim();
-        const em = document.getElementById('email').value.trim();
-        const ph = document.getElementById('phone').value.trim();
-
-        if (!fn || !ln || !em || !ph) {
-          return alert('Please fill out all four fields.');
-        }
-
-        // 2) Call your Netlify Function to create a Square checkout
-
-        const resp = await fetch('/.netlify/functions/create-checkout', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json'},
-           body: JSON.stringify({ firstName: fn, lastName: ln, email: em, phone: ph })
-        });
-
-        // 3) Handle function errors
-        if (!resp.ok) {
-          const text = await resp.text();
-          console.error('🛑 Function error:', resp.status, text);
-          return alert('Server error — please try again later.');
-        }
-
-        // 4) Redirect to the Square checkout URL
-        const { url } = await resp.json();
-        if (!url) {
-          console.error('🛑 No checkout URL!', await resp.text());
-          return alert('Unexpected error; please contact us.');
-        }
-
-        window.location.href = url;
-      });
+      // Build the prefill URL
+      const base = 'https://square.link/u/gvk4q7Az';
+      const params = `?prefill[buyer_name]=${fn}%20${ln}`
+                   + `&prefill[buyer_email]=${em}`
+                   + `&prefill[buyer_phone]=${ph}`;
+      window.location.href = base + params;
     });
   </script>
+
 </body>
 </html>
-
