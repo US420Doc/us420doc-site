@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>…</head>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Complete Your Medical Intake</title>
+  <style>
+    body { font-family: sans-serif; margin:0; padding:2rem; background:#f0fdf4; color:#14532d; }
+    h1 { text-align:center; margin-bottom:1rem; }
+    #jotformEmbed { max-width:600px; margin:0 auto; }
+  </style>
+</head>
 <body>
   <h1>Complete Your Medical Intake</h1>
   <div id="jotformEmbed"></div>
 
   <script>
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const firstName = urlParams.get('prefill[buyer_name]')?.split(' ')[0] || '';
-      const lastName  = urlParams.get('prefill[buyer_name]')?.split(' ')[1] || '';
-      const email     = urlParams.get('prefill[buyer_email]') || '';
-      const phone     = urlParams.get('prefill[buyer_phone]') || '';
+    (function(){
+      // 1) Parse out any prefill from the URL (Square will echo back what the user entered)
+      const params = new URLSearchParams(window.location.search);
+      const email = params.get('prefill[buyer_email]') || '';
+      const phone = params.get('prefill[buyer_phone]') || '';
+      const name  = params.get('prefill[buyer_name]') || ''; // may be "First Last"
+      const [ firstName='', lastName='' ] = name.split(' ');
 
-      const params = new URLSearchParams();
-      if (firstName) params.set('firstName', firstName);
-      if (lastName)  params.set('lastName',  lastName);
-      if (email)     params.set('email',     email);
-      if (phone)     params.set('phone',     phone);
+      // 2) Build JotForm query string using your form field names
+      const jf = new URLSearchParams();
+      if (firstName) jf.set('firstName', firstName);
+      if (lastName)  jf.set('lastName',  lastName);
+      if (email)     jf.set('email',     email);
+      if (phone)     jf.set('phone',     phone);
 
-      const s = document.createElement('script');
-      s.src = 'https://form.jotform.com/jsform/251263863957064?' + params;
-      document.getElementById('jotformEmbed').appendChild(s);
+      // 3) Inject the JotForm embed script with those prefill params
+      const script = document.createElement('script');
+      script.src = 'https://form.jotform.com/jsform/251263863957064?' + jf.toString();
+      document.getElementById('jotformEmbed').appendChild(script);
     })();
   </script>
 </body>
