@@ -1,15 +1,13 @@
 // netlify/functions/create-checkout.js
 
-// If you’re on Netlify’s default Node 14 runtime:
-const fetch  = require('node-fetch');
 
 // If you upgraded to Node 18+, you can drop the line above and use the built-in fetch.
 
 // crypto is used to generate an idempotency key:
-const crypto = require('crypto');
+    const crypto = require('crypto');
 
-exports.handler = async (event, context) => {
-  try {
+    exports.handler = async (event, context) => {
+    try {
     // 1. Parse incoming form data:
     const { firstName, lastName, email, phone } = JSON.parse(event.body);
 
