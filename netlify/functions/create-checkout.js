@@ -1,9 +1,10 @@
 // netlify/functions/create-checkout.js
-const fetch  = require('node-fetch');
-const crypto = require('crypto');
 
-exports.handler = async (event, context) => {
-  // 1) parse incoming form data
+  const crypto = require('crypto');
+
+  exports.handler = async (event, context) => {
+ 
+ // 1) parse incoming form data
   let payload;
   try {
     payload = JSON.parse(event.body);
