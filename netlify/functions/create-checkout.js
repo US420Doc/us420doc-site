@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
       },
       ask_for_shipping_address: false,
       merchant_support_email: 'support@us420doc.com',
-      redirect_url: `${process.env.URL}/apply/index.html`,
+      redirect_url: `${process.env.SITE_URL}/apply/index.html`,
       // optional buyer info for your records:
       pre_populate_buyer_email: email,
       pre_populate_buyer_name: `${firstName} ${lastName}`,

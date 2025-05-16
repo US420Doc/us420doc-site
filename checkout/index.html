@@ -72,7 +72,7 @@
 
     try {
       // 3️⃣ Kick off the Netlify Function
-      const resp = await fetch('/.netlify/functions/create-checkout', {
+      const resp = await fetch('/.netlify/functions/create-checkout.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, phone })
