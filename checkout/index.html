@@ -1,51 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>US420DOC Quick Checkout</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: #f4f4f4;
-    }
-    .card {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 0.5rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      width: 320px;
-    }
-    .card h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.25rem;
-    }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background: #c00;
-      color: #fff;
-      border: none;
-      border-radius: 0.25rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #a00;
-    }
-  </style>
+  <!-- your CSS… -->
 </head>
 <body>
   <div class="card">
@@ -59,35 +18,34 @@
     </form>
   </div>
 
-<script>
-  // 1️⃣ Make the listener async
-  document.getElementById('checkout-form').addEventListener('submit', async e => {
-    e.preventDefault();
+  <script>
+    document.getElementById('checkout-form').addEventListener('submit', e => {
+      e.preventDefault();
 
-    // 2️⃣ Grab & trim your form values
-    const firstName = e.target.firstName.value.trim();
-    const lastName  = e.target.lastName.value.trim();
-    const email     = e.target.email.value.trim();
-    const phone     = e.target.phone.value.trim();
+      // 1) grab & encode values
+      const fn = encodeURIComponent(e.target.firstName.value.trim());
+      const ln = encodeURIComponent(e.target.lastName.value.trim());
+      const em = encodeURIComponent(e.target.email.value.trim());
+      const ph = encodeURIComponent(e.target.phone.value.trim());
 
-    try {
-      // 3️⃣ Kick off the Netlify Function
-      const resp = await fetch('/.netlify/functions/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, phone })
-      });
+      // 2) build the Square link with its own prefill keys…
+      const squareBase = 'https://square.link/u/Z0VIALUG';  // your Square link
+      const squareParams =
+        `?prefill[buyer_name]=${fn}%20${ln}` +
+        `&prefill[buyer_email]=${em}` +
+        `&prefill[buyer_phone_number]=${ph}` +
+        // 3) tell Square where to send them **after** payment:
+        `&redirect_url=${encodeURIComponent(
+            'https://form.jotform.com/251263863957064' +
+            `?firstName=${fn}` +
+            `&lastName=${ln}` +
+            `&email=${em}` +
+            `&phone=${ph}`
+        )}`;
 
-      // 4️⃣ Make sure it came back OK, then pull out the URL
-      if (!resp.ok) throw new Error(`Function error ${resp.status}`);
-      const { url } = await resp.json();
-
-      // 5️⃣ Finally redirect the browser into Square’s hosted checkout
-      window.location.assign(url);
-
-    } catch (err) {
-      console.error('Checkout kickoff failed:', err);
-      alert('🛑 Sorry, we couldn’t start checkout. Please try again.');
-    }
-  });
-</script>
+      // 4) blast them off to Square
+      window.location.href = squareBase + squareParams;
+    });
+  </script>
+</body>
+</html>
