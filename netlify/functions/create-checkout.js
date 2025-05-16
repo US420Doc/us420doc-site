@@ -1,43 +1,42 @@
+
 // netlify/functions/create-checkout.js
+const crypto = require('crypto');
 
-
-// If you upgraded to Node 18+, you can drop the line above and use the built-in fetch.
-
-// crypto is used to generate an idempotency key:
-    const crypto = require('crypto');
-
-    exports.handler = async (event, context) => {
-    try {
+exports.handler = async (event, context) => {
+  try {
     // 1. Parse incoming form data:
     const { firstName, lastName, email, phone } = JSON.parse(event.body);
 
     // 2. Build Square Checkout request:
-    const body = {
+    const payload = {
       idempotency_key: crypto.randomUUID(),
       order: {
         location_id: process.env.SQUARE_LOCATION_ID,
-        line_items: [
-          {
-            name: 'Consultation Fee',
-            quantity: '1',
-            base_price_money: { amount: 5000, currency: 'USD' }
-          }
-        ]
+        line_items: [{
+          name: 'Consultation Fee',
+          quantity: '1',
+          base_price_money: { amount: 5000, currency: 'USD' }
+        }]
       },
       ask_for_shipping_address: false,
       merchant_support_email: 'support@us420doc.com',
-      redirect_url: `${process.env.URL}/apply/index.html`
+      redirect_url: `${process.env.URL}/apply/index.html`,
+      // optional buyer info for your records:
+      pre_populate_buyer_email: email,
+      pre_populate_buyer_name: `${firstName} ${lastName}`,
+      pre_populate_buyer_phone: phone
     };
 
-    // 3. Call Square’s API:
+    // 3. POST to the correct Checkout endpoint:
     const response = await fetch(
-      'https://connect.squareupsandbox.com/v2/checkout', {
+      `https://connect.squareup.com/v2/locations/${process.env.SQUARE_LOCATION_ID}/checkouts`,
+      {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(payload)
       }
     );
 
