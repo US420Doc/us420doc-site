@@ -1,64 +1,70 @@
 // netlify/functions/create-checkout.js
 
-  const crypto = require('crypto');
+// If you’re on Netlify’s default Node 14 runtime:
+const fetch  = require('node-fetch');
 
-  exports.handler = async (event, context) => {
- 
- // 1) parse incoming form data
-  let payload;
+// If you upgraded to Node 18+, you can drop the line above and use the built-in fetch.
+
+// crypto is used to generate an idempotency key:
+const crypto = require('crypto');
+
+exports.handler = async (event, context) => {
   try {
-    payload = JSON.parse(event.body);
-  } catch (err) {
-    return { statusCode: 400, body: 'Bad JSON' };
-  }
-  const { firstName, lastName, email, phone } = payload;
+    // 1. Parse incoming form data:
+    const { firstName, lastName, email, phone } = JSON.parse(event.body);
 
-  // 2) build your JotForm URL with query params
-  const jotformUrl = 'https://form.jotform.com/251263863957064';
-  const redirectUrl =
-    `${jotformUrl}?name=${encodeURIComponent(firstName + ' ' + lastName)}` +
-    `&email=${encodeURIComponent(email)}` +
-    `&phone=${encodeURIComponent(phone)}`;
-
-  // 3) call Square’s CreateCheckout
-  const resp = await fetch(
-    `https://connect.squareup.com/v2/locations/${process.env.SQUARE_LOCATION_ID}/checkouts`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.SQUARE_SECRET}`,
-        'Content-Type':  'application/json',
-        'Accept':        'application/json',
+    // 2. Build Square Checkout request:
+    const body = {
+      idempotency_key: crypto.randomUUID(),
+      order: {
+        location_id: process.env.SQUARE_LOCATION_ID,
+        line_items: [
+          {
+            name: 'Consultation Fee',
+            quantity: '1',
+            base_price_money: { amount: 5000, currency: 'USD' }
+          }
+        ]
       },
-      body: JSON.stringify({
-        idempotency_key: crypto.randomUUID(),
-        order: {
-          location_id: process.env.SQUARE_LOCATION_ID,
-          line_items: [
-            {
-              name:             'Consultation + Card',
-              quantity:         '1',
-              base_price_money: { amount: 5000, currency: 'USD' }
-            }
-          ]
+      ask_for_shipping_address: false,
+      merchant_support_email: 'support@us420doc.com',
+      redirect_url: `${process.env.URL}/apply/index.html`
+    };
+
+    // 3. Call Square’s API:
+    const response = await fetch(
+      'https://connect.squareupsandbox.com/v2/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.SQUARE_ACCESS_TOKEN}`
         },
-        redirect_url: redirectUrl
-      })
+        body: JSON.stringify(body)
+      }
+    );
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('Square API error:', errText);
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({ error: 'Failed to create checkout session' })
+      };
     }
-  );
 
-  // 4) if Square blew up, pass the error back
-  if (!resp.ok) {
-    const errText = await resp.text();
-    return { statusCode: resp.status, body: errText };
+    const { checkout } = await response.json();
+
+    // 4. Return the URL back to the frontend:
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ url: checkout.checkout_page_url })
+    };
+
+  } catch (e) {
+    console.error('Function error:', e);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' })
+    };
   }
-
-  // 5) redirect the browser straight to Square’s checkout page
-  const { checkout } = await resp.json();
-  return {
-    statusCode: 302,
-    headers: { Location: checkout.checkout_page_url },
-    body: '',
-  };
 };
-
