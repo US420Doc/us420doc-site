@@ -74,26 +74,30 @@
   </div>
 
   <script>
-    document.getElementById('checkout-form')
-      .addEventListener('submit', function(e) {
-        e.preventDefault();
-        const f = e.target;
-        const fn = encodeURIComponent(f.firstName.value.trim());
-        const ln = encodeURIComponent(f.lastName.value.trim());
-        const em = encodeURIComponent(f.email.value.trim());
-        const ph = encodeURIComponent(f.phone.value.trim());
+  document
+    .getElementById('checkout-form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = e.target;                        // <— alias the form
 
-        // Replace with your actual Square link:
-        const base = 'https://square.link/u/Z0VIALUG';
+      // grab & encode the values
+      const fn = encodeURIComponent(f.firstName.value.trim());
+      const ln = encodeURIComponent(f.lastName.value.trim());
+      const em = encodeURIComponent(f.email.value.trim());
+      const ph = encodeURIComponent(f.phone.value.trim());
 
-        // Build the prefill query string:
-        const qs  = '?prefill[buyer_name]='   + fn + '%20' + ln
-                  + '&prefill[buyer_email]='  + em
-                  + '&prefill[buyer_phone_number]=' + ph;
+      // DEBUG: make sure these are what you expect
+      console.log({ fn, ln, em, ph });
 
-        // Redirect into Square’s hosted checkout:
-        window.location.href = base + qs;
-      });
-  </script>
+      const base = 'https://square.link/u/Z0VIALUG';
+      const params =
+        `?prefill[buyer_name]=${fn}%20${ln}` +
+        `&prefill[buyer_email]=${em}` +
+        `&prefill[buyer_phone_number]=${ph}`;
+
+      window.location.href = base + params;
+    });
+</script>
+
 </body>
 </html>
