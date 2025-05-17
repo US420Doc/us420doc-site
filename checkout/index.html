@@ -81,8 +81,7 @@
       const f = e.target
 
       // instead of f.firstName etc.…
--     const fn = encodeURIComponent(f.firstName.value.trim())
--     const ln = encodeURIComponent(f.lastName.value.trim())
+
 +     const fn = encodeURIComponent(f.elements['firstName'].value.trim())
 +     const ln = encodeURIComponent(f.elements['lastName'].value.trim())
 
