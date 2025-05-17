@@ -53,28 +53,28 @@
   </div>
 
   <script>
-    // 1) Read the 4 values from this page’s URL
+    // 1) Read the four values from this page’s URL:
     const p  = new URLSearchParams(window.location.search);
     const fn = encodeURIComponent(p.get('firstName') || '');
     const ln = encodeURIComponent(p.get('lastName')  || '');
     const em = encodeURIComponent(p.get('email')     || '');
     const ph = encodeURIComponent(p.get('phone')     || '');
 
-    // 2) Your form’s ID and correct field‐parameter names
+    // 2) Your form’s ID and correct field‐parameter names:
     const FORM_ID     = '251263863957064';
-    const PARAM_LAST  = 'q3_lastname';   // internal name for “Last Name”
-    const PARAM_FIRST = 'q4_firstname';  // internal name for “First Name”
-    const PARAM_EMAIL = 'email';         // internal name for “Email”
-    const PARAM_PHONE = 'phone';         // internal name for “Phone”
+    const PARAM_FIRST = 'firstName';  // exactly the input name in the form
+    const PARAM_LAST  = 'lastName';   // exactly the input name in the form
+    const PARAM_EMAIL = 'email';
+    const PARAM_PHONE = 'phone';
 
-    // 3) Build the iframe URL with URL‐prefill params
+    // 3) Build the iframe URL with URL‐prefill params:
     const src = `https://form.jotform.com/${FORM_ID}`
       + `?${PARAM_FIRST}=${fn}`
       + `&${PARAM_LAST}=${ln}`
       + `&${PARAM_EMAIL}=${em}`
       + `&${PARAM_PHONE}=${ph}`;
 
-    // 4) Inject it
+    // 4) Inject it:
     document.getElementById('jotform-iframe').src = src;
   </script>
 </body>
