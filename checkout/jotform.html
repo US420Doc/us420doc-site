@@ -67,6 +67,9 @@
     const FIELD_KEY_EMAIL = 'email';
     const FIELD_KEY_PHONE = 'phone';
 
+    <script>
+    console.log('jotform.html search:', window.location.search);
+    
     // 3) Once iframe is loaded, postMessage to prefill
     const iframe = document.getElementById('jotform-iframe');
     iframe.addEventListener('load', () => {
