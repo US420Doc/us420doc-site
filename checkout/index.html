@@ -92,7 +92,10 @@
       const ph = encodeURIComponent(f.phone.value.trim());
 
       // Square wants these exact params:
-      const base = 'https://checkout.square.site/merchant/ML2P064SHVJ74/checkout/WI46IYI0KFVW2DQWY E4AJEQP';
+    
+      // NEW (exactly what your deploy shows)
+      const base = 'https://checkout.square.site/merchant/ML2P064SHVJ74/checkout/WI46IYI0KFVW2DQWY4AJEQP';
+      
       const params =
         `?prefill%5Bbuyer_name%5D=${fn}%20${ln}` +
         `&prefill%5Bbuyer_email%5D=${em}` +
