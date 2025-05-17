@@ -1,11 +1,11 @@
 {
   "name": "us420doc-site",
   "version": "1.0.0",
-  "dependencies": {
-  },
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "echo \"No build step defined\"", 
+    "test": "echo \"No tests to run\" && exit 0"
   },
   "repository": {
     "type": "git",
@@ -14,9 +14,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {},
   "bugs": {
     "url": "https://github.com/US420Doc/us420doc-site/issues"
   },
-  "homepage": "https://github.com/US420Doc/us420doc-site#readme",
-  "description": ""
+  "homepage": "https://github.com/US420Doc/us420doc-site#readme"
 }
