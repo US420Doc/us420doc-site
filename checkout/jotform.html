@@ -62,10 +62,13 @@
 
     // 2) Your form’s ID and correct field‐parameter names:
     const FORM_ID     = '251263863957064';
-    const PARAM_LAST  = 'lastName';   // exactly the input name in the form
     const PARAM_FIRST = 'firstName';  // exactly the input name in the form
+    const PARAM_LAST  = 'lastName';   // exactly the input name in the form
     const PARAM_EMAIL = 'email';
     const PARAM_PHONE = 'phone';
+    
+    console.log('👉 iframe URL:', src);
+    document.getElementById('jotform-iframe').src = src;
 
     // 3) Build the iframe URL with URL‐prefill params:
     const src = `https://form.jotform.com/${FORM_ID}`
