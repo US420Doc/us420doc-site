@@ -1,50 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>US420DOC Quick Checkout</title>
-  <!-- your CSS… -->
+  <!-- paste in your site’s existing CSS link(s) here -->
+  <link rel="stylesheet" href="../styles/site.css" />
 </head>
 <body>
-  <div class="card">
-    <h2>Let’s Get Started</h2>
-    <form id="checkout-form">
-      <input id="firstName" name="firstName" type="text" placeholder="First name" required />
-      <input id="lastName"  name="lastName"  type="text" placeholder="Last name"  required />
-      <input id="email"     name="email"     type="email" placeholder="Email address" required />
-      <input id="phone"     name="phone"     type="tel"   placeholder="Phone number" required />
-      <button type="submit">CONTINUE to Payment →</button>
-    </form>
-  </div>
+  <header>
+    <!-- your site’s normal header/nav -->
+    <nav>
+      <a href="../index.html"><img src="../assets/logo.png" alt="US420DOC Logo"></a>
+      <!-- …other nav items… -->
+    </nav>
+  </header>
+
+  <main class="checkout-page">
+    <section class="container">
+      <h1>Quick Checkout</h1>
+      <p>Please enter your details to continue to payment.</p>
+
+      <form id="checkout-form" class="checkout-form">
+        <label for="firstName">First Name</label>
+        <input id="firstName" name="firstName" type="text" required />
+
+        <label for="lastName">Last Name</label>
+        <input id="lastName" name="lastName" type="text" required />
+
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" required />
+
+        <label for="phone">Phone Number</label>
+        <input id="phone" name="phone" type="tel" required />
+
+        <button type="submit" class="btn btn-primary">Continue to Payment →</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <!-- your site’s normal footer -->
+    <p>&copy; 2025 US420DOC. All rights reserved.</p>
+  </footer>
 
   <script>
-    document.getElementById('checkout-form').addEventListener('submit', e => {
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // 1) grab & encode values
-      const fn = encodeURIComponent(e.target.firstName.value.trim());
-      const ln = encodeURIComponent(e.target.lastName.value.trim());
-      const em = encodeURIComponent(e.target.email.value.trim());
-      const ph = encodeURIComponent(e.target.phone.value.trim());
+      // grab & URL-encode the values
+      const fn = encodeURIComponent(this.firstName.value.trim());
+      const ln = encodeURIComponent(this.lastName.value.trim());
+      const em = encodeURIComponent(this.email.value.trim());
+      const ph = encodeURIComponent(this.phone.value.trim());
 
-      // 2) build the Square link with its own prefill keys…
-      const squareBase = 'https://square.link/u/Z0VIALUG';  // your Square link
-      const squareParams =
+      // your Square payment link
+      const baseLink = 'https://square.link/u/Z0VIALUG';
+
+      // add the prefill parameters
+      const params =
         `?prefill[buyer_name]=${fn}%20${ln}` +
         `&prefill[buyer_email]=${em}` +
-        `&prefill[buyer_phone_number]=${ph}` +
-        // 3) tell Square where to send them **after** payment:
-        `&redirect_url=${encodeURIComponent(
-            'https://form.jotform.com/251263863957064' +
-            `?firstName=${fn}` +
-            `&lastName=${ln}` +
-            `&email=${em}` +
-            `&phone=${ph}`
-        )}`;
+        `&prefill[buyer_phone_number]=${ph}`;
 
-      // 4) blast them off to Square
-      window.location.href = squareBase + squareParams;
+      // redirect user directly to Square checkout
+      window.location.href = baseLink + params;
     });
   </script>
 </body>
