@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>US420DOC Intake Form</title>
+  <!-- Brand fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .wrapper {
+      background: #f0fdf4;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 2rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      color: #1a751a;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+    }
+    /* Make sure the iframe fills the wrapper */
+    .jotform-form {
+      border: none!important;
+      width: 100%!important;
+      min-height: 700px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <h1>Patient Intake</h1>
+    <iframe
+      id="jotform-iframe"
+      class="jotform-form"
+      src="https://form.jotform.com/251263863957064?no-preload=true"
+      allowfullscreen
+      scrolling="auto"
+    ></iframe>
+  </div>
+
+  <script>
+    // 1) Grab the four values from the URL
+    const params = new URLSearchParams(window.location.search);
+    const fn = params.get('firstName') || '';
+    const ln = params.get('lastName')  || '';
+    const em = params.get('email')     || '';
+    const ph = params.get('phone')     || '';
+
+    // 2) Your JotForm field keys (replace with actual)
+    const FIELD_KEY_FIRST = 'firstName';
+    const FIELD_KEY_LAST  = 'lastName';
+    const FIELD_KEY_EMAIL = 'email';
+    const FIELD_KEY_PHONE = 'phone';
+
+    // 3) Once iframe is loaded, postMessage to prefill
+    const iframe = document.getElementById('jotform-iframe');
+    iframe.addEventListener('load', () => {
+      const win = iframe.contentWindow;
+      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_FIRST, value: fn }, '*');
+      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_LAST , value: ln }, '*');
+      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_EMAIL, value: em }, '*');
+      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_PHONE, value: ph }, '*');
+    });
+  </script>
+</body>
+</html>
