@@ -4,105 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Payment</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #fff;
-      color: #1a751a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-    .card {
-      background: #f0fdf4;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      width: 100%;
-      max-width: 400px;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: 600;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.25rem;
-      border: 1px solid #c1eac5;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
-    button {
-      margin-top: 1.5rem;
-      width: 100%;
-      padding: 0.75rem;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      background-color: #1a751a;
-      color: white;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-  </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Pay $199</h1>
-    <form id="checkout-form">
-      <label for="first">First Name</label>
-      <input id="first" name="firstName" type="text" required />
-
-      <label for="last">Last Name</label>
-      <input id="last" name="lastName" type="text" required />
-
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" required />
-
-      <label for="phone">Phone</label>
-      <input id="phone" name="phone" type="tel" required />
-
-      <button type="submit">Proceed to Payment</button>
-    </form>
-  </div>
+  <form id="checkout-form">
+    <input name="firstName"   type="text" placeholder="First Name" required>
+    <input name="lastName"    type="text" placeholder="Last Name" required>
+    <input name="email"       type="email" placeholder="Email" required>
+    <input name="phone"       type="tel" placeholder="Phone" required>
+    <button type="submit">Continue to Payment</button>
+  </form>
 
   <script>
     document.getElementById('checkout-form').addEventListener('submit', e => {
       e.preventDefault();
-      const f = e.target;
+      const f  = e.target;
       const fn = encodeURIComponent(f.firstName.value.trim());
       const ln = encodeURIComponent(f.lastName.value.trim());
       const em = encodeURIComponent(f.email.value.trim());
       const ph = encodeURIComponent(f.phone.value.trim());
 
-      // Square wants these exact params:
-    
-      // NEW (exactly what your deploy shows)
-      const base = 'https://checkout.square.site/merchant/ML2P064SHVJ74/checkout/WI46IYI0KFVW2DQWY4AJEQP';
-      
+      const base = 'https://square.link/u/Z0VIALUG';
       const params =
         `?prefill%5Bbuyer_name%5D=${fn}%20${ln}` +
         `&prefill%5Bbuyer_email%5D=${em}` +
         `&prefill%5Bbuyer_phone_number%5D=${ph}` +
         `&redirect_url=${encodeURIComponent('https://domain.com/jotform.html')}`;
 
-      console.log('Redirecting to:', base + params);
       window.location.href = base + params;
     });
   </script>
