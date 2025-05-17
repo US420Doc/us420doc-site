@@ -4,68 +4,96 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>US420DOC Quick Checkout</title>
-  <!-- paste in your site’s existing CSS link(s) here -->
-  <link rel="stylesheet" href="../styles/site.css" />
+  <style>
+    /* Full-screen centered layout */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f4f4f4;
+    }
+
+    /* The “card” container */
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: #14532d;
+    }
+
+    /* Inputs */
+    .card input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    /* Submit button */
+    .card button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #ff000d;
+      color: #fff;
+      border: none;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background: #c9000b;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <!-- your site’s normal header/nav -->
-    <nav>
-      <a href="../index.html"><img src="../assets/logo.png" alt="US420DOC Logo"></a>
-      <!-- …other nav items… -->
-    </nav>
-  </header>
-
-  <main class="checkout-page">
-    <section class="container">
-      <h1>Quick Checkout</h1>
-      <p>Please enter your details to continue to payment.</p>
-
-      <form id="checkout-form" class="checkout-form">
-        <label for="firstName">First Name</label>
-        <input id="firstName" name="firstName" type="text" required />
-
-        <label for="lastName">Last Name</label>
-        <input id="lastName" name="lastName" type="text" required />
-
-        <label for="email">Email Address</label>
-        <input id="email" name="email" type="email" required />
-
-        <label for="phone">Phone Number</label>
-        <input id="phone" name="phone" type="tel" required />
-
-        <button type="submit" class="btn btn-primary">Continue to Payment →</button>
-      </form>
-    </section>
-  </main>
-
-  <footer>
-    <!-- your site’s normal footer -->
-    <p>&copy; 2025 US420DOC. All rights reserved.</p>
-  </footer>
+  <div class="card">
+    <h2>Let’s Get Started</h2>
+    <form id="checkout-form">
+      <input name="firstName" type="text"     placeholder="First name"     required>
+      <input name="lastName"  type="text"     placeholder="Last name"      required>
+      <input name="email"     type="email"    placeholder="Email address"  required>
+      <input name="phone"     type="tel"      placeholder="Phone number"   required>
+      <button type="submit">CONTINUE to Payment →</button>
+    </form>
+  </div>
 
   <script>
-    document.getElementById('checkout-form').addEventListener('submit', function(e) {
-      e.preventDefault();
+    document.getElementById('checkout-form')
+      .addEventListener('submit', function(e) {
+        e.preventDefault();
+        const f = e.target;
+        const fn = encodeURIComponent(f.firstName.value.trim());
+        const ln = encodeURIComponent(f.lastName.value.trim());
+        const em = encodeURIComponent(f.email.value.trim());
+        const ph = encodeURIComponent(f.phone.value.trim());
 
-      // grab & URL-encode the values
-      const fn = encodeURIComponent(this.firstName.value.trim());
-      const ln = encodeURIComponent(this.lastName.value.trim());
-      const em = encodeURIComponent(this.email.value.trim());
-      const ph = encodeURIComponent(this.phone.value.trim());
+        // Replace with your actual Square link:
+        const base = 'https://square.link/u/Z0VIALUG';
 
-      // your Square payment link
-      const baseLink = 'https://square.link/u/Z0VIALUG';
+        // Build the prefill query string:
+        const qs  = '?prefill[buyer_name]='   + fn + '%20' + ln
+                  + '&prefill[buyer_email]='  + em
+                  + '&prefill[buyer_phone_number]=' + ph;
 
-      // add the prefill parameters
-      const params =
-        `?prefill[buyer_name]=${fn}%20${ln}` +
-        `&prefill[buyer_email]=${em}` +
-        `&prefill[buyer_phone_number]=${ph}`;
-
-      // redirect user directly to Square checkout
-      window.location.href = baseLink + params;
-    });
+        // Redirect into Square’s hosted checkout:
+        window.location.href = base + qs;
+      });
   </script>
 </body>
 </html>
