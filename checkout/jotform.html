@@ -66,9 +66,7 @@
     const PARAM_LAST  = 'lastName';   // exactly the input name in the form
     const PARAM_EMAIL = 'email';
     const PARAM_PHONE = 'phone';
-    
-    console.log('👉 iframe URL:', src);
-    document.getElementById('jotform-iframe').src = src;
+       
 
     // 3) Build the iframe URL with URL‐prefill params:
     const src = `https://form.jotform.com/${FORM_ID}`
@@ -77,6 +75,9 @@
       + `&${PARAM_EMAIL}=${em}`
       + `&${PARAM_PHONE}=${ph}`;
 
+    console.log('👉 iframe URL:', src);
+    document.getElementById('jotform-iframe').src = src;
+    
     // 4) Inject it:
     document.getElementById('jotform-iframe').src = src;
   </script>
