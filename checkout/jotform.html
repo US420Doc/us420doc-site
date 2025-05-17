@@ -33,7 +33,6 @@
       margin-bottom: 1.5rem;
       font-size: 1.8rem;
     }
-    /* Make sure the iframe fills the wrapper */
     .jotform-form {
       border: none!important;
       width: 100%!important;
@@ -47,38 +46,36 @@
     <iframe
       id="jotform-iframe"
       class="jotform-form"
-      src="https://form.jotform.com/251263863957064?no-preload=true"
+      src=""
       allowfullscreen
       scrolling="auto"
     ></iframe>
   </div>
 
   <script>
-    // 1) Grab the four values from the URL
-    const params = new URLSearchParams(window.location.search);
-    const fn = params.get('firstName') || '';
-    const ln = params.get('lastName')  || '';
-    const em = params.get('email')     || '';
-    const ph = params.get('phone')     || '';
+    // 1) Grab the four values from this page’s URL:
+    const p  = new URLSearchParams(window.location.search);
+    const fn = encodeURIComponent(p.get('firstName') || '');
+    const ln = encodeURIComponent(p.get('lastName')  || '');
+    const em = encodeURIComponent(p.get('email')     || '');
+    const ph = encodeURIComponent(p.get('phone')     || '');
 
-    // 2) Your JotForm field keys (replace with actual)
-    const FIELD_KEY_FIRST = 'firstName';
-    const FIELD_KEY_LAST  = 'lastName';
-    const FIELD_KEY_EMAIL = 'email';
-    const FIELD_KEY_PHONE = 'phone';
+    // 2) Since your JotForm input names exactly match "firstName", "lastName", "email", "phone":
+    const FORM_ID     = '251263863957064';
+    const PARAM_FIRST = 'firstName';
+    const PARAM_LAST  = 'lastName';
+    const PARAM_EMAIL = 'email';
+    const PARAM_PHONE = 'phone';
 
-    <script>
-    console.log('jotform.html search:', window.location.search);
-    
-    // 3) Once iframe is loaded, postMessage to prefill
-    const iframe = document.getElementById('jotform-iframe');
-    iframe.addEventListener('load', () => {
-      const win = iframe.contentWindow;
-      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_FIRST, value: fn }, '*');
-      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_LAST , value: ln }, '*');
-      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_EMAIL, value: em }, '*');
-      win.postMessage({ type: 'setFieldValue', field: FIELD_KEY_PHONE, value: ph }, '*');
-    });
+    // 3) Build the iframe src with URL-prefill parameters:
+    const src = `https://form.jotform.com/${FORM_ID}`
+      + `?${PARAM_FIRST}=${fn}`
+      + `&${PARAM_LAST}=${ln}`
+      + `&${PARAM_EMAIL}=${em}`
+      + `&${PARAM_PHONE}=${ph}`;
+
+    // 4) Inject it into the iframe:
+    document.getElementById('jotform-iframe').src = src;
   </script>
 </body>
 </html>
