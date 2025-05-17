@@ -4,15 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Payment</title>
+  <!-- Brand fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      color: #1a751a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #f0fdf4;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #1a751a;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #1a751a;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.25rem;
+      border: 1px solid #c1eac5;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      background-color: #1a751a;
+      color: white;
+      transition: opacity 0.2s ease;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
 </head>
 <body>
-  <form id="checkout-form">
-    <input name="firstName"   type="text" placeholder="First Name" required>
-    <input name="lastName"    type="text" placeholder="Last Name" required>
-    <input name="email"       type="email" placeholder="Email" required>
-    <input name="phone"       type="tel" placeholder="Phone" required>
-    <button type="submit">Continue to Payment</button>
-  </form>
+  <div class="container">
+    <h1>Pay $199</h1>
+    <form id="checkout-form">
+      <label for="firstName">First Name</label>
+      <input id="firstName" name="firstName" type="text" placeholder="First Name" required>
+
+      <label for="lastName">Last Name</label>
+      <input id="lastName" name="lastName" type="text" placeholder="Last Name" required>
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="Email" required>
+
+      <label for="phone">Phone</label>
+      <input id="phone" name="phone" type="tel" placeholder="Phone" required>
+
+      <button type="submit">Proceed to Payment</button>
+    </form>
+  </div>
 
   <script>
     document.getElementById('checkout-form').addEventListener('submit', e => {
