@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Intake Form</title>
   <!-- Brand fonts -->
@@ -53,27 +53,31 @@
   </div>
 
   <script>
-    // 1) Read incoming values from the URL (firstName, lastName, email, phone)
-    const p  = new URLSearchParams(window.location.search);
-    const fn = encodeURIComponent(p.get('firstName') || '');
-    const ln = encodeURIComponent(p.get('lastName')  || '');
-    const em = encodeURIComponent(p.get('email')     || '');
-    const ph = encodeURIComponent(p.get('phone')     || '');
+    // 1) Grab the four values from this page’s URL
+    const params = new URLSearchParams(window.location.search);
+    const fn = encodeURIComponent(params.get('firstName') || '');
+    const ln = encodeURIComponent(params.get('lastName')  || '');
+    const em = encodeURIComponent(params.get('email')     || '');
+    const ph = encodeURIComponent(params.get('phone')     || '');
 
-    // 2) Your JotForm ID
+    // 2) Your form’s ID
     const FORM_ID = '251263863957064';
 
-    // 3) Build the iframe URL using the Full Name widget syntax (name[first], name[last])
-    const src = `https://form.jotform.com/${FORM_ID}`
-      + `?name[first]=${fn}`
-      + `&name[last]=${ln}`
-      + `&email=${em}`
-      + `&phone=${ph}`;
+    // 3) Build the iframe src with Full Name widget syntax:
+    //    - name[first]=... and name[last]=... for the Full Name widget
+    //    - email=... and phone=... for your Short Text fields
+    const src =
+      `https://form.jotform.com/${FORM_ID}` +
+      `?name[first]=${fn}` +
+      `&name[last]=${ln}` +
+      `&email=${em}` +
+      `&phone=${ph}`;
 
-    console.log('iframe URL:', src);
+    console.log('Embedding form with URL:', src);
 
-    // 4) Inject it into the iframe
+    // 4) Inject into the iframe
     document.getElementById('jotform-iframe').src = src;
   </script>
 </body>
 </html>
+
