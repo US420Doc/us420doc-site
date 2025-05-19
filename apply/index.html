@@ -2,39 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Complete Your Medical Intake</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>US420DOC Intake Form</title>
   <style>
-    body { font-family: sans-serif; margin:0; padding:2rem; background:#f0fdf4; color:#14532d; }
-    h1 { text-align:center; margin-bottom:1rem; }
-    #jotformEmbed { max-width:600px; margin:0 auto; }
+    /* your branded iframe and wrapper styles */
   </style>
 </head>
 <body>
-  <h1>Complete Your Medical Intake</h1>
-  <div id="jotformEmbed"></div>
+  <h1>Patient Intake</h1>
+  <iframe
+    id="jotform-iframe"
+    src=""
+    style="width:100%;min-height:700px;border:none;"
+    allowfullscreen
+    scrolling="auto"
+  ></iframe>
 
   <script>
-    (function(){
-      // 1) Parse out any prefill from the URL (Square will echo back what the user entered)
-      const params = new URLSearchParams(window.location.search);
-      const email = params.get('prefill[buyer_email]') || '';
-      const phone = params.get('prefill[buyer_phone]') || '';
-      const name  = params.get('prefill[buyer_name]') || ''; // may be "First Last"
-      const [ firstName='', lastName='' ] = name.split(' ');
+    // 1) pull the saved data
+    const fn = encodeURIComponent(localStorage.getItem('us420doc_firstName') || '');
+    const ln = encodeURIComponent(localStorage.getItem('us420doc_lastName')  || '');
+    const em = encodeURIComponent(localStorage.getItem('us420doc_email')     || '');
+    const ph = encodeURIComponent(localStorage.getItem('us420doc_phone')     || '');
 
-      // 2) Build JotForm query string using your form field names
-      const jf = new URLSearchParams();
-      if (firstName) jf.set('firstName', firstName);
-      if (lastName)  jf.set('lastName',  lastName);
-      if (email)     jf.set('email',     email);
-      if (phone)     jf.set('phone',     phone);
+    // 2) build the JotForm prefill URL
+    const FORM_ID = '251263863957064';
+    const src = `https://form.jotform.com/${FORM_ID}`
+      + `?name[first]=${fn}`
+      + `&name[last]=${ln}`
+      + `&email=${em}`
+      + `&phone=${ph}`;
 
-      // 3) Inject the JotForm embed script with those prefill params
-      const script = document.createElement('script');
-      script.src = 'https://form.jotform.com/jsform/251263863957064?' + jf.toString();
-      document.getElementById('jotformEmbed').appendChild(script);
-    })();
+    // 3) load it
+    document.getElementById('jotform-iframe').src = src;
+
+    // 4) clear the storage
+    localStorage.removeItem('us420doc_firstName');
+    localStorage.removeItem('us420doc_lastName');
+    localStorage.removeItem('us420doc_email');
+    localStorage.removeItem('us420doc_phone');
   </script>
 </body>
 </html>
