@@ -4,41 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>US420DOC Intake Form</title>
-  <!-- Brand fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap"
-    rel="stylesheet"
-  />
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #ffffff;
-      margin: 0;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-    }
-    .wrapper {
-      background: #f0fdf4;
-      max-width: 600px;
-      width: 100%;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 2rem;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      color: #1a751a;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      font-size: 1.8rem;
-    }
-    .jotform-form {
-      border: none!important;
-      width: 100%!important;
-      min-height: 700px;
-    }
-  </style>
+  <!-- your existing fonts & CSS here -->
 </head>
 <body>
   <div class="wrapper">
@@ -53,30 +19,28 @@
   </div>
 
   <script>
-    // 1) Grab the four values from this page’s URL
-    const params = new URLSearchParams(window.location.search);
-    const fn = encodeURIComponent(params.get('firstName') || '');
-    const ln = encodeURIComponent(params.get('lastName')  || '');
-    const em = encodeURIComponent(params.get('email')     || '');
-    const ph = encodeURIComponent(params.get('phone')     || '');
+    // 1) Read stored values from localStorage
+    const fn = encodeURIComponent(localStorage.getItem('us420doc_firstName') || '');
+    const ln = encodeURIComponent(localStorage.getItem('us420doc_lastName')  || '');
+    const em = encodeURIComponent(localStorage.getItem('us420doc_email')     || '');
+    const ph = encodeURIComponent(localStorage.getItem('us420doc_phone')     || '');
 
-    // 2) Your form’s ID
+    // 2) Build your JotForm iframe URL as before
     const FORM_ID = '251263863957064';
+    const src = `https://form.jotform.com/${FORM_ID}`
+      + `?name[first]=${fn}`
+      + `&name[last]=${ln}`
+      + `&email=${em}`
+      + `&phone=${ph}`;
 
-    // 3) Build the iframe src with Full Name widget syntax:
-    //    - name[first]=... and name[last]=... for the Full Name widget
-    //    - email=... and phone=... for your Short Text fields
-    const src =
-      `https://form.jotform.com/${FORM_ID}` +
-      `?name[first]=${fn}` +
-      `&name[last]=${ln}` +
-      `&email=${em}` +
-      `&phone=${ph}`;
-
-    console.log('Embedding form with URL:', src);
-
-    // 4) Inject into the iframe
+    // 3) Inject into the iframe
     document.getElementById('jotform-iframe').src = src;
+
+    // 4) Clear the stored values so they don't persist
+    localStorage.removeItem('us420doc_firstName');
+    localStorage.removeItem('us420doc_lastName');
+    localStorage.removeItem('us420doc_email');
+    localStorage.removeItem('us420doc_phone');
   </script>
 </body>
 </html>
