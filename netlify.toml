@@ -1,0 +1,3 @@
+[build]
+  # Tell Netlify to serve from the 'checkout' folder
+  publish = "checkout"
